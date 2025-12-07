@@ -18,3 +18,5 @@ six==1.17.0
 sqlparse==0.5.3
 urllib3==2.6.0
 whitenoise==6.11.0
+django-storages
+boto3

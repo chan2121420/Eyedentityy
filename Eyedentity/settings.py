@@ -11,9 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -56,8 +53,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
 
     # Cloudinary storage
-    'cloudinary',
-    'cloudinary_storage',
+    'storages',
     
     # Local apps
     'apps.main',
@@ -145,9 +141,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 
 # Media files
-MEDIA_URL = f"https://res.cloudinary.com/{os.environ.get('CLOUDINARY_CLOUD_NAME')}/"
-MEDIA_ROOT = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
+AWS_ACCESS_KEY_ID = os.environ.get('B2_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('B2_APP_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('B2_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.environ.get('B2_REGION')  # e.g., 'us-west-004'
+AWS_S3_ENDPOINT_URL = f'https://s3.{AWS_S3_REGION_NAME}.backblazeb2.com'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.backblazeb2.com'
+
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -303,12 +306,3 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
 THUMBNAIL_SIZE = (300, 300)
 PRODUCT_IMAGE_SIZE = (800, 600)
 BLOG_IMAGE_SIZE = (1200, 600)
-
-# Cloudinary media storage
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
-}
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
