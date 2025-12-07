@@ -1,0 +1,14 @@
+INFO 2025-12-07 13:42:34,787 autoreload 80938 140396865425664 Watching for file changes with StatReloader
+INFO 2025-12-07 13:42:36,559 basehttp 80938 140396804081344 "GET / HTTP/1.1" 301 0
+INFO 2025-12-07 13:42:36,575 basehttp 80938 140396804081344 code 400, message Bad request version ('\x00\x12\x00\x10\x04\x03\x08\x04\x04\x01\x05\x03\x08\x05\x05\x01\x08\x06\x06\x01\x00\x17\x00\x00ÿ\x01\x00\x01\x00\x00-\x00\x02\x01\x01\x00#\x00\x00\x00')
+ERROR 2025-12-07 13:42:36,575 basehttp 80938 140396804081344 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2025-12-07 13:42:36,577 basehttp 80938 140396787295936 code 400, message Bad request version ('jj\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06s')
+ERROR 2025-12-07 13:42:36,578 basehttp 80938 140396787295936 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2025-12-07 13:42:38,531 basehttp 80938 140396787295936 code 400, message Bad request version ('6\x18¦7\'L"\x00')
+ERROR 2025-12-07 13:42:38,531 basehttp 80938 140396787295936 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2025-12-07 13:42:38,532 basehttp 80938 140396575323840 code 400, message Bad request version ('::\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x063\x9a\x9a\x00\x00\x00+\x00\x07\x06zz\x03\x04\x03\x03\x00-\x00\x02\x01\x01\x00')
+INFO 2025-12-07 13:42:38,532 basehttp 80938 140396787295936 code 400, message Bad request version ('«´©')
+ERROR 2025-12-07 13:42:38,532 basehttp 80938 140396575323840 You're accessing the development server over HTTPS, but it only supports HTTP.
+ERROR 2025-12-07 13:42:38,533 basehttp 80938 140396787295936 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2025-12-07 13:42:38,535 basehttp 80938 140396787295936 code 400, message Bad request version ('\x8a\x8a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06SJJ\x00\x00\x003\x04ï\x04í')
+ERROR 2025-12-07 13:42:38,535 basehttp 80938 140396787295936 You're accessing the development server over HTTPS, but it only supports HTTP.

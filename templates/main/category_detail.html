@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} - Products{% endblock %}
+
+{% block content %}
+<section class="py-5" style="margin-top: 80px;">
+    <div class="container">
+        <h1 class="section-title">{{ category.name }}</h1>
+        <p class="text-center mb-5">{{ category.description|default:"Discover our premium collection in this category." }}</p>
+        <div class="row">
+            {% for product in products %}
+                <div class="col-lg-4 col-md-6 col-6 mb-4">
+                <div class="card h-100">
+                    <a href="{{ product.get_absolute_url }}">
+                        <img src="{{ product.image.url }}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="{{ product.name }}">
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title"><a href="{{ product.get_absolute_url }}" class="text-decoration-none">{{ product.name }}</a></h5>
+                        <p class="card-text flex-grow-1">{{ product.description|truncatewords:15 }} <a href="#" class="about-readmore text-decoration-none" data-modal="product-modal-{{ forloop.counter }}">Read More</a></p>
+                        <div class="price-section mb-3">
+                            <span class="price">${{ product.price }}</span>
+                            {% if product.is_on_sale and product.old_price %}
+                            <span class="old-price ms-2">${{ product.old_price }}</span>
+                            {% endif %}
+                        </div>
+                        <a href="{{ product.whatsapp_link }}" target="_blank" class="btn btn-primary mt-auto">
+                            <i class="bi bi-whatsapp me-2"></i>Buy Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No products available in this category.</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% if products.has_other_pages %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                {% for num in products.paginator.page_range %}
+                <li class="page-item {% if products.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endfor %}
+                {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        <!-- Product Modals -->
+        {% for product in products %}
+        <div id="product-modal-{{ forloop.counter }}" class="about-modal" style="display: none;">
+            <div class="modal-overlay"></div>
+            <div class="modal-content-custom">
+                <div class="modal-header-custom">
+                    <h5>{{ product.name }}</h5>
+                    <button type="button" class="close">&times;</button>
+                </div>
+                <div class="modal-body-custom">
+                    <p>{{ product.description }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/about-glasses.js' %}"></script>
+{% endblock %}

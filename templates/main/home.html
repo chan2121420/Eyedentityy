@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Eyedentity Eyewear | Premium Eyewear in Harare, Zimbabwe{% endblock %}
+
+{% block content %}
+<section class="hero-section hero-with-image">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="hero-title">Stylish. Protective. Uniquely You.</h1>
+                <p class="hero-subtitle">
+                    <a href="{% url 'category_detail' 'photochromic' %}" class="text-decoration-none text-light">Photochromic</a> |
+                    <a href="{% url 'category_detail' 'polarized' %}" class="text-decoration-none text-light">Polarized</a> |
+                    <a href="{% url 'category_detail' 'anti-blue' %}" class="text-decoration-none text-light">Anti Blue</a> |
+                    <a href="{% url 'category_detail' 'readers' %}" class="text-decoration-none text-light">Readers</a> |
+                    <a href="{% url 'category_detail' 'optical-frames' %}" class="text-decoration-none text-light">Optical Frames</a>
+                </p>
+                <div class="hero-buttons">
+                    <a href="{% url 'shop' %}" class="btn btn-primary btn-lg me-3">Shop Now</a>
+                    <a href="{% url 'categories' %}" class="btn btn-outline-light btn-lg">View Categories</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if sale_products %}
+<section class="py-5" style="background-color: var(--bg-secondary);">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-danger text-light text-center mb-5" role="alert">
+                    <h4 class="mb-0">
+                        <i class="bi bi-fire me-2"></i>LIMITED TIME SALE - Up to 40% OFF!
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {% if sale_products|length > 0 %}
+                <div id="saleProductsCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000" data-bs-wrap="true" data-bs-pause="false">
+                    <div class="carousel-indicators">
+                        {% for product in sale_products %}
+                        <button type="button" data-bs-target="#saleProductsCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
+                        {% endfor %}
+                    </div>
+                    <div class="carousel-inner">
+                        {% for product in sale_products %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="card product-card h-100" style="max-width: 2000px; margin: 0 auto; border: none;">
+                                        <div class="sale-badge">{{ product.discount_percentage }}% OFF</div>
+                                        <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title">{{ product.name }}</h5>
+                                            <p class="card-text flex-grow-1">{{ product.description|truncatewords:15 }}</p>
+                                            {% if product.features.all %}
+                                            <div class="mb-2">
+                                                {% for feature in product.features.all|slice:"0:2" %}
+                                                <span class="badge bg-primary me-1 mb-1">{{ feature }}</span>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                            <div class="price-section mb-3">
+                                                <span class="price sale">${{ product.price }}</span>
+                                                <span class="old-price ms-2">${{ product.old_price }}</span>
+                                            </div>
+                                            <a href="{{ product.whatsapp_link }}" target="_blank" class="btn btn-primary">
+                                                <i class="bi bi-whatsapp me-2"></i>Buy on WhatsApp
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% if sale_products|length == 0 %}
+                        <div class="carousel-item active">
+                            <div class="col-12 text-center">
+                                <p class="text-muted">No sale products available at the moment.</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#saleProductsCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#saleProductsCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                {% else %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">No sale products available at the moment.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+<section class="py-5" style="background: var(--bg-secondary);">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">About Our Glasses</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                {% if about_glasses_cards and about_glasses_cards|length > 0 %}
+                <div class="about-glasses-container position-relative">
+                    
+                    <!-- Cards -->
+                    {% for card in about_glasses_cards %}
+                    <div class="about-glasses-card card shadow-lg p-4 mb-4 text-center" style="border:none; max-width:600px; margin:0 auto; display: none;">
+                        <div class="mb-3">
+                            <i class="bi bi-eyeglasses" style="font-size: 3rem; color: var(--brand-primary);"></i>
+                        </div>
+                        <h5 class="card-title">{{ card.title }}</h5>
+                        <p class="card-text">{{ card.content|truncatewords:18 }}</p>
+                        <button class="btn btn-outline-primary about-readmore" data-modal="about-modal-{{ forloop.counter }}">
+                            Read More
+                        </button>
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- Navigation arrows - only show if more than 1 card -->
+                    {% if about_glasses_cards|length > 1 %}
+                    <button id="about-prev" class="carousel-control carousel-control-prev" type="button">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button id="about-next" class="carousel-control carousel-control-next" type="button">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    {% endif %}
+                    
+                    <!-- Dots indicators - only show if more than 1 card -->
+                    {% if about_glasses_cards|length > 1 %}
+                    <div class="carousel-dots text-center mt-3">
+                        {% for card in about_glasses_cards %}
+                        <span class="dot {% if forloop.first %}active{% endif %}" data-slide="{{ forloop.counter0 }}"></span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="text-center">
+                    <p class="text-muted">No information available about our glasses at the moment.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom Modals for Read More content -->
+{% for card in about_glasses_cards %}
+<div id="about-modal-{{ forloop.counter }}" class="about-modal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content-custom">
+        <div class="modal-header-custom">
+            <h5>{{ card.title }}</h5>
+            <button type="button" class="close">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <p>{{ card.content }}</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<script src="{% static 'js/about-glasses.js' %}"></script>
+
+<section class="py-5" style="background-color: var(--bg-dark); color: var(--text-light);">
+    <div class="container">
+        <h2 class="section-title" style="color: var(--text-light);">Shop by Category</h2>
+        <div class="row">
+                {% for category in categories|slice:':2' %}
+                <div class="col-lg-2 col-md-4 col-6 mb-4">
+                    <a href="{{ category.get_absolute_url }}" class="text-decoration-none">
+                        <div class="card text-center h-100">
+                            {% if category.image %}
+                            <img src="{{ category.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ category.name }}">
+                            {% else %}
+                            <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 150px; background-color: var(--bg-accent);">
+                                <i class="bi bi-eyeglasses" style="font-size: 3rem; color: var(--brand-primary);"></i>
+                            </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h6 class="card-title">{{ category.name }}</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'categories' %}" class="btn btn-primary btn-lg d-inline-block" style="box-shadow: 0 2px 8px rgba(0,0,0,0.08); font-weight: 600; letter-spacing: 0.5px; border-width: 2px; color: #fff; background: var(--brand-primary, #007bff);">View All Categories</a>
+        </div>
+    </div>
+</section>
+
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">What Our Customers Say</h2>
+        <div id="testimonialCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="30000">
+            <div class="carousel-inner">
+                {% for testimonial in testimonials %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 mb-4">
+                            <div class="testimonial-card">
+                                <div class="stars mb-3">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= testimonial.rating %}
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        {% else %}
+                                            <i class="bi bi-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <p class="mb-3">"{{ testimonial.text }}"</p>
+                                <h6 class="mb-0">- {{ testimonial.name }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+
+<section class="py-5" style="background-color: var(--bg-accent);">
+    <div class="container">
+        <h2 class="section-title">Eye Health Tips</h2>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-shield-check" style="font-size: 3rem; color: var(--brand-primary);"></i>
+                        </div>
+                        <h5 class="card-title">UV Protection</h5>
+                        <p class="card-text">Always wear sunglasses with 100% UV protection when outdoors to prevent eye damage from harmful rays.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-laptop" style="font-size: 3rem; color: var(--brand-primary);"></i>
+                        </div>
+                        <h5 class="card-title">Blue Light Protection</h5>
+                        <p class="card-text">Reduce digital eye strain with blue light blocking glasses during extended screen time.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-eye" style="font-size: 3rem; color: var(--brand-primary);"></i>
+                        </div>
+                        <h5 class="card-title">Regular Check-ups</h5>
+                        <p class="card-text">Schedule regular eye exams to maintain optimal eye health and catch issues early.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

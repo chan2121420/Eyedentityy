@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: {{ request.build_absolute_uri }}/sitemap.xml
+
+# Disallow admin and sensitive areas
+Disallow: /admin/
+Disallow: /ckeditor/
+Disallow: /media/uploads/
+
+# Allow all other content
+Allow: /static/
+Allow: /media/products/
+Allow: /media/blog/
+Allow: /media/categories/

@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Eyedentity{% endblock %}
+
+{% block content %}
+<section class="py-5" style="margin-top:80px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Gallery -->
+                <div class="product-gallery">
+                    <div class="main-image mb-3">
+                        <img id="gallery-main" src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid" style="width:100%; height:auto; object-fit:contain;" />
+                    </div>
+                    <div class="gallery-thumbs d-flex gap-2">
+                        <img src="{{ product.image.url }}" class="thumb img-thumbnail" data-full="{{ product.image.url }}" data-index="0" style="width:80px; height:80px; object-fit:cover; cursor:pointer;"/>
+                        {% for img in product.additional_images.all %}
+                            {% if forloop.counter <= 5 %}
+                                <img src="{{ img.image.url }}" class="thumb img-thumbnail" data-full="{{ img.image.url }}" data-index="{{ forloop.counter }}" style="width:80px; height:80px; object-fit:cover; cursor:pointer;"/>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h2>{{ product.name }}</h2>
+                <div class="price-section mb-3">
+                    <span class="price">${{ product.price }}</span>
+                    {% if product.old_price %}<span class="old-price ms-2">${{ product.old_price }}</span>{% endif %}
+                </div>
+                <p>{{ product.description|linebreaksbr }}</p>
+                <a href="{{ product.whatsapp_link }}" target="_blank" class="btn btn-primary mt-3">
+                    <i class="bi bi-whatsapp me-2"></i>Buy on WhatsApp
+                </a>
+            </div>
+        </div>
+
+        <!-- Lightbox Modal -->
+        <div id="imageLightbox" class="about-modal" style="display:none;">
+            <div class="modal-overlay"></div>
+            <div class="modal-content-custom" style="max-width:900px;">
+                <div class="modal-header-custom">
+                    <h5 id="lightbox-title">{{ product.name }}</h5>
+                    <button type="button" class="close">&times;</button>
+                </div>
+                <div class="modal-body-custom text-center">
+                    <img id="lightbox-img" src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width:100%; height:auto;" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var images = [];
+    var thumbs = Array.from(document.querySelectorAll('.thumb'));
+    thumbs.forEach(function(t) {
+        var src = t.getAttribute('data-full');
+        if (src) images.push(src);
+    });
+
+    
+    if (mainPreview) mainPreview.dataset.index = 0;
+
+    var currentIndex = 0;
+    var lightbox = document.getElementById('imageLightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    var mainPreview = document.getElementById('gallery-main');
+    var lastNavTime = 0;
+
+    function showImageAtIndex(idx) {
+        if (idx < 0 || idx >= images.length) return;
+        currentIndex = idx;
+        var url = images[currentIndex];
+        if (mainPreview) mainPreview.setAttribute('src', url);
+        if (mainPreview) mainPreview.dataset.index = currentIndex;
+        if (lightboxImg && lightbox.classList.contains('show')) {
+            lightboxImg.setAttribute('src', url);
+        }
+    }
+
+    
+    thumbs.forEach(function(thumb) {
+        thumb.addEventListener('click', function() {
+            var idx = parseInt(this.getAttribute('data-index')) || 0;
+            showImageAtIndex(idx);
+        });
+
+        thumb.addEventListener('dblclick', function() {
+            var idx = parseInt(this.getAttribute('data-index')) || 0;
+            showImageAtIndex(idx);
+            lightbox.classList.add('show'); lightbox.style.display='block'; document.body.style.overflow='hidden';
+        });
+    });
+
+    
+    var mainImg = document.getElementById('gallery-main');
+    if (mainImg) {
+        mainImg.addEventListener('click', function() {
+            
+            var idx = parseInt(this.dataset.index);
+            if (isNaN(idx)) {
+                idx = images.indexOf(this.getAttribute('src'));
+                if (idx === -1) idx = 0;
+            }
+            showImageAtIndex(idx);
+            lightbox.classList.add('show'); lightbox.style.display='block'; document.body.style.overflow='hidden';
+        });
+    }
+
+    
+    function showNext() {
+        if (currentIndex < images.length - 1) {
+            showImageAtIndex(currentIndex + 1);
+        }
+    }
+
+    function showPrev() {
+        if (currentIndex > 0) {
+            showImageAtIndex(currentIndex - 1);
+        }
+    }
+
+    
+    document.querySelectorAll('#imageLightbox .close, #imageLightbox .modal-overlay').forEach(function(el) {
+        el.addEventListener('click', function() {
+            lightbox.classList.remove('show'); lightbox.style.display='none'; document.body.style.overflow='';
+        });
+    });
+
+    
+    document.addEventListener('keydown', function(e) {
+        if (!lightbox.classList.contains('show')) return;
+        if (e.key === 'Escape') {
+            lightbox.classList.remove('show'); lightbox.style.display='none'; document.body.style.overflow='';
+        } else if (e.key === 'ArrowRight') {
+            showNext();
+        } else if (e.key === 'ArrowLeft') {
+            showPrev();
+        }
+    });
+
+    
+    if (lightbox) {
+        lightbox.addEventListener('wheel', function(e) {
+            if (!lightbox.classList.contains('show')) return;
+            var now = Date.now();
+            if (now - lastNavTime < 250) return; // throttle to 250ms
+            if (e.deltaY > 0) {
+                // wheel down -> next
+                showNext();
+                lastNavTime = now;
+            } else if (e.deltaY < 0) {
+                // wheel up -> prev
+                showPrev();
+                lastNavTime = now;
+            }
+            e.preventDefault();
+        }, { passive: false });
+    }
+});
+</script>
+{% endblock %}
