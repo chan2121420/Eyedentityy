@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,6 +54,10 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'crispy_forms',
     'crispy_bootstrap5',
+
+    # Cloudinary storage
+    'cloudinary',
+    'cloudinary_storage',
     
     # Local apps
     'apps.main',
@@ -138,8 +145,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = f"https://res.cloudinary.com/{os.environ.get('CLOUDINARY_CLOUD_NAME')}/"
+MEDIA_ROOT = None
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -158,7 +166,7 @@ SITE_ID = 1
 # DEFAULT_FROM_EMAIL = 'Eyedentity Eyewear <noreply@Eyedentity.co.zw>'
 
 # CKEditor settings
-CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_UPLOAD_PATH = ''
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 
@@ -295,3 +303,12 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
 THUMBNAIL_SIZE = (300, 300)
 PRODUCT_IMAGE_SIZE = (800, 600)
 BLOG_IMAGE_SIZE = (1200, 600)
+
+# Cloudinary media storage
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
