@@ -20,4 +20,4 @@ urllib3==2.6.0
 whitenoise==6.11.0
 django-storages
 boto3
-dj_database==3.0.1
+dj-database-url==3.0.1
