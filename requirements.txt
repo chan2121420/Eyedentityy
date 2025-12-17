@@ -21,3 +21,4 @@ whitenoise==6.11.0
 django-storages
 boto3
 dj-database-url==3.0.1
+psycopg2-binary
