@@ -258,9 +258,6 @@ LOGGING = {
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
 
-# WhatsApp configuration
-WHATSAPP_NUMBER = '263123456789'
-
 # Cache settings
 CACHES = {
     'default': {
