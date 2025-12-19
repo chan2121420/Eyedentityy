@@ -133,23 +133,23 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3.S3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3.S3Storage'
 
-# # 2. Supabase Connection Settings
-# AWS_ACCESS_KEY_ID = os.environ.get('SUPABASE_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_SECRET_ACCESS_KEY')
-# AWS_STORAGE_BUCKET_NAME = os.environ.get('SUPABASE_STORAGE_BUCKET_NAME', 'media')
-# AWS_S3_ENDPOINT_URL = os.environ.get('SUPABASE_S3_ENDPOINT_URL')
+# 2. Supabase Connection Settings
+AWS_ACCESS_KEY_ID = os.environ.get('SUPABASE_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('SUPABASE_STORAGE_BUCKET_NAME', 'media')
+AWS_S3_ENDPOINT_URL = os.environ.get('SUPABASE_S3_ENDPOINT_URL')
 
-# # 3. Critical Configuration for Supabase
-# AWS_S3_REGION_NAME = 'us-east-1'  # Supabase uses this for S3 compatibility
-# AWS_S3_ADDRESSING_STYLE = "virtual"
-# AWS_S3_FILE_OVERWRITE = False     # Don't overwrite files with same name
-# AWS_QUERYSTRING_AUTH = False      # IMPORTANT: Set to False so image URLs are public (not signed)
+# 3. Critical Configuration for Supabase
+AWS_S3_REGION_NAME = 'us-east-1'  # Supabase uses this for S3 compatibility
+AWS_S3_ADDRESSING_STYLE = "virtual"
+AWS_S3_FILE_OVERWRITE = False     # Don't overwrite files with same name
+AWS_QUERYSTRING_AUTH = False      # IMPORTANT: Set to False so image URLs are public (not signed)
 
-# # 4. Constructing the Public URL
-# # This tells Django how to link to the image
-# MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
+# 4. Constructing the Public URL
+# This tells Django how to link to the image
+MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
 
 
 # Default primary key field type
