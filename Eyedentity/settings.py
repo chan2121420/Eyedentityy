@@ -133,23 +133,33 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3.S3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# 2. Supabase Connection Settings
+SUPABASE_PROJECT_ID = 'jmzrevalerojybgvxfas'
+AWS_STORAGE_BUCKET_NAME = 'media'
+
 AWS_ACCESS_KEY_ID = os.environ.get('SUPABASE_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('SUPABASE_STORAGE_BUCKET_NAME', 'media')
-AWS_S3_ENDPOINT_URL = os.environ.get('SUPABASE_S3_ENDPOINT_URL')
 
-# 3. Critical Configuration for Supabase
-AWS_S3_REGION_NAME = 'us-east-1'  # Supabase uses this for S3 compatibility
-AWS_S3_ADDRESSING_STYLE = "virtual"
-AWS_S3_FILE_OVERWRITE = False     # Don't overwrite files with same name
-AWS_QUERYSTRING_AUTH = False      # IMPORTANT: Set to False so image URLs are public (not signed)
+AWS_S3_ENDPOINT_URL = f'https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3'
 
-# 4. Constructing the Public URL
-# This tells Django how to link to the image
-MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
+AWS_S3_REGION_NAME = 'us-east-1'
+AWS_S3_ADDRESSING_STYLE = "path"
+AWS_QUERYSTRING_AUTH = False  # Make URLs public
+AWS_S3_FILE_OVERWRITE = False
+
+AWS_S3_CUSTOM_DOMAIN = f'{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}'
+
+# Media URL
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+AWS_DEFAULT_ACL = 'public-read'
+AWS_S3_VERIFY = True
+# MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
 
 
 # Default primary key field type
