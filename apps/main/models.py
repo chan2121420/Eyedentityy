@@ -128,7 +128,7 @@ class Product(models.Model):
     def whatsapp_link(self):
         from .models import CompanyInfo
         company_info = CompanyInfo.objects.first()
-        whatsapp_number = company_info.whatsapp if company_info else '263123456789'
+        whatsapp_number = company_info.whatsapp if company_info else '263784342632'
         
         if self.whatsapp_message:
             message = self.whatsapp_message
