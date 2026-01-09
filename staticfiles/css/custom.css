@@ -1822,47 +1822,65 @@ footer {
     flex-shrink: 0;
 }
 
-.specs-container {
-    background-color: var(--bg-secondary);
-    border-radius: var(--radius-lg);
-    padding: var(--space-md);
-    border: 1px solid var(--gray-100);
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
+section.py-5, main {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+.specs-container {
+    background-color: transparent; /* Blends with background */
+    width: 100%;
+}
+
+/* Individual Rows */
 .spec-row {
     display: flex;
     justify-content: space-between;
-    padding: var(--space-sm) 0;
-    border-bottom: 1px solid var(--gray-50); /* Subtle dark border */
+    align-items: center;
+    padding: 12px 0;
+    /* Subtle border using your existing dark gray variable */
+    border-bottom: 1px solid var(--gray-50);
 }
 
 .spec-row:last-child {
     border-bottom: none;
 }
 
+/* Label (e.g., "Frame Material") */
 .spec-label {
-    color: var(--text-secondary);
+    color: var(--text-secondary); /* Muted grey text */
     font-size: 0.95rem;
 }
 
+/* Value (e.g., "Acetate") */
 .spec-value {
-    color: var(--text-primary);
+    color: var(--text-primary); /* Bright white text */
     font-weight: 600;
     text-align: right;
 }
 
 .trust-box {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--gray-100);
-    border-radius: var(--radius-lg);
-    padding: var(--space-lg);
+    background-color: var(--bg-secondary); /* Matches your other cards */
+    border: 1px solid var(--gray-50);      /* Matches your borders */
+    border-radius: 15px;
+    padding: 25px;
     height: 100%;
 }
 
 .trust-item {
     display: flex;
     align-items: flex-start;
-    margin-bottom: var(--space-lg);
+    margin-bottom: 25px;
 }
 
 .trust-item:last-child {
@@ -1870,19 +1888,23 @@ footer {
 }
 
 .trust-icon {
-    color: var(--brand-primary);
+    color: var(--brand-primary); /* Uses your site's blue */
     font-size: 1.5rem;
-    margin-right: var(--space-md);
-    margin-top: -5px;
+    margin-right: 15px;
+    line-height: 1;
+    margin-top: 2px;
 }
 
 .trust-content h6 {
     color: var(--text-primary);
-    margin-bottom: 2px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    font-size: 1rem;
 }
 
 .trust-content p {
     color: var(--text-secondary);
     font-size: 0.85rem;
     margin: 0;
+    line-height: 1.4;
 }

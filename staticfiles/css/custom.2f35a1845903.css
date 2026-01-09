@@ -401,7 +401,7 @@
 
 /* Hero with background image */
 .hero-with-image {
-    background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/static/images/EYD 6.jpg');
+    background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url("/static/images/EYD 6.0f669a20963b.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
