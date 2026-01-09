@@ -52,6 +52,100 @@
 
     </div>
 </section>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <hr class="mb-5 text-muted">
+    </div>
+
+    <div class="col-md-7 mb-4">
+        <h4 class="mb-3">Product Specifications</h4>
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <tbody>
+                        <tr>
+                            <th style="width: 35%;" class="ps-4">Category</th>
+                            <td>{{ product.category.name }}</td>
+                        </tr>
+                        {% if product.frame_material %}
+                        <tr>
+                            <th class="ps-4">Frame Material</th>
+                            <td>{{ product.frame_material }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if product.lens_material %}
+                        <tr>
+                            <th class="ps-4">Lens Material</th>
+                            <td>{{ product.lens_material }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if product.lens_type %}
+                        <tr>
+                            <th class="ps-4">Lens Type</th>
+                            <td>{{ product.lens_type|title }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if product.uv_protection %}
+                        <tr>
+                            <th class="ps-4">Protection</th>
+                            <td>{{ product.uv_protection }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th class="ps-4">Availability</th>
+                            <td>
+                                {% if product.stock_quantity > 0 %}
+                                    <span class="badge bg-success">In Stock</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Out of Stock</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <h4 class="mb-3">Why Shop with Eyedentity?</h4>
+        <div class="card border-0 shadow-sm bg-light">
+            <div class="card-body">
+                <div class="d-flex align-items-start mb-3">
+                    <div class="fs-2 text-primary me-3"><i class="bi bi-shield-check"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Quality Guaranteed</h6>
+                        <p class="small text-muted mb-0">Premium materials including TR90, Acetate, and Stainless Steel.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                    <div class="fs-2 text-primary me-3"><i class="bi bi-truck"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Nationwide Delivery</h6>
+                        <p class="small text-muted mb-0">Fast and reliable delivery across Zimbabwe.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                    <div class="fs-2 text-primary me-3"><i class="bi bi-whatsapp"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Easy Ordering</h6>
+                        <p class="small text-muted mb-0">Order directly via WhatsApp for personalized service.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start">
+                    <div class="fs-2 text-primary me-3"><i class="bi bi-eyeglasses"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Free Accessories</h6>
+                        <p class="small text-muted mb-0">Most frames come with a free case, pouch, and cleaning cloth.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}
 
 {% block extra_js %}
