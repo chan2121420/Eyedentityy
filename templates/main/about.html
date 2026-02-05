@@ -4,348 +4,416 @@
 {% block title %}About Us - Eyedentity Eyewear{% endblock %}
 
 {% block content %}
-<section class="py-5" style="margin-top: 80px;">
+<section class="section about-hero">
     <div class="container">
-        <!-- Hero Section -->
-        <div class="row mb-5">
-            <div class="col-lg-10 mx-auto text-center">
-                <h1 class="section-title">About Eyedentity</h1>
-                <p class="hero-subtitle">Your vision is our mission. Discover the story behind Harare's premier eyewear destination.</p>
-            </div>
+        <div class="about-hero-content">
+            <h1 class="section-title">About Eyedentity</h1>
+            <p class="section-subtitle">Your vision is our mission. Discover the story behind Harare's premier eyewear destination.</p>
         </div>
+    </div>
+</section>
 
-        <!-- Company Story -->
-        {% if company_info %}
-        <div class="row mb-5">
-            <div class="col-lg-8 mx-auto">
-                <div class="card" style="background: var(--bg-secondary); color: #fff;">
-                    <div class="card-body">
-                        <div class="blog-content text-center" style="color: #fff;">
-                            {{ company_info.description|safe }}
-                        </div>
-                    </div>
-                </div>
+{% if company_info %}
+<section class="section">
+    <div class="container">
+        <div class="about-story">
+            <div class="story-content">
+                {{ company_info.description|safe }}
             </div>
         </div>
-
-        <!-- Mission & Vision -->
-        <div class="row mb-5">
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 text-center" style="background: linear-gradient(135deg, var(--bg-accent), var(--bg-secondary)); color: #fff;">
-                    <div class="card-body" style="color: #fff;">
-                        <div class="mb-4">
-                            <i class="bi bi-bullseye" style="font-size: 4rem; color: var(--brand-primary);"></i>
-                        </div>
-                        <h3 class="card-title">Our Mission</h3>
-                        <p class="card-text">To provide exceptional eyewear solutions that enhance vision, comfort, and style for every individual in Zimbabwe, making quality eye care accessible and affordable for all.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 text-center" style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-accent)); color: #fff;">
-                    <div class="card-body" style="color: #fff;">
-                        <div class="mb-4">
-                            <i class="bi bi-eye" style="font-size: 4rem; color: var(--brand-primary);"></i>
-                        </div>
-                        <h3 class="card-title">Our Vision</h3>
-                        <p class="card-text">To be the leading eyewear provider in Zimbabwe, recognized for innovation, quality, and exceptional customer service while promoting eye health awareness throughout our community.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Store Information -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <h2 class="section-title">Visit Our Store</h2>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card h-100" style="background: var(--bg-secondary); color: #fff;">
-                    <div class="card-body" style="color: #fff;">
-                        <h5 class="card-title">
-                            <i class="bi bi-geo-alt-fill me-3 text-primary"></i>Location & Hours
-                        </h5>
-                        <div class="mb-4">
-                            <h6 class="text-primary">Address</h6>
-                            <p class="mb-3">{{ company_info.address }}</p>
-                        </div>
-                        <div class="mb-4">
-                            <h6 class="text-primary">
-                                <i class="bi bi-clock me-2"></i>Opening Hours
-                            </h6>
-                            <div class="ms-3">
-                                {{ company_info.opening_hours|linebreaks }}
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <a href="https://maps.google.com/?q={{ company_info.address|urlencode }}" 
-                               target="_blank" class="btn btn-outline-primary">
-                                <i class="bi bi-map me-2"></i>Get Directions
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card h-100" style="background: var(--bg-secondary); color: #fff;">
-                    <div class="card-body" style="color: #fff;">
-                        <h5 class="card-title">
-                            <i class="bi bi-headset me-3 text-primary"></i>Contact Information
-                        </h5>
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-whatsapp text-success me-3"></i>
-                                <div>
-                                    <strong>WhatsApp:</strong>
-                                    <a href="https://wa.me/{{ company_info.whatsapp }}" target="_blank" class="text-decoration-none ms-2">
-                                        {{ company_info.whatsapp }}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        {% if company_info.email %}
-                        <div class="mb-4">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-envelope-fill text-primary me-3"></i>
-                                <div>
-                                    <strong>Email:</strong>
-                                    <a href="mailto:{{ company_info.email }}" class="text-decoration-none ms-2">
-                                        {{ company_info.email }}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                        <div class="mt-4">
-                            <a href="https://wa.me/{{ company_info.whatsapp }}?text=Hi, I'm interested in learning more about your eyewear services." 
-                               target="_blank" class="btn btn-primary">
-                                <i class="bi bi-whatsapp me-2"></i>Start Conversation
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
         
-        <!-- Our Expertise -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <h2 class="section-title">Our Expertise</h2>
-                <div class="row">
-                        <div class="col-lg-4 col-md-6 col-6 mb-4">
-                        <div class="card text-center h-100" style="background: var(--bg-secondary); color: #fff;">
-                            <div class="card-body" style="color: #fff;">
-                                <div class="mb-3">
-                                    <i class="bi bi-eyeglasses" style="font-size: 3rem; color: var(--brand-primary);"></i>
-                                </div>
-                                <h5 class="card-title">Custom Fitting</h5>
-                                <p class="card-text">Professional frame fitting and adjustment services to ensure perfect comfort and optimal vision correction.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="card text-center h-100" style="background: var(--bg-secondary); color: #fff;">
-                            <div class="card-body" style="color: #fff;">
-                                <div class="mb-3">
-                                    <i class="bi bi-person-check-fill" style="font-size: 3rem; color: var(--brand-primary);"></i>
-                                </div>
-                                <h5 class="card-title">Personal Consultation</h5>
-                                <p class="card-text">One-on-one consultations to help you choose the perfect eyewear for your lifestyle and visual needs.</p>
-                            </div>
-                        </div>
-                    </div>
+        <div class="mission-vision-grid">
+            <div class="mission-card">
+                <div class="mv-icon">
+                    <i class="bi bi-bullseye"></i>
                 </div>
+                <h2>Our Mission</h2>
+                <p>To provide exceptional eyewear solutions that enhance vision, comfort, and style for every individual in Zimbabwe, making quality eye care accessible and affordable for all.</p>
+            </div>
+            
+            <div class="mission-card">
+                <div class="mv-icon">
+                    <i class="bi bi-eye"></i>
+                </div>
+                <h2>Our Vision</h2>
+                <p>To be the leading eyewear provider in Zimbabwe, recognized for innovation, quality, and exceptional customer service while promoting eye health awareness throughout our community.</p>
             </div>
         </div>
-
-        <!-- Why Choose Eyedentity -->
-        {% comment %} <div class="row mb-5">
-            <div class="col-12">
-                <div class="card" style="background: linear-gradient(135deg, var(--bg-accent), var(--bg-secondary)); color: #fff;">
-                    <div class="card-body" style="color: #fff;">
-                        <h2 class="text-center mb-5">Why Choose Eyedentity?</h2>
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-award text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6>Premium Quality Products</h6>
-                                        <p class="mb-0 small" style="color: #f5f5f5">We source only the finest materials and latest lens technologies from trusted international suppliers.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-people text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6>Expert Team</h6>
-                                        <p class="mb-0 small" style="color: #f5f5f5">Our experienced opticians provide personalized recommendations based on your unique vision needs and lifestyle.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-currency-dollar text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6>Competitive Pricing</h6>
-                                        <p class="mb-0 small" style="color: #f5f5f5">Quality eyewear shouldn't break the bank. We offer transparent, competitive pricing with flexible payment options.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-heart text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6>Community Focus</h6>
-                                        <p class="mb-0 small" style="color: #f5f5f5">As a local Harare business, we understand our community's needs and are committed to serving our neighbors.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-shield-check text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6>Quality Guarantee</h6>
-                                        <p class="mb-0 small" style="color: #f5f5f5">We stand behind our products with comprehensive warranties and dedicated after-sales support.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="d-flex align-items-start">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                            <i class="bi bi-lightning text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6>Quick Service</h6>
-                                        <p class="mb-0 small" style="color: #f5f5f5">Fast turnaround times for prescriptions, repairs, and adjustments without compromising on quality.</p>
-                                    </div>
-                                </div>
-                            </div>
+        
+        <div class="contact-grid">
+            <div class="contact-card">
+                <h3>
+                    <i class="bi bi-geo-alt-fill"></i>
+                    Visit Us
+                </h3>
+                <div class="contact-details">
+                    <div class="detail-item">
+                        <h4>Address</h4>
+                        <p>{{ company_info.address }}</p>
+                    </div>
+                    <div class="detail-item">
+                        <h4>Opening Hours</h4>
+                        <div class="hours-list">
+                            {{ company_info.opening_hours|linebreaks }}
                         </div>
                     </div>
+                    <a href="https://maps.google.com/?q={{ company_info.address|urlencode }}" target="_blank" class="btn btn-outline">
+                        <i class="bi bi-map"></i>
+                        Get Directions
+                    </a>
                 </div>
             </div>
-        </div> {% endcomment %}
-
-        <!-- Customer Success Stories -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <h2 class="section-title">Customer Success Stories</h2>
-                <div class="row">
-                    {% for testimonial in testimonials %}
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="testimonial-card">
-                            <div class="stars mb-3">
-                                {% for i in "12345" %}
-                                    {% if forloop.counter <= testimonial.rating %}
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    {% else %}
-                                        <i class="bi bi-star text-warning"></i>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                            <p class="mb-3 fst-italic">"{{ testimonial.text }}"</p>
-                            <div class="d-flex align-items-center">
-                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <span class="text-white fw-bold">{{ testimonial.name|first }}</span>
-                                </div>
-                                <div>
-                                    <h6 class="mb-0">{{ testimonial.name }}</h6>
-                                    {% if testimonial.location %}
-                                    <small class="text-muted">{{ testimonial.location }}</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div class="col-12 text-center py-4">
-                        <div class="mb-3">
-                            <i class="bi bi-chat-quote" style="font-size: 3rem; color: var(--text-muted);"></i>
-                        </div>
-                        <p class="text-muted">Customer testimonials will be featured here soon.</p>
-                        <a href="https://wa.me/{{ company_info.whatsapp }}?text=Hi, I'd like to share my experience with Eyedentity!" 
-                           target="_blank" class="btn btn-outline-primary">
-                            <i class="bi bi-whatsapp me-2"></i>Share Your Experience
+            
+            <div class="contact-card">
+                <h3>
+                    <i class="bi bi-headset"></i>
+                    Contact Us
+                </h3>
+                <div class="contact-details">
+                    <div class="detail-item">
+                        <h4>WhatsApp</h4>
+                        <a href="https://wa.me/{{ company_info.whatsapp }}" target="_blank" class="contact-link">
+                            <i class="bi bi-whatsapp"></i>
+                            {{ company_info.whatsapp }}
                         </a>
                     </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Eye Health Commitment -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <div class="card text-center" style="background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); color: #fff;">
-                    <div class="card-body py-5" style="color: #fff;">
-                        <div class="row">
-                            <div class="col-lg-8 mx-auto">
-                                <div class="mb-4">
-                                    <i class="bi bi-heart-pulse" style="font-size: 4rem;"></i>
-                                </div>
-                                <h3 class="mb-4">Our Commitment to Eye Health</h3>
-                                <p class="mb-4">At Eyedentity, we believe that good vision is fundamental to quality of life. We're committed to promoting eye health awareness throughout Zimbabwe and providing accessible, quality eye care for everyone.</p>
-                                <div class="row text-center">
-                                    <div class="col-md-4 mb-3">
-                                        <h4>250+</h4>
-                                        <p class="mb-0">Happy Customers</p>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <h4>5+</h4>
-                                        <p class="mb-0">Years Experience</p>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <h4>100+</h4>
-                                        <p class="mb-0">Frame Styles</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {% if company_info.email %}
+                    <div class="detail-item">
+                        <h4>Email</h4>
+                        <a href="mailto:{{ company_info.email }}" class="contact-link">
+                            <i class="bi bi-envelope"></i>
+                            {{ company_info.email }}
+                        </a>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Call to Action -->
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <div class="card" style="background: var(--bg-secondary); color: #fff;">
-                    <div class="card-body py-5" style="color: #fff;">
-                        <h3 class="mb-3" style="color: #f5f5f5">Ready to Enhance Your Vision?</h3>
-                        <p class="mb-4" style="color: #f5f5f5">Visit our store in Harare or browse our collection online. Our expert team is ready to help you find the perfect eyewear solution.</p>
-                        <div class="d-flex justify-content-center flex-wrap gap-3">
-                            <a href="{% url 'shop' %}" class="btn btn-primary btn-lg">
-                                <i class="bi bi-shop me-2" style="color: #f5f5f5"></i>Browse Our Collection
-                            </a>
-                        </div>
-                    </div>
+                    {% endif %}
+                    <a href="https://wa.me/{{ company_info.whatsapp }}?text=Hi, I'm interested in learning more" target="_blank" class="btn btn-primary">
+                        <i class="bi bi-whatsapp"></i>
+                        Start Conversation
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<section class="section expertise-section">
+    <div class="container">
+        <h2 class="section-title">Our Expertise</h2>
+        <div class="grid grid-2">
+            <div class="expertise-card">
+                <i class="bi bi-eyeglasses"></i>
+                <h3>Custom Fitting</h3>
+                <p>Professional frame fitting and adjustment services to ensure perfect comfort and optimal vision correction.</p>
+            </div>
+            
+            <div class="expertise-card">
+                <i class="bi bi-person-check-fill"></i>
+                <h3>Personal Consultation</h3>
+                <p>One-on-one consultations to help you choose the perfect eyewear for your lifestyle and visual needs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if testimonials %}
+<section class="section testimonials-about">
+    <div class="container">
+        <h2 class="section-title">Customer Success Stories</h2>
+        <div class="testimonials-grid">
+            {% for testimonial in testimonials %}
+            <div class="testimonial-card">
+                <div class="testimonial-stars">
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= testimonial.rating %}
+                    <i class="bi bi-star-fill"></i>
+                    {% else %}
+                    <i class="bi bi-star"></i>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <p class="testimonial-text">"{{ testimonial.text }}"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">{{ testimonial.name|first }}</div>
+                    <div>
+                        <div class="author-name">{{ testimonial.name }}</div>
+                        {% if testimonial.location %}
+                        <div class="author-location">{{ testimonial.location }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="section commitment-section">
+    <div class="container">
+        <div class="commitment-card">
+            <div class="commitment-icon">
+                <i class="bi bi-heart-pulse"></i>
+            </div>
+            <h2>Our Commitment to Eye Health</h2>
+            <p>At Eyedentity, we believe that good vision is fundamental to quality of life. We're committed to promoting eye health awareness throughout Zimbabwe and providing accessible, quality eye care for everyone.</p>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">250+</div>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Frame Styles</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<style>
+.about-hero {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(34, 197, 94, 0.05));
+}
+
+.about-hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-story {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    margin-bottom: 3rem;
+}
+
+.story-content {
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.mission-vision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.mission-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.mission-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.mv-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.mv-icon i {
+    font-size: 2.5rem;
+    color: var(--bg-primary);
+}
+
+.mission-card h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.mission-card p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.contact-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 2rem;
+}
+
+.contact-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.contact-card h3 i {
+    color: var(--accent-primary);
+}
+
+.contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.detail-item h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.detail-item p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.hours-list {
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.contact-link:hover {
+    text-decoration: underline;
+}
+
+.expertise-section {
+    background: var(--bg-secondary);
+}
+
+.expertise-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+}
+
+.expertise-card i {
+    font-size: 3rem;
+    color: var(--accent-primary);
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.expertise-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.expertise-card p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.commitment-section {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+}
+
+.commitment-card {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.commitment-icon {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+}
+
+.commitment-icon i {
+    font-size: 3.5rem;
+    color: var(--bg-primary);
+}
+
+.commitment-card h2 {
+    font-size: 2.25rem;
+    margin-bottom: 1.5rem;
+    color: var(--bg-primary);
+}
+
+.commitment-card p {
+    font-size: 1.1rem;
+    color: rgba(14, 17, 22, 0.9);
+    line-height: 1.8;
+    margin-bottom: 3rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 3rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--bg-primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: rgba(14, 17, 22, 0.8);
+}
+
+@media (max-width: 768px) {
+.mission-vision-grid,
+.contact-grid {
+    grid-template-columns: 1fr;
+    }
+}
+.commitment-card h2 {
+    font-size: 1.75rem;
+}
+
+.stats-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+</style>
 {% endblock %}

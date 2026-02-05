@@ -1,54 +1,36 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Eyedentity Eyewear | Stylish. Protective. Uniquely You.{% endblock %}</title>
+    <title>{% block title %}Eyedentity Eyewear | Premium Eyewear Solutions{% endblock %}</title>
     <meta name="description" content="{% block description %}Premium eyewear in Harare, Zimbabwe. Photochromic, Polarized, Anti-Blue Light glasses and more.{% endblock %}">
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     
-    <!-- Custom CSS -->
+    {% load static %}
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern.css' %}">
     
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center w-100">
-                <a class="navbar-brand" href="{% url 'home' %}">
-                    <img src="{% static 'images/White bold.png' %}" alt="Eyedentity Eyewear Logo" height="50">
-                </a>
-                
-                <!-- Mobile Toggle Button -->
-                <button class="navbar-toggler d-md-none" type="button" onclick="toggleMobileMenu()">
-                    <i class="bi bi-list"></i>
-                </button>
-                
-                <!-- Desktop Navigation Links -->
-                <div class="navbar-nav d-none d-md-flex">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
-                    <a class="nav-link" href="{% url 'categories' %}">Categories</a>
-                    <a class="nav-link" href="{% url 'shop' %}">Shop</a>
-                    <a class="nav-link" href="{% url 'blog_list' %}">Blog</a>
-                    <a class="nav-link" href="{% url 'about' %}">About</a>
-                </div>
-            </div>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a class="nav-brand" href="{% url 'home' %}">
+                <img src="{% static 'images/White bold.png' %}" alt="Eyedentity Eyewear" height="48">
+            </a>
             
-            <!-- Mobile Navigation Menu -->
-            <div class="mobile-nav d-md-none collapse" id="mobileNav">
+            <button class="nav-toggle" type="button" onclick="toggleNav()">
+                <i class="bi bi-list"></i>
+            </button>
+            
+            <div class="nav-links desktop-nav">
                 <a class="nav-link" href="{% url 'home' %}">Home</a>
                 <a class="nav-link" href="{% url 'categories' %}">Categories</a>
                 <a class="nav-link" href="{% url 'shop' %}">Shop</a>
@@ -56,107 +38,81 @@
                 <a class="nav-link" href="{% url 'about' %}">About</a>
             </div>
         </div>
+        
+        <div class="mobile-nav" id="mobileNav">
+            <a class="nav-link" href="{% url 'home' %}">Home</a>
+            <a class="nav-link" href="{% url 'categories' %}">Categories</a>
+            <a class="nav-link" href="{% url 'shop' %}">Shop</a>
+            <a class="nav-link" href="{% url 'blog_list' %}">Blog</a>
+            <a class="nav-link" href="{% url 'about' %}">About</a>
+        </div>
     </nav>
 
-    <!-- Main Content -->
-    <main>
+    <main class="main-content">
         {% block content %}{% endblock %}
-
-        <div class="whatsapp-float">
-            <a href="https://wa.me/+263784342632?text" 
-            target="_blank" 
-            class="whatsapp-button" 
-            title="Chat with us on WhatsApp">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp" style="width: 70px; " />
-                <span class="tooltip-text">Need help securing glasses? Chat with us!</span>
-            </a>
-        </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="text-center">
-                <p class="mb-0">&copy; 2025 Eyedentity Eyewear. | Shop 15, Summer City Mall, Harare | <a href="https://wa.me/+263784342632?text">+263 784 342 632</a></p>
-            </div>
-            <div class="text-center">
-                <p style="margin-top: 0.5rem; opacity: 0.75;">
-                Website designed, developed & maintained by 
-                <a href="https://eyedeadigital.com" target="_blank" style="color: var(--primary); font-weight: 600; text-decoration: none;">Eyedear Digital Solutions </a>
-            </div>
+    <a href="https://wa.me/+263784342632" target="_blank" class="whatsapp-float">
+        <i class="bi bi-whatsapp"></i>
+        <span class="whatsapp-text">Need help?</span>
+    </a>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Eyedentity Eyewear</h4>
+                    <p class="footer-text">Premium eyewear solutions in Harare, Zimbabwe. Quality vision care for everyone.</p>
+                </div>
                 
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <a href="{% url 'shop' %}" class="footer-link">Shop All</a>
+                    <a href="{% url 'categories' %}" class="footer-link">Categories</a>
+                    <a href="{% url 'blog_list' %}" class="footer-link">Blog</a>
+                    <a href="{% url 'about' %}" class="footer-link">About Us</a>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p class="footer-text">Shop 15, Summer City Mall, Harare</p>
+                    <p class="footer-text">+263 784 342 632</p>
+                    <p class="footer-text">info@eyedentity.co.zw</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Hours</h4>
+                    <p class="footer-text">Mon-Fri: 9:00 AM - 6:00 PM</p>
+                    <p class="footer-text">Sat: 9:00 AM - 4:00 PM</p>
+                    <p class="footer-text">Sun: Closed</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Eyedentity Eyewear. All rights reserved.</p>
+                <p class="footer-credit">
+                    Website by <a href="https://eyedeadigital.com" target="_blank">Eyedear Digital Solutions</a>
+                </p>
+            </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Custom JavaScript -->
     <script>
-        
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                }
-            });
-        }, observerOptions);
-
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.card, .testimonial-card').forEach(el => {
-                observer.observe(el);
-            });
-        });
-
-        
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        
-        function toggleMobileMenu() {
+        function toggleNav() {
             const mobileNav = document.getElementById('mobileNav');
-            const toggleIcon = document.querySelector('.navbar-toggler i');
-            mobileNav.classList.toggle('show');
-            if (mobileNav.classList.contains('show')) {
-                toggleIcon.className = 'bi bi-x';
-            } else {
-                toggleIcon.className = 'bi bi-list';
-            }
+            const toggle = document.querySelector('.nav-toggle i');
+            mobileNav.classList.toggle('active');
+            toggle.className = mobileNav.classList.contains('active') ? 'bi bi-x' : 'bi bi-list';
         }
 
-        
-        document.addEventListener('click', function(event) {
-            const navbar = document.querySelector('.navbar');
+        document.addEventListener('click', function(e) {
+            const nav = document.querySelector('.main-nav');
             const mobileNav = document.getElementById('mobileNav');
-            if (mobileNav && !navbar.contains(event.target)) {
-                mobileNav.classList.remove('show');
-                const toggleIcon = document.querySelector('.navbar-toggler i');
-                if (toggleIcon) {
-                    toggleIcon.className = 'bi bi-list';
-                }
+            if (!nav.contains(e.target) && mobileNav.classList.contains('active')) {
+                mobileNav.classList.remove('active');
+                document.querySelector('.nav-toggle i').className = 'bi bi-list';
             }
         });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        var whatsappButton = document.querySelector('whatsapp-button');
-       
-    });
     </script>
     
     {% block extra_js %}{% endblock %}

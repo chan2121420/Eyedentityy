@@ -4,268 +4,457 @@
 {% block title %}{{ product.name }} - Eyedentity{% endblock %}
 
 {% block content %}
-<section class="py-5" style="margin-top:80px;">
+<section class="section product-detail-section">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <!-- Gallery -->
-                <div class="product-gallery">
-                    <div class="main-image mb-3">
-                        <img id="gallery-main" src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid" style="width:100%; height:auto; object-fit:contain;" />
-                    </div>
-                    <div class="gallery-thumbs d-flex gap-2">
-                        <img src="{{ product.image.url }}" class="thumb img-thumbnail" data-full="{{ product.image.url }}" data-index="0" style="width:80px; height:80px; object-fit:cover; cursor:pointer;"/>
-                        {% for img in product.additional_images.all %}
-                            {% if forloop.counter <= 5 %}
-                                <img src="{{ img.image.url }}" class="thumb img-thumbnail" data-full="{{ img.image.url }}" data-index="{{ forloop.counter }}" style="width:80px; height:80px; object-fit:cover; cursor:pointer;"/>
-                            {% endif %}
+        <nav class="breadcrumb-nav">
+            <a href="{% url 'home' %}">Home</a>
+            <i class="bi bi-chevron-right"></i>
+            <a href="{% url 'shop' %}">Shop</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>{{ product.name }}</span>
+        </nav>
+        
+        <div class="product-detail-grid">
+            <div class="product-gallery-section">
+                <div class="gallery-main">
+                    <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name }}" class="main-img">
+                </div>
+                
+                <div class="gallery-thumbs">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="thumb-img active" onclick="changeImage(this)">
+                    {% for img in additional_images %}
+                    <img src="{{ img.image.url }}" alt="{{ product.name }}" class="thumb-img" onclick="changeImage(this)">
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="product-detail-info">
+                <h1 class="product-detail-title">{{ product.name }}</h1>
+                
+                <div class="product-detail-price">
+                    <span class="detail-price-current">${{ product.price }}</span>
+                    {% if product.old_price %}
+                    <span class="detail-price-old">${{ product.old_price }}</span>
+                    <span class="detail-discount">{{ product.discount_percentage }}% OFF</span>
+                    {% endif %}
+                </div>
+                
+                <div class="product-detail-desc">
+                    <p>{{ product.description|linebreaks }}</p>
+                </div>
+                
+                {% if product.features.all %}
+                <div class="product-detail-features">
+                    <h3>Features</h3>
+                    <div class="features-list">
+                        {% for feature in product.features.all %}
+                        <div class="feature-tag">
+                            <i class="bi bi-check-circle-fill"></i>
+                            {{ feature.name }}
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <h2>{{ product.name }}</h2>
-                <div class="price-section mb-3">
-                    <span class="price">${{ product.price }}</span>
-                    {% if product.old_price %}<span class="old-price ms-2">${{ product.old_price }}</span>{% endif %}
+                {% endif %}
+                
+                <div class="product-detail-actions">
+                    <a href="{{ product.whatsapp_link }}" target="_blank" class="btn btn-primary btn-lg">
+                        <i class="bi bi-whatsapp"></i>
+                        Order via WhatsApp
+                    </a>
                 </div>
-                <p>{{ product.description|linebreaksbr }}</p>
-                <a href="{{ product.whatsapp_link }}" target="_blank" class="btn btn-primary mt-3">
-                    <i class="bi bi-whatsapp me-2"></i>Buy on WhatsApp
-                </a>
-            </div>
-        </div>
-
-        <!-- Lightbox Modal -->
-        <div id="imageLightbox" class="about-modal" style="display:none;">
-            <div class="modal-overlay"></div>
-            <div class="modal-content-custom" style="max-width:900px;">
-                <div class="modal-header-custom">
-                    <h5 id="lightbox-title">{{ product.name }}</h5>
-                    <button type="button" class="close">&times;</button>
-                </div>
-                <div class="modal-body-custom text-center">
-                    <img id="lightbox-img" src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width:100%; height:auto;" />
+                
+                <div class="product-trust-signals">
+                    <div class="trust-item">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Authentic Products</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="bi bi-truck"></i>
+                        <span>Fast Delivery</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="bi bi-headset"></i>
+                        <span>Expert Support</span>
+                    </div>
                 </div>
             </div>
         </div>
-
+        
+        <div class="product-specifications">
+            <h2 class="specs-title">Specifications</h2>
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <span class="spec-label">Category</span>
+                    <span class="spec-value">{{ product.category.name }}</span>
+                </div>
+                
+                {% if product.frame_material %}
+                <div class="spec-item">
+                    <span class="spec-label">Frame Material</span>
+                    <span class="spec-value">{{ product.frame_material }}</span>
+                </div>
+                {% endif %}
+                
+                {% if product.lens_material %}
+                <div class="spec-item">
+                    <span class="spec-label">Lens Material</span>
+                    <span class="spec-value">{{ product.lens_material }}</span>
+                </div>
+                {% endif %}
+                
+                {% if product.lens_type %}
+                <div class="spec-item">
+                    <span class="spec-label">Lens Type</span>
+                    <span class="spec-value">{{ product.lens_type|title }}</span>
+                </div>
+                {% endif %}
+                
+                {% if product.uv_protection %}
+                <div class="spec-item">
+                    <span class="spec-label">Protection</span>
+                    <span class="spec-value">{{ product.uv_protection }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="spec-item">
+                    <span class="spec-label">Availability</span>
+                    <span class="spec-value {% if product.stock_quantity > 0 %}in-stock{% else %}out-stock{% endif %}">
+                        {% if product.stock_quantity > 0 %}
+                        <i class="bi bi-check-circle-fill"></i> In Stock
+                        {% else %}
+                        <i class="bi bi-x-circle-fill"></i> Out of Stock
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        {% if related_products %}
+        <div class="related-products">
+            <h2 class="section-title">You May Also Like</h2>
+            <div class="related-grid">
+                {% for related in related_products %}
+                <div class="related-card">
+                    <a href="{{ related.get_absolute_url }}">
+                        <img src="{{ related.image.url }}" alt="{{ related.name }}" class="related-img">
+                    </a>
+                    <div class="related-info">
+                        <h3>{{ related.name }}</h3>
+                        <div class="related-price">
+                            <span class="price-current">${{ related.price }}</span>
+                            {% if related.old_price %}
+                            <span class="price-old">${{ related.old_price }}</span>
+                            {% endif %}
+                        </div>
+                        <a href="{{ related.get_absolute_url }}" class="btn btn-outline btn-sm">View Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>
 
-<div class="row mt-5">
-    <div class="col-12">
-        <hr class="mb-5" style="border-color: var(--text-secondary); opacity: 0.2;">
-    </div>
+<style>
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+}
 
-    <div class="col-md-7 mb-4">
-        <h4 class="mb-4" style="color: var(--text-primary);">Product Details</h4>
-        
-        <div class="specs-container">
-            <div class="spec-row">
-                <span class="spec-label">Category</span>
-                <span class="spec-value">{{ product.category.name }}</span>
-            </div>
-            
-            {% if product.frame_material %}
-            <div class="spec-row">
-                <span class="spec-label">Frame Material</span>
-                <span class="spec-value">{{ product.frame_material }}</span>
-            </div>
-            {% endif %}
-            
-            {% if product.lens_material %}
-            <div class="spec-row">
-                <span class="spec-label">Lens Material</span>
-                <span class="spec-value">{{ product.lens_material }}</span>
-            </div>
-            {% endif %}
-            
-            {% if product.lens_type %}
-            <div class="spec-row">
-                <span class="spec-label">Lens Type</span>
-                <span class="spec-value">{{ product.lens_type|title }}</span>
-            </div>
-            {% endif %}
-            
-            {% if product.uv_protection %}
-            <div class="spec-row">
-                <span class="spec-label">Protection</span>
-                <span class="spec-value">{{ product.uv_protection }}</span>
-            </div>
-            {% endif %}
-            
-            <div class="spec-row">
-                <span class="spec-label">Availability</span>
-                <span class="spec-value">
-                    {% if product.stock_quantity > 0 %}
-                        <span style="color: var(--success);"><i class="bi bi-check-circle-fill me-1"></i>In Stock</span>
-                    {% else %}
-                        <span style="color: var(--error);"><i class="bi bi-x-circle-fill me-1"></i>Out of Stock</span>
-                    {% endif %}
-                </span>
-            </div>
-        </div>
-    </div>
+.breadcrumb-nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
 
-    <div class="col-md-5">
-        <h4 class="mb-4" style="color: var(--text-primary);">Why Eyedentity?</h4>
-        <div class="trust-box">
-            
-            <div class="trust-item">
-                <div class="trust-icon">
-                    <i class="bi bi-shield-check"></i>
-                </div>
-                <div class="trust-content">
-                    <h6 class="fw-bold">Premium Quality</h6>
-                    <p>Durable TR90 & Acetate materials built to last.</p>
-                </div>
-            </div>
+.breadcrumb-nav a:hover {
+    color: var(--accent-primary);
+}
 
-            <div class="trust-item">
-                <div class="trust-icon">
-                    <i class="bi bi-truck"></i>
-                </div>
-                <div class="trust-content">
-                    <h6 class="fw-bold">Fast Delivery</h6>
-                    <p>Reliable shipping across Zimbabwe.</p>
-                </div>
-            </div>
+.breadcrumb-nav i {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
 
-            <div class="trust-item">
-                <div class="trust-icon">
-                    <i class="bi bi-whatsapp"></i>
-                </div>
-                <div class="trust-content">
-                    <h6 class="fw-bold">Personal Service</h6>
-                    <p>Order directly via WhatsApp for support.</p>
-                </div>
-            </div>
+.breadcrumb-nav span {
+    color: var(--text-primary);
+}
 
-            <div class="trust-item">
-                <div class="trust-icon">
-                    <i class="bi bi-gift"></i>
-                </div>
-                <div class="trust-content">
-                    <h6 class="fw-bold">Free Extras</h6>
-                    <p>Free pouch & cloth with every frame.</p>
-                </div>
-            </div>
+.product-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+}
 
-        </div>
-    </div>
-</div>
-{% endblock %}
+.gallery-main {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
 
-{% block extra_js %}
+.main-img {
+    width: 100%;
+    height: 500px;
+    object-fit: contain;
+    cursor: zoom-in;
+}
+
+.gallery-thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+}
+
+.thumb-img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.thumb-img:hover,
+.thumb-img.active {
+    border-color: var(--accent-primary);
+}
+
+.product-detail-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.product-detail-price {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.detail-price-current {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+}
+
+.detail-price-old {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+.detail-discount {
+    background: #ef4444;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.product-detail-desc {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.product-detail-desc p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.product-detail-features {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.product-detail-features h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.feature-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.feature-tag i {
+    color: var(--accent-secondary);
+    font-size: 1.25rem;
+}
+
+.product-detail-actions {
+    margin-bottom: 2rem;
+}
+
+.product-trust-signals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.trust-item i {
+    color: var(--accent-primary);
+    font-size: 1.25rem;
+}
+
+.product-specifications {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 4rem;
+}
+
+.specs-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.specs-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.spec-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.spec-item:last-child {
+    border-bottom: none;
+}
+
+.spec-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.spec-value {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.spec-value.in-stock {
+    color: var(--accent-secondary);
+}
+
+.spec-value.out-stock {
+    color: #ef4444;
+}
+
+.related-products {
+    margin-top: 4rem;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.related-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.related-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.related-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.related-info {
+    padding: 1.5rem;
+}
+
+.related-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.related-price {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .product-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .main-img {
+        height: 350px;
+    }
+    
+    .product-detail-title {
+        font-size: 1.75rem;
+    }
+    
+    .detail-price-current {
+        font-size: 2rem;
+    }
+    
+    .related-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var images = [];
-    var thumbs = Array.from(document.querySelectorAll('.thumb'));
-    thumbs.forEach(function(t) {
-        var src = t.getAttribute('data-full');
-        if (src) images.push(src);
+function changeImage(element) {
+    const mainImg = document.getElementById('mainImage');
+    mainImg.src = element.src;
+    
+    document.querySelectorAll('.thumb-img').forEach(thumb => {
+        thumb.classList.remove('active');
     });
-
-    
-    if (mainPreview) mainPreview.dataset.index = 0;
-
-    var currentIndex = 0;
-    var lightbox = document.getElementById('imageLightbox');
-    var lightboxImg = document.getElementById('lightbox-img');
-    var mainPreview = document.getElementById('gallery-main');
-    var lastNavTime = 0;
-
-    function showImageAtIndex(idx) {
-        if (idx < 0 || idx >= images.length) return;
-        currentIndex = idx;
-        var url = images[currentIndex];
-        if (mainPreview) mainPreview.setAttribute('src', url);
-        if (mainPreview) mainPreview.dataset.index = currentIndex;
-        if (lightboxImg && lightbox.classList.contains('show')) {
-            lightboxImg.setAttribute('src', url);
-        }
-    }
-
-    
-    thumbs.forEach(function(thumb) {
-        thumb.addEventListener('click', function() {
-            var idx = parseInt(this.getAttribute('data-index')) || 0;
-            showImageAtIndex(idx);
-        });
-
-        thumb.addEventListener('dblclick', function() {
-            var idx = parseInt(this.getAttribute('data-index')) || 0;
-            showImageAtIndex(idx);
-            lightbox.classList.add('show'); lightbox.style.display='block'; document.body.style.overflow='hidden';
-        });
-    });
-
-    
-    var mainImg = document.getElementById('gallery-main');
-    if (mainImg) {
-        mainImg.addEventListener('click', function() {
-            
-            var idx = parseInt(this.dataset.index);
-            if (isNaN(idx)) {
-                idx = images.indexOf(this.getAttribute('src'));
-                if (idx === -1) idx = 0;
-            }
-            showImageAtIndex(idx);
-            lightbox.classList.add('show'); lightbox.style.display='block'; document.body.style.overflow='hidden';
-        });
-    }
-
-    
-    function showNext() {
-        if (currentIndex < images.length - 1) {
-            showImageAtIndex(currentIndex + 1);
-        }
-    }
-
-    function showPrev() {
-        if (currentIndex > 0) {
-            showImageAtIndex(currentIndex - 1);
-        }
-    }
-
-    
-    document.querySelectorAll('#imageLightbox .close, #imageLightbox .modal-overlay').forEach(function(el) {
-        el.addEventListener('click', function() {
-            lightbox.classList.remove('show'); lightbox.style.display='none'; document.body.style.overflow='';
-        });
-    });
-
-    
-    document.addEventListener('keydown', function(e) {
-        if (!lightbox.classList.contains('show')) return;
-        if (e.key === 'Escape') {
-            lightbox.classList.remove('show'); lightbox.style.display='none'; document.body.style.overflow='';
-        } else if (e.key === 'ArrowRight') {
-            showNext();
-        } else if (e.key === 'ArrowLeft') {
-            showPrev();
-        }
-    });
-
-    
-    if (lightbox) {
-        lightbox.addEventListener('wheel', function(e) {
-            if (!lightbox.classList.contains('show')) return;
-            var now = Date.now();
-            if (now - lastNavTime < 250) return; // throttle to 250ms
-            if (e.deltaY > 0) {
-                // wheel down -> next
-                showNext();
-                lastNavTime = now;
-            } else if (e.deltaY < 0) {
-                // wheel up -> prev
-                showPrev();
-                lastNavTime = now;
-            }
-            e.preventDefault();
-        }, { passive: false });
-    }
-});
+    element.classList.add('active');
+}
 </script>
 {% endblock %}

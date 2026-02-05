@@ -1,21 +1,27 @@
 {% extends 'base.html' %}
 
-{% block title %}Server Error - Eyedentity Eyewear{% endblock %}
+{% block title %}Page Not Found - Eyedentity Eyewear{% endblock %}
 
 {% block content %}
 <section class="section error-section">
     <div class="container">
         <div class="error-content">
             <div class="error-icon">
-                <i class="bi bi-exclamation-triangle"></i>
+                <i class="bi bi-search"></i>
             </div>
-            <h1 class="error-title">500</h1>
-            <h2 class="error-subtitle">Server Error</h2>
-            <p class="error-text">Something went wrong on our end. Please try again later.</p>
-            <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
-                <i class="bi bi-house"></i>
-                Go Home
-            </a>
+            <h1 class="error-title">404</h1>
+            <h2 class="error-subtitle">Page Not Found</h2>
+            <p class="error-text">The page you're looking for doesn't exist or has been moved.</p>
+            <div class="error-actions">
+                <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-house"></i>
+                    Go Home
+                </a>
+                <a href="{% url 'shop' %}" class="btn btn-outline btn-lg">
+                    <i class="bi bi-shop"></i>
+                    Browse Shop
+                </a>
+            </div>
         </div>
     </div>
 </section>
@@ -37,7 +43,7 @@
 .error-icon {
     width: 120px;
     height: 120px;
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(56, 189, 248, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -47,7 +53,7 @@
 
 .error-icon i {
     font-size: 4rem;
-    color: #ef4444;
+    color: var(--accent-primary);
 }
 
 .error-title {
@@ -68,6 +74,13 @@
     font-size: 1.1rem;
     color: var(--text-secondary);
     margin-bottom: 2rem;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 </style>
 {% endblock %}
