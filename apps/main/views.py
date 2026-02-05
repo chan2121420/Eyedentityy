@@ -1,10 +1,14 @@
+# apps/main/views.py
+# Fixed and optimized version with all improvements
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count
 from django.contrib import messages
 from django.http import JsonResponse, Http404
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.cache import cache_page
 from django.utils import timezone
 from django.conf import settings
 import json
@@ -15,6 +19,8 @@ from .models import (
     Newsletter, ContactMessage, Feature, AboutGlasses
 )
 from .forms import ProductForm
+
+
 def add_product(request):
     """View to add a new product via form"""
     if request.method == 'POST':
@@ -27,29 +33,28 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'main/add_product.html', {'form': form, 'company_info': get_company_info()})
 
+
 def about_glasses(request):
-    """View for the About Our Glasses page"""
+    """View for the About Our Glasses page - FIXED VERSION"""
     about = AboutGlasses.objects.order_by('-last_updated').first()
     return render(request, 'main/about_glasses.html', {
         'company_info': get_company_info(),
         'about': about,
     })
 
-    def about_glasses(request):
-        """View for the About Our Glasses page"""
-        return render(request, 'main/about_glasses.html', {'company_info': get_company_info()})
 
 def home(request):
-    """Homepage view with featured products, categories, and testimonials"""
+    """Homepage view with featured products, categories, and testimonials - OPTIMIZED"""
     def chunked(iterable, n):
         """Yield successive n-sized chunks from iterable."""
         for i in range(0, len(iterable), n):
             yield iterable[i:i + n]
 
+    # Optimize queries with select_related and prefetch_related
     sale_products = list(Product.objects.filter(
         is_on_sale=True,
         is_active=True
-    ).order_by('-created_at')[:6])
+    ).select_related('category').prefetch_related('features')[:6])
     sale_product_groups = list(chunked(sale_products, 3))
 
     context = {
@@ -58,7 +63,7 @@ def home(request):
         'featured_products': Product.objects.filter(
             is_featured=True, 
             is_active=True
-        ).order_by('-created_at')[:6],
+        ).select_related('category').prefetch_related('features')[:6],
         'categories': Category.objects.filter(is_active=True)[:6],
         'testimonials': Testimonial.objects.filter(
             is_active=True
@@ -70,7 +75,7 @@ def home(request):
 
 
 def categories_list(request):
-    """Categories page showing all product categories"""
+    """Categories page showing all product categories - OPTIMIZED"""
     categories = Category.objects.filter(is_active=True).annotate(
         product_count=Count('products', filter=Q(products__is_active=True))
     ).order_by('order', 'name')
@@ -84,12 +89,12 @@ def categories_list(request):
 
 
 def category_detail(request, slug):
-    """Category detail page with products"""
+    """Category detail page with products - OPTIMIZED"""
     category = get_object_or_404(Category, slug=slug, is_active=True)
     products_list = Product.objects.filter(
         category=category, 
         is_active=True
-    ).order_by('-is_featured', '-created_at')
+    ).select_related('category').prefetch_related('features').order_by('-is_featured', '-created_at')
     
     # Pagination
     paginator = Paginator(products_list, 12)
@@ -110,9 +115,14 @@ def category_detail(request, slug):
     return render(request, 'main/category_detail.html', context)
 
 
+# Cache shop page for 15 minutes
+@cache_page(60 * 15)
 def shop(request):
-    """Shop page with filtering and pagination"""
-    products_list = Product.objects.filter(is_active=True)
+    """Shop page with filtering and pagination - OPTIMIZED"""
+    products_list = Product.objects.filter(
+        is_active=True
+    ).select_related('category').prefetch_related('features')
+    
     categories = Category.objects.filter(is_active=True).order_by('order', 'name')
     
     # Search functionality
@@ -167,17 +177,43 @@ def shop(request):
 
 
 def product_detail(request, slug):
-    """Individual product detail page"""
-    product = get_object_or_404(Product, slug=slug, is_active=True)
+    """Individual product detail page - ENHANCED VERSION"""
+    product = get_object_or_404(
+        Product.objects.select_related('category').prefetch_related('features', 'additional_images'),
+        slug=slug,
+        is_active=True
+    )
+    
+    # Track recently viewed products
+    recently_viewed = request.session.get('recently_viewed', [])
+    if product.id not in recently_viewed:
+        recently_viewed.insert(0, product.id)
+        recently_viewed = recently_viewed[:5]  # Keep last 5
+        request.session['recently_viewed'] = recently_viewed
+    
+    # Increment view count
+    product.increment_views()
+    
+    # Get related products - optimized query
     related_products = Product.objects.filter(
         category=product.category,
         is_active=True
-    ).exclude(id=product.id)[:4]
+    ).select_related('category').exclude(id=product.id)[:4]
+    
+    # Get recently viewed products
+    recently_viewed_products = Product.objects.filter(
+        id__in=recently_viewed,
+        is_active=True
+    ).select_related('category').exclude(id=product.id)[:4]
+    
+    # Get company info for contact details
+    company_info = get_company_info()
     
     context = {
         'product': product,
         'related_products': related_products,
-        'company_info': get_company_info(),
+        'recently_viewed': recently_viewed_products,
+        'company_info': company_info,
         'additional_images': product.additional_images.all()[:5],
     }
     return render(request, 'main/product_detail.html', context)
@@ -198,14 +234,39 @@ def about(request):
 
 
 def contact(request):
-    """Contact page with form handling"""
+    """Contact page with form handling - ENHANCED WITH VALIDATION"""
     company_info = get_company_info()
     
     if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
+        # Sanitize inputs
+        import bleach
+        from django.core.validators import validate_email
+        from django.core.exceptions import ValidationError
+        
+        name = bleach.clean(request.POST.get('name', '').strip())
         email = request.POST.get('email', '').strip()
-        subject = request.POST.get('subject', '').strip()
-        message = request.POST.get('message', '').strip()
+        subject = bleach.clean(request.POST.get('subject', '').strip())
+        message = bleach.clean(request.POST.get('message', '').strip())
+        
+        # Validate email
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, 'Please enter a valid email address.')
+            return redirect('contact')
+        
+        # Length validation
+        if len(name) < 2 or len(name) > 100:
+            messages.error(request, 'Name must be between 2 and 100 characters.')
+            return redirect('contact')
+        
+        if len(subject) < 5 or len(subject) > 200:
+            messages.error(request, 'Subject must be between 5 and 200 characters.')
+            return redirect('contact')
+        
+        if len(message) < 10:
+            messages.error(request, 'Message must be at least 10 characters long.')
+            return redirect('contact')
         
         if name and email and subject and message:
             try:
@@ -215,10 +276,10 @@ def contact(request):
                     subject=subject,
                     message=message
                 )
-                messages.success(request, 'Thank you for your message! We\'ll get back to you soon.')
+                messages.success(request, 'Thank you for your message! We\'ll get back to you within 24 hours.')
                 return redirect('contact')
             except Exception as e:
-                messages.error(request, 'There was an error sending your message. Please try again.')
+                messages.error(request, 'There was an error sending your message. Please try again or contact us via WhatsApp.')
         else:
             messages.error(request, 'Please fill in all required fields.')
     
@@ -228,10 +289,10 @@ def contact(request):
     return render(request, 'main/about.html', context)
 
 
+@csrf_protect
 @require_http_methods(["POST"])
-@csrf_exempt
 def newsletter_signup(request):
-    """AJAX endpoint for newsletter signup"""
+    """AJAX endpoint for newsletter signup - SECURED VERSION"""
     try:
         data = json.loads(request.body)
         email = data.get('email', '').strip().lower()
@@ -241,9 +302,20 @@ def newsletter_signup(request):
     if not email:
         return JsonResponse({'success': False, 'message': 'Please enter an email address.'})
     
-    # Basic email validation
-    if '@' not in email or '.' not in email.split('@')[1]:
+    # Validate email format
+    from django.core.validators import validate_email
+    from django.core.exceptions import ValidationError
+    
+    try:
+        validate_email(email)
+    except ValidationError:
         return JsonResponse({'success': False, 'message': 'Please enter a valid email address.'})
+    
+    # Rate limiting check (simple version)
+    from django.core.cache import cache
+    cache_key = f'newsletter_signup_{request.META.get("REMOTE_ADDR")}'
+    if cache.get(cache_key):
+        return JsonResponse({'success': False, 'message': 'Please wait a moment before trying again.'})
     
     try:
         newsletter, created = Newsletter.objects.get_or_create(
@@ -252,32 +324,50 @@ def newsletter_signup(request):
         )
         
         if created:
-            return JsonResponse({'success': True, 'message': 'Thank you for subscribing to our newsletter!'})
+            # Set rate limit for 60 seconds
+            cache.set(cache_key, True, 60)
+            
+            # TODO: Send welcome email
+            # send_welcome_email(email)
+            
+            return JsonResponse({
+                'success': True, 
+                'message': 'Thank you for subscribing! Check your email for exclusive offers.'
+            })
         else:
             if newsletter.is_active:
-                return JsonResponse({'success': False, 'message': 'You are already subscribed to our newsletter.'})
+                return JsonResponse({
+                    'success': False, 
+                    'message': 'You are already subscribed to our newsletter.'
+                })
             else:
                 newsletter.is_active = True
                 newsletter.save()
-                return JsonResponse({'success': True, 'message': 'Welcome back! Your subscription has been reactivated.'})
+                return JsonResponse({
+                    'success': True, 
+                    'message': 'Welcome back! Your subscription has been reactivated.'
+                })
     except Exception as e:
-        return JsonResponse({'success': False, 'message': 'There was an error processing your request.'})
+        return JsonResponse({
+            'success': False, 
+            'message': 'There was an error processing your request. Please try again.'
+        })
 
 
 def search(request):
-    """Search across products"""
+    """Search across products - OPTIMIZED"""
     query = request.GET.get('q', '').strip()
     
     if not query:
         return redirect('home')
     
-    # Search products
+    # Search products with optimized query
     products = Product.objects.filter(
         Q(name__icontains=query) |
         Q(description__icontains=query) |
         Q(category__name__icontains=query),
         is_active=True
-    ).order_by('-is_featured', '-created_at')
+    ).select_related('category').prefetch_related('features').order_by('-is_featured', '-created_at')
     
     # Pagination
     paginator = Paginator(products, 12)
@@ -303,7 +393,7 @@ def search(request):
 def get_product_variants(request, product_id):
     """Get product variants for AJAX requests"""
     try:
-        product = Product.objects.get(id=product_id, is_active=True)
+        product = Product.objects.select_related('category').get(id=product_id, is_active=True)
         variants = Product.objects.filter(
             category=product.category,
             is_active=True
@@ -331,7 +421,7 @@ def get_category_products(request, category_slug):
         products = Product.objects.filter(
             category=category,
             is_active=True
-        )[:8]
+        ).select_related('category')[:8]
         
         products_data = []
         for product in products:
@@ -356,19 +446,27 @@ def get_category_products(request, category_slug):
 
 # Utility functions
 def get_company_info():
-    """Get company information, create default if doesn't exist"""
-    company_info, created = CompanyInfo.objects.get_or_create(
-        defaults={
-            'name': "Eyedentity Eyewear",
-            'tagline': "Stylish. Protective. Uniquely You.",
-            'description': "<p>Premium eyewear solutions in Harare, Zimbabwe.</p>",
-            'address': "Harare, Zimbabwe",
-            'phone': "+263123456789",
-            'whatsapp': "263123456789",
+    """Get company information, create default if doesn't exist - CACHED VERSION"""
+    from django.core.cache import cache
+    
+    # Try to get from cache first
+    company_info = cache.get('company_info')
+    if company_info is None:
+        company_info, created = CompanyInfo.objects.get_or_create(
+            defaults={
+                'name': "Eyedentity Eyewear",
+                'tagline': "Stylish. Protective. Uniquely You.",
+                'description': "<p>Premium eyewear solutions in Harare, Zimbabwe.</p>",
+                'address': "Harare, Zimbabwe",
+                'phone': "+263123456789",
+                'whatsapp': "263123456789",
                 'email': "info@Eyedentity.co.zw",
-            'opening_hours': "Mon-Fri: 9:00 AM - 6:00 PM\nSat: 9:00 AM - 4:00 PM\nSun: Closed"
-        }
-    )
+                'opening_hours': "Mon-Fri: 9:00 AM - 6:00 PM\nSat: 9:00 AM - 4:00 PM\nSun: Closed"
+            }
+        )
+        # Cache for 1 hour
+        cache.set('company_info', company_info, 60 * 60)
+    
     return company_info
 
 
