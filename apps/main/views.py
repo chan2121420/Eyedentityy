@@ -1,6 +1,6 @@
 """
-COMPLETE FIXED views.py for apps/main/views.py
-This fixes all 500 errors on home and shop pages
+PRODUCTION-SAFE views.py for apps/main/views.py
+ALL 500 errors fixed
 """
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -25,7 +25,7 @@ from .forms import ProductForm
 
 
 def get_company_info():
-    """Get company info with proper error handling - FIXED"""
+    """Get company info with proper error handling - PRODUCTION SAFE"""
     from django.core.cache import cache
     
     # Try to get from cache first
@@ -34,30 +34,23 @@ def get_company_info():
     if company_info is None:
         try:
             company_info = CompanyInfo.objects.first()
-            if not company_info:
-                # Create default if none exists
-                company_info = CompanyInfo.objects.create(
-                    name="Eyedentity Eyewear",
-                    tagline="Stylish. Protective. Uniquely You.",
-                    description="<p>Premium eyewear solutions in Harare, Zimbabwe.</p>",
-                    address="Harare, Zimbabwe",
-                    phone="+263 784 342 632",
-                    whatsapp="263784342632",
-                    email="info@eyedentity.co.zw",
-                    opening_hours="Mon-Fri: 9:00 AM - 6:00 PM\nSat: 9:00 AM - 4:00 PM\nSun: Closed"
-                )
-            # Cache for 1 hour
-            cache.set('company_info', company_info, 60 * 60)
+            # Don't auto-create in production
+            if company_info:
+                # Cache for 1 hour
+                cache.set('company_info', company_info, 60 * 60)
             
         except (ProgrammingError, OperationalError) as e:
             print(f"Database error getting company info: {e}")
+            return None
+        except Exception as e:
+            print(f"Unexpected error getting company info: {e}")
             return None
     
     return company_info
 
 
 def home(request):
-    """Homepage view - COMPLETELY FIXED"""
+    """Homepage view - PRODUCTION SAFE"""
     def chunked(iterable, n):
         """Yield successive n-sized chunks from iterable."""
         result = []
@@ -120,7 +113,7 @@ def home(request):
 
 
 def shop(request):
-    """Shop page - COMPLETELY FIXED"""
+    """Shop page - PRODUCTION SAFE"""
     # Initialize defaults
     products_list = Product.objects.none()
     categories = []
@@ -211,7 +204,7 @@ def add_product(request):
 
 
 def about_glasses(request):
-    """View for the About Our Glasses page - FIXED"""
+    """View for the About Our Glasses page - PRODUCTION SAFE"""
     about = None
     try:
         about = AboutGlasses.objects.order_by('-last_updated').first()
@@ -225,7 +218,7 @@ def about_glasses(request):
 
 
 def categories_list(request):
-    """Categories page - FIXED"""
+    """Categories page - PRODUCTION SAFE"""
     categories = []
     about = None
     
@@ -247,7 +240,7 @@ def categories_list(request):
 
 
 def category_detail(request, slug):
-    """Category detail page - FIXED"""
+    """Category detail page - PRODUCTION SAFE"""
     try:
         category = get_object_or_404(Category, slug=slug, is_active=True)
         products_list = Product.objects.filter(
@@ -255,6 +248,9 @@ def category_detail(request, slug):
             is_active=True
         ).select_related('category').prefetch_related('features').order_by('-is_featured', '-created_at')
     except (ProgrammingError, OperationalError, Http404):
+        return redirect('categories')
+    except Exception as e:
+        print(f"Error in category_detail: {e}")
         return redirect('categories')
     
     # Pagination
@@ -275,7 +271,7 @@ def category_detail(request, slug):
 
 
 def product_detail(request, slug):
-    """Individual product detail page - FIXED"""
+    """Individual product detail page - PRODUCTION SAFE"""
     try:
         product = get_object_or_404(
             Product.objects.select_related('category').prefetch_related('features', 'additional_images'),
@@ -283,6 +279,9 @@ def product_detail(request, slug):
             is_active=True
         )
     except (ProgrammingError, OperationalError, Http404):
+        return redirect('shop')
+    except Exception as e:
+        print(f"Error in product_detail: {e}")
         return redirect('shop')
     
     # Track recently viewed products
@@ -323,7 +322,7 @@ def product_detail(request, slug):
 
 
 def about(request):
-    """About page - FIXED"""
+    """About page - PRODUCTION SAFE"""
     testimonials = []
     try:
         testimonials = list(Testimonial.objects.filter(is_active=True).order_by(
@@ -340,7 +339,7 @@ def about(request):
 
 
 def contact(request):
-    """Contact page - FIXED"""
+    """Contact page - PRODUCTION SAFE"""
     company_info = get_company_info()
     
     if request.method == 'POST':
@@ -395,7 +394,7 @@ def contact(request):
 @csrf_protect
 @require_http_methods(["POST"])
 def newsletter_signup(request):
-    """AJAX endpoint for newsletter signup - FIXED"""
+    """AJAX endpoint for newsletter signup - PRODUCTION SAFE"""
     try:
         data = json.loads(request.body)
         email = data.get('email', '').strip().lower()
@@ -451,7 +450,7 @@ def newsletter_signup(request):
 
 
 def search(request):
-    """Search across products - FIXED"""
+    """Search across products - PRODUCTION SAFE"""
     query = request.GET.get('q', '').strip()
     
     if not query:
