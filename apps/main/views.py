@@ -9,8 +9,7 @@ from django.views.decorators.cache import cache_page
 from django.utils import timezone
 from django.conf import settings
 import json
-from django.db import ProgrammingError
-from django.db import OperationalError
+from django.db import ProgrammingError, OperationalError
 
 
 from .models import (
