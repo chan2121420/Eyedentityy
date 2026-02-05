@@ -16,7 +16,7 @@ import json
 
 from .models import (
     Product, Category, Testimonial, CompanyInfo, 
-    Newsletter, ContactMessage, Feature, AboutGlasses
+    Newsletter, ContactMessage, Feature, AboutGlasses, Wishlist, WishlistItem, WhatsAppOrderClick
 )
 from .forms import ProductForm
 
@@ -476,6 +476,170 @@ def site_context(request):
     return {
         'company_info': get_company_info(),
         'main_categories': Category.objects.filter(is_active=True)[:5],
+    }
+
+
+@require_http_methods(["POST"])
+@csrf_protect
+def add_to_wishlist(request, product_id):
+    """Add product to wishlist (cart alternative)"""
+    try:
+        product = get_object_or_404(Product, id=product_id, is_active=True)
+        
+        # Get or create session key
+        if not request.session.session_key:
+            request.session.create()
+        session_key = request.session.session_key
+        
+        # Get or create wishlist
+        wishlist, created = Wishlist.objects.get_or_create(session_key=session_key)
+        
+        # Add product to wishlist
+        wishlist_item, item_created = WishlistItem.objects.get_or_create(
+            wishlist=wishlist,
+            product=product
+        )
+        
+        if item_created:
+            return JsonResponse({
+                'success': True,
+                'message': f'{product.name} added to your list',
+                'wishlist_count': wishlist.items.count()
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'message': 'Product already in your list'
+            })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': 'Error adding to list. Please try again.'
+        }, status=500)
+
+
+@require_http_methods(["POST"])
+@csrf_protect
+def remove_from_wishlist(request, product_id):
+    """Remove product from wishlist"""
+    try:
+        session_key = request.session.session_key
+        if not session_key:
+            return JsonResponse({'success': False, 'message': 'No wishlist found'})
+        
+        wishlist = get_object_or_404(Wishlist, session_key=session_key)
+        product = get_object_or_404(Product, id=product_id)
+        
+        WishlistItem.objects.filter(wishlist=wishlist, product=product).delete()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Product removed',
+            'wishlist_count': wishlist.items.count()
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': 'Error removing product'
+        }, status=500)
+
+
+def view_wishlist(request):
+    """View all wishlist items"""
+    session_key = request.session.session_key
+    wishlist_items = []
+    wishlist = None
+    
+    if session_key:
+        try:
+            wishlist = Wishlist.objects.get(session_key=session_key)
+            wishlist_items = wishlist.items.select_related(
+                'product__category'
+            ).prefetch_related('product__features').all()
+        except Wishlist.DoesNotExist:
+            pass
+    
+    context = {
+        'wishlist': wishlist,
+        'wishlist_items': wishlist_items,
+        'company_info': get_company_info(),
+    }
+    return render(request, 'main/wishlist.html', context)
+
+
+def get_wishlist_count(request):
+    """AJAX endpoint to get wishlist count"""
+    session_key = request.session.session_key
+    count = 0
+    
+    if session_key:
+        try:
+            wishlist = Wishlist.objects.get(session_key=session_key)
+            count = wishlist.items.count()
+        except Wishlist.DoesNotExist:
+            pass
+    
+    return JsonResponse({'count': count})
+
+
+# ============= WHATSAPP ORDER TRACKING =============
+
+@csrf_protect
+@require_http_methods(["POST"])
+def track_whatsapp_order(request):
+    """Track WhatsApp order button clicks for analytics"""
+    try:
+        data = json.loads(request.body)
+        
+        # Get or create session key
+        if not request.session.session_key:
+            request.session.create()
+        
+        # Create tracking record
+        WhatsAppOrderClick.objects.create(
+            product_id=data.get('product_id', ''),
+            product_name=data.get('product_name', ''),
+            price=data.get('price', 0),
+            session_key=request.session.session_key,
+            ip_address=request.META.get('REMOTE_ADDR'),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],  # Limit length
+        )
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+# ============= QUICK ACTIONS =============
+
+def quick_quote(request, product_id):
+    """Generate quick quote WhatsApp link"""
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    return redirect(product.whatsapp_quick_quote)
+
+
+def share_product(request, product_id):
+    """Generate product share WhatsApp link"""
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    return redirect(product.whatsapp_share_link)
+
+
+# ============= CONTEXT PROCESSOR =============
+
+def wishlist_context(request):
+    """Add wishlist count to all templates"""
+    count = 0
+    session_key = request.session.session_key
+    
+    if session_key:
+        try:
+            wishlist = Wishlist.objects.get(session_key=session_key)
+            count = wishlist.items.count()
+        except Wishlist.DoesNotExist:
+            pass
+    
+    return {
+        'wishlist_count': count
     }
 
 

@@ -125,22 +125,192 @@ class Product(models.Model):
         return 0
 
     @property
+    def product_code(self):
+        """
+        Generate unique product code for easy reference
+        Format: EYE-CAT-0001
+        """
+        category_prefix = self.category.slug[:3].upper() if self.category else 'GEN'
+        return f"EYE-{category_prefix}-{self.id:04d}"
+    
+    @property
     def whatsapp_link(self):
+        """
+        Generate enhanced WhatsApp order link with rich message
+        Optimized for Zimbabwe market
+        """
         from .models import CompanyInfo
+        
         company_info = CompanyInfo.objects.first()
         whatsapp_number = company_info.whatsapp if company_info else '263784342632'
         
-        if self.whatsapp_message:
-            message = self.whatsapp_message
-        else:
-            message = f"Hi! I'm interested in the {self.name} priced at ${self.price}. Can you tell me more?"
+        # Build rich message with product details
+        message_parts = [
+            "🛒 *ORDER REQUEST*",
+            "",
+            f"📦 Product: {self.name}",
+            f"🔢 Code: {self.product_code}",
+            f"💰 Price: ${self.price}",
+        ]
         
-        import urllib.parse
+        # Add savings if on sale
+        if self.old_price and self.old_price > self.price:
+            savings = float(self.old_price) - float(self.price)
+            message_parts.append(f"💸 You Save: ${savings:.2f}")
+        
+        # Add urgency if low stock
+        if self.stock_quantity <= 5 and self.stock_quantity > 0:
+            message_parts.append(f"⚠️ Only {self.stock_quantity} left in stock!")
+        
+        # Add product link
+        message_parts.extend([
+            "",
+            f"📱 View product: {self.get_full_url()}",
+            "",
+            "Hi! I'd like to order this product. Please confirm availability and delivery options.",
+        ])
+        
+        message = "\n".join(message_parts)
+        encoded_message = urllib.parse.quote(message)
+        
+        return f"https://wa.me/{whatsapp_number}?text={encoded_message}"
+    
+    def get_full_url(self):
+        """Get full absolute URL for product"""
+        from django.contrib.sites.models import Site
+        try:
+            current_site = Site.objects.get_current()
+            domain = current_site.domain
+            protocol = 'https' if not domain.startswith('localhost') else 'http'
+            return f"{protocol}://{domain}{self.get_absolute_url()}"
+        except:
+            # Fallback to hardcoded domain
+            return f"https://eyedentity-gx20.onrender.com{self.get_absolute_url()}"
+    
+    @property
+    def whatsapp_quick_quote(self):
+        """
+        Generate WhatsApp link for quote request
+        """
+        from .models import CompanyInfo
+        
+        company_info = CompanyInfo.objects.first()
+        whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+        
+        message = (
+            f"Hi! I'd like a quote for {self.name} (Code: {self.product_code}). "
+            f"Please provide:\n"
+            f"- Availability\n"
+            f"- Delivery cost to my location\n"
+            f"- Payment options\n"
+            f"- Total price"
+        )
+        
         encoded_message = urllib.parse.quote(message)
         return f"https://wa.me/{whatsapp_number}?text={encoded_message}"
+    
+    @property
+    def whatsapp_share_link(self):
+        """
+        Generate WhatsApp share link
+        """
+        message = (
+            f"Check out this eyewear! 👓\n\n"
+            f"{self.name}\n"
+            f"Only ${self.price}\n"
+            f"{self.get_full_url()}"
+        )
+        
+        encoded_message = urllib.parse.quote(message)
+        return f"https://wa.me/?text={encoded_message}"
 
-    def get_absolute_url(self):
-        return reverse('product_detail', kwargs={'slug': self.slug})
+
+# NEW MODEL: Wishlist for multiple item orders
+class Wishlist(models.Model):
+    session_key = models.CharField(max_length=40, db_index=True)
+    email = models.EmailField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Wishlist {self.session_key}"
+    
+    @property
+    def total_price(self):
+        """Calculate total price of all items"""
+        return sum(float(item.product.price) for item in self.items.all())
+    
+    @property
+    def whatsapp_order_link(self):
+        """Generate WhatsApp message for all wishlist items"""
+        from .models import CompanyInfo
+        
+        company_info = CompanyInfo.objects.first()
+        whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+        
+        message_parts = [
+            "🛒 *MULTIPLE ITEMS ORDER*",
+            "",
+            "I'm interested in ordering the following items:",
+            "",
+        ]
+        
+        for item in self.items.select_related('product__category').all():
+            product = item.product
+            message_parts.append(
+                f"📦 {product.name}\n"
+                f"   Code: {product.product_code}\n"
+                f"   Price: ${product.price}"
+            )
+            message_parts.append("")
+        
+        message_parts.extend([
+            f"💰 *Total: ${self.total_price:.2f}*",
+            "",
+            "Please confirm:",
+            "- Availability of all items",
+            "- Total delivery cost to my location",
+            "- Payment options",
+            "- Estimated delivery time",
+        ])
+        
+        message = "\n".join(message_parts)
+        encoded_message = urllib.parse.quote(message)
+        
+        return f"https://wa.me/{whatsapp_number}?text={encoded_message}"
+
+
+class WishlistItem(models.Model):
+    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['wishlist', 'product']
+        ordering = ['-added_at']
+    
+    def __str__(self):
+        return f"{self.product.name} in wishlist"
+
+
+# NEW MODEL: Track WhatsApp order clicks for analytics
+class WhatsAppOrderClick(models.Model):
+    product_id = models.CharField(max_length=50)
+    product_name = models.CharField(max_length=200)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    session_key = models.CharField(max_length=40, blank=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    user_agent = models.TextField(blank=True)
+    clicked_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-clicked_at']
+        verbose_name = "WhatsApp Order Click"
+        verbose_name_plural = "WhatsApp Order Clicks"
+    
+    def __str__(self):
+        return f"{self.product_name} - {self.clicked_at.strftime('%Y-%m-%d %H:%M')}"
+
 
 
 class ProductImage(models.Model):

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import (
     Category, Product, ProductImage, Feature, Testimonial, 
-    CompanyInfo, Newsletter, ContactMessage, UserProfile, AboutGlasses
+    CompanyInfo, Newsletter, ContactMessage, UserProfile, AboutGlasses, Wishlist, WhatsAppOrderClick
 )
 
 # Register AboutGlasses for admin editing
@@ -201,6 +201,27 @@ class UserProfileAdmin(admin.ModelAdmin):
             return ['user', 'created_at']
         return ['created_at']
 
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    list_display = ['session_key', 'email', 'item_count', 'total_price', 'created_at']
+    search_fields = ['session_key', 'email']
+    readonly_fields = ['created_at', 'updated_at']
+    
+    def item_count(self, obj):
+        return obj.items.count()
+    item_count.short_description = 'Items'
+
+
+@admin.register(WhatsAppOrderClick)
+class WhatsAppOrderClickAdmin(admin.ModelAdmin):
+    list_display = ['product_name', 'price', 'ip_address', 'clicked_at']
+    list_filter = ['clicked_at']
+    search_fields = ['product_name', 'product_id', 'ip_address']
+    readonly_fields = ['clicked_at']
+    date_hierarchy = 'clicked_at'
+    
+    def has_add_permission(self, request):
+        return False  
 
 # Admin site customization
 admin.site.site_header = "Eyedentity Eyewear Admin"
