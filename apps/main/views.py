@@ -441,32 +441,35 @@ def get_category_products(request, category_slug):
     except Category.DoesNotExist:
         return JsonResponse({'error': 'Category not found'}, status=404)
 
-
-# Utility functions
 def get_company_info():
-    """Get company information, create default if doesn't exist - CACHED VERSION"""
     from django.core.cache import cache
     
     # Try to get from cache first
     company_info = cache.get('company_info')
+    
     if company_info is None:
-        company_info, created = CompanyInfo.objects.get_or_create(
-            defaults={
-                'name': "Eyedentity Eyewear",
-                'tagline': "Stylish. Protective. Uniquely You.",
-                'description': "<p>Premium eyewear solutions in Harare, Zimbabwe.</p>",
-                'address': "Harare, Zimbabwe",
-                'phone': "+263123456789",
-                'whatsapp': "263123456789",
-                'email': "info@Eyedentity.co.zw",
-                'opening_hours': "Mon-Fri: 9:00 AM - 6:00 PM\nSat: 9:00 AM - 4:00 PM\nSun: Closed"
-            }
-        )
-        # Cache for 1 hour
-        cache.set('company_info', company_info, 60 * 60)
+        try:
+            # Wrap this in a try/except block!
+            company_info, created = CompanyInfo.objects.get_or_create(
+                defaults={
+                    'name': "Eyedentity Eyewear",
+                    'tagline': "Stylish. Protective. Uniquely You.",
+                    'description': "<p>Premium eyewear solutions in Harare, Zimbabwe.</p>",
+                    'address': "Harare, Zimbabwe",
+                    'phone': "+263 784 342 632",
+                    'whatsapp': " 263 784 342 632",
+                    'email': "info@Eyedentity.co.zw",
+                    'opening_hours': "Mon-Fri: 9:00 AM - 6:00 PM\nSat: 9:00 AM - 4:00 PM\nSun: Closed"
+                }
+            )
+            # Cache for 1 hour
+            cache.set('company_info', company_info, 60 * 60)
+            
+        except (ProgrammingError, OperationalError):
+            # If the table doesn't exist yet, return None instead of crashing
+            return None
     
     return company_info
-
 
 # Context processors (to be added to settings.py)
 def site_context(request):
