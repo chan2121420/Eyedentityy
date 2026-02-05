@@ -18,7 +18,7 @@
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:title" content="{% block og_title %}Eyedentity Eyewear - Premium Eyewear in Zimbabwe{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Shop premium eyewear in Harare, Zimbabwe. Photochromic, Polarized, Anti-Blue Light glasses and more. Quality vision care for everyone.{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/og-image.jpg' %}{% endblock %}">
+    {% comment %} <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/og-image.jpg' %}{% endblock %}"> {% endcomment %}
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Eyedentity Eyewear">
@@ -29,7 +29,7 @@
     <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
     <meta property="twitter:title" content="{% block twitter_title %}Eyedentity Eyewear Zimbabwe{% endblock %}">
     <meta property="twitter:description" content="{% block twitter_description %}Premium eyewear solutions in Harare. Quality, style, and eye protection.{% endblock %}">
-    <meta property="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/og-image.jpg' %}{% endblock %}">
+    {% comment %} <meta property="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% load static %}{% static 'images/og-image.jpg' %}{% endblock %}"> {% endcomment %}
     
     <!-- Canonical URL -->
     <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
