@@ -1,6 +1,3 @@
-# apps/main/views.py
-# Fixed and optimized version with all improvements
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count
@@ -12,6 +9,8 @@ from django.views.decorators.cache import cache_page
 from django.utils import timezone
 from django.conf import settings
 import json
+from django.db import ProgrammingError
+from django.db import OperationalError
 
 
 from .models import (
@@ -623,9 +622,6 @@ def share_product(request, product_id):
     product = get_object_or_404(Product, id=product_id, is_active=True)
     return redirect(product.whatsapp_share_link)
 
-
-# ============= CONTEXT PROCESSOR =============
-
 def wishlist_context(request):
     session_key = request.session.session_key
     if not session_key:
@@ -635,7 +631,7 @@ def wishlist_context(request):
     try:
         wishlist = Wishlist.objects.get(session_key=session_key)
         items_count = wishlist.items.count()
-    except (Wishlist.DoesNotExist, ProgrammingError): # Add ProgrammingError here
+    except (Wishlist.DoesNotExist, ProgrammingError, OperationalError):
         wishlist = None
         items_count = 0
         
