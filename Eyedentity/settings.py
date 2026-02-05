@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'Eyedentity.wsgi.application'
 # Uses "Pooler" connection for high performance on Render/Fly
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
         conn_max_age=600
     )
 }
@@ -264,7 +264,7 @@ LOGGING = {
 if DEBUG:
     INSTALLED_APPS += ['debug_toolbar']
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
-    
+
 # Create logs directory if it doesn't exist
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)

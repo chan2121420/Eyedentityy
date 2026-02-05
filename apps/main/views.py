@@ -627,21 +627,22 @@ def share_product(request, product_id):
 # ============= CONTEXT PROCESSOR =============
 
 def wishlist_context(request):
-    """Add wishlist count to all templates"""
-    count = 0
     session_key = request.session.session_key
+    if not session_key:
+        request.session.create()
+        session_key = request.session.session_key
     
-    if session_key:
-        try:
-            wishlist = Wishlist.objects.get(session_key=session_key)
-            count = wishlist.items.count()
-        except Wishlist.DoesNotExist:
-            pass
-    
+    try:
+        wishlist = Wishlist.objects.get(session_key=session_key)
+        items_count = wishlist.items.count()
+    except (Wishlist.DoesNotExist, ProgrammingError): # Add ProgrammingError here
+        wishlist = None
+        items_count = 0
+        
     return {
-        'wishlist_count': count
+        'wishlist': wishlist,
+        'wishlist_items_count': items_count,
     }
-
 
 # Error handlers
 def handler404(request, exception):

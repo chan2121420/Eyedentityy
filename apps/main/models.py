@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from ckeditor_uploader.fields import RichTextUploadingField
 from PIL import Image
+import urllib.parse
 
 
 # AboutGlasses model for dynamic about page content
@@ -135,15 +136,14 @@ class Product(models.Model):
     
     @property
     def whatsapp_link(self):
-        """
-        Generate enhanced WhatsApp order link with rich message
-        Optimized for Zimbabwe market
-        """
         from .models import CompanyInfo
+        try:
+            company_info = CompanyInfo.objects.first()
+        except ProgrammingError:
+            company_info = None
         
-        company_info = CompanyInfo.objects.first()
         whatsapp_number = company_info.whatsapp if company_info else '263784342632'
-        
+    
         # Build rich message with product details
         message_parts = [
             "🛒 *ORDER REQUEST*",
