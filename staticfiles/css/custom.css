@@ -1,19 +1,17 @@
 :root {
-    --bg-primary: #0b0f14;
-    --bg-secondary: #121826;
-    --bg-tertiary: #1a2332;
-    --bg-accent: #222d3f;
-    --border-color: #2a3547;
-    --accent-primary: #60a5fa;
-    --accent-secondary: #34d399;
-    --text-primary: #f1f5f9;
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
-    --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
-    --radius: 8px;
-    --radius-lg: 12px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --bg-primary: #0e1116;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #1c2128;
+    --border-color: #2a2f3a;
+    --accent-primary: #38bdf8;
+    --accent-secondary: #22c55e;
+    --text-primary: #e5e7eb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+    --radius: 12px;
+    --radius-lg: 16px;
 }
 
 * {
@@ -30,7 +28,7 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: 1.7;
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -41,10 +39,11 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(18, 24, 38, 0.95);
+    background: rgba(22, 27, 34, 0.95);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     z-index: 1000;
+    padding: 0;
 }
 
 .nav-container {
@@ -58,7 +57,7 @@ body {
 
 .nav-brand img {
     display: block;
-    height: 40px;
+    height: 48px;
 }
 
 .nav-toggle {
@@ -66,7 +65,7 @@ body {
     background: none;
     border: none;
     color: var(--text-primary);
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     cursor: pointer;
     padding: 0.5rem;
 }
@@ -82,7 +81,7 @@ body {
     text-decoration: none;
     font-weight: 500;
     font-size: 0.95rem;
-    transition: var(--transition);
+    transition: color 0.2s;
     position: relative;
 }
 
@@ -90,8 +89,43 @@ body {
     color: var(--accent-primary);
 }
 
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-primary);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+}
+
+.nav-link:hover::after {
+    transform: scaleX(1);
+}
+
 .mobile-nav {
     display: none;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mobile-nav.active {
+    display: flex;
+}
+
+.mobile-nav .nav-link {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    display: block;
+}
+
+.mobile-nav .nav-link:hover {
+    background: var(--bg-tertiary);
 }
 
 @media (max-width: 768px) {
@@ -102,62 +136,19 @@ body {
     .desktop-nav {
         display: none;
     }
-    
-    .mobile-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--bg-secondary);
-        border-top: 1px solid var(--border-color);
-        padding: 0.5rem;
-        display: flex;
-        justify-content: space-around;
-        z-index: 1000;
-        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
-    }
-    
-    .mobile-nav .nav-link {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.5rem;
-        border-radius: var(--radius);
-        min-width: 60px;
-    }
-    
-    .mobile-nav .nav-link i {
-        font-size: 1.25rem;
-    }
-    
-    .mobile-nav .nav-link span {
-        font-size: 0.7rem;
-    }
-    
-    .mobile-nav .nav-link:hover,
-    .mobile-nav .nav-link.active {
-        background: var(--bg-tertiary);
-    }
 }
 
 .main-content {
     min-height: 100vh;
-    padding-top: 72px;
-}
-
-@media (max-width: 768px) {
-    .main-content {
-        padding-bottom: 72px;
-    }
+    padding-top: 80px;
 }
 
 .whatsapp-float {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     background: #25d366;
     border-radius: 50%;
     display: flex;
@@ -166,7 +157,7 @@ body {
     box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
     z-index: 999;
     text-decoration: none;
-    transition: var(--transition);
+    transition: all 0.3s;
 }
 
 .whatsapp-float:hover {
@@ -175,20 +166,12 @@ body {
 }
 
 .whatsapp-float i {
-    font-size: 26px;
+    font-size: 28px;
     color: white;
 }
 
-@media (max-width: 768px) {
-    .whatsapp-float {
-        bottom: 88px;
-        width: 52px;
-        height: 52px;
-    }
-    
-    .whatsapp-float i {
-        font-size: 24px;
-    }
+.whatsapp-text {
+    display: none;
 }
 
 .main-footer {
@@ -213,7 +196,7 @@ body {
 
 .footer-col h4 {
     color: var(--text-primary);
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 1rem;
 }
@@ -231,7 +214,7 @@ body {
     text-decoration: none;
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
-    transition: var(--transition);
+    transition: color 0.2s;
 }
 
 .footer-link:hover {
@@ -270,7 +253,7 @@ body {
 }
 
 .section-title {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
     font-weight: 700;
     text-align: center;
     margin-bottom: 1rem;
@@ -292,7 +275,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     overflow: hidden;
-    transition: var(--transition);
+    transition: all 0.3s;
 }
 
 .card:hover {
@@ -332,9 +315,9 @@ body {
     padding: 0.75rem 1.5rem;
     font-size: 0.95rem;
     font-weight: 600;
-    border-radius: var(--radius);
+    border-radius: 8px;
     text-decoration: none;
-    transition: var(--transition);
+    transition: all 0.2s;
     cursor: pointer;
     border: none;
     gap: 0.5rem;
@@ -346,9 +329,9 @@ body {
 }
 
 .btn-primary:hover {
-    background: #3b82f6;
+    background: #0ea5e9;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
 }
 
 .btn-secondary {
@@ -357,14 +340,14 @@ body {
 }
 
 .btn-secondary:hover {
-    background: #10b981;
+    background: #16a34a;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
 }
 
 .btn-outline {
     background: transparent;
-    border: 1px solid var(--accent-primary);
+    border: 2px solid var(--accent-primary);
     color: var(--accent-primary);
 }
 
@@ -447,15 +430,15 @@ body {
     font-size: 0.95rem;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    border-radius: 8px;
     color: var(--text-primary);
-    transition: var(--transition);
+    transition: all 0.2s;
 }
 
 .form-control:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
 }
 
 .form-select {
@@ -464,7 +447,7 @@ body {
     font-size: 0.95rem;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    border-radius: 8px;
     color: var(--text-primary);
     cursor: pointer;
 }
@@ -491,10 +474,10 @@ body {
     padding: 0 0.75rem;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    border-radius: 8px;
     color: var(--text-secondary);
     text-decoration: none;
-    transition: var(--transition);
+    transition: all 0.2s;
 }
 
 .page-link:hover {
@@ -523,15 +506,15 @@ body {
 }
 
 .alert-success {
-    background: rgba(52, 211, 153, 0.1);
+    background: rgba(34, 197, 94, 0.1);
     border-color: var(--accent-secondary);
     color: #86efac;
 }
 
 .alert-info {
-    background: rgba(96, 165, 250, 0.1);
+    background: rgba(56, 189, 248, 0.1);
     border-color: var(--accent-primary);
-    color: #93c5fd;
+    color: #7dd3fc;
 }
 
 @media (max-width: 768px) {
@@ -567,5 +550,16 @@ body {
     .btn-lg {
         padding: 0.875rem 1.5rem;
         font-size: 1rem;
+    }
+    
+    .whatsapp-float {
+        width: 56px;
+        height: 56px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .whatsapp-float i {
+        font-size: 24px;
     }
 }
