@@ -103,8 +103,7 @@
                     <a href="{{ product.whatsapp_link }}" 
                        target="_blank" 
                        rel="noopener noreferrer"
-                       class="btn-whatsapp-order"
-                       onclick="trackOrder('{{ product.name }}', '{{ product.product_code }}', {{ product.price }})">
+                       class="btn-whatsapp-order">
                         <i class="bi bi-whatsapp"></i>
                         <div class="btn-text">
                             <span class="btn-main">Order via WhatsApp</span>
@@ -121,7 +120,7 @@
                     {% endif %}
                     
                     <div class="quick-actions">
-                        <button class="action-btn" onclick="toggleWishlist({{ product.id }})">
+                        <button class="action-btn">
                             <i class="bi bi-heart"></i>
                             <span>Save</span>
                         </button>
@@ -224,7 +223,7 @@
 
 <style>
 .product-detail-section {
-    background: #0a0d12;
+    background: var(--bg-primary);
     padding: 2rem 0 4rem;
     min-height: 100vh;
 }
@@ -238,14 +237,14 @@
 
 .product-gallery {
     position: sticky;
-    top: 120px;
+    top: 160px;
     align-self: start;
 }
 
 .main-image-wrapper {
     position: relative;
-    background: #161b22;
-    border: 1px solid #2a2f3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
     overflow: hidden;
     margin-bottom: 1rem;
@@ -292,17 +291,17 @@
     aspect-ratio: 1;
     object-fit: cover;
     border-radius: 12px;
-    border: 2px solid #2a2f3a;
+    border: 2px solid var(--border-color);
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .thumbnail:hover {
-    border-color: #38bdf8;
+    border-color: var(--accent-primary);
 }
 
 .thumbnail.active {
-    border-color: #38bdf8;
+    border-color: var(--accent-primary);
     box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
 }
 
@@ -314,28 +313,28 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: #161b22;
-    border: 1px solid #2a2f3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     padding: 0.5rem 1rem;
     border-radius: 8px;
-    color: #9ca3af;
+    color: var(--text-secondary);
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
 }
 
 .product-meta-badge i {
-    color: #38bdf8;
+    color: var(--accent-primary);
 }
 
 .product-meta-badge span {
-    color: #e5e7eb;
+    color: var(--text-primary);
     font-weight: 600;
 }
 
 .product-name {
     font-size: 2.5rem;
     font-weight: 800;
-    color: #e5e7eb;
+    color: var(--text-primary);
     margin-bottom: 1.5rem;
     line-height: 1.2;
 }
@@ -345,12 +344,13 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .price-main {
     font-size: 3rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--accent-secondary), #16a34a);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -358,7 +358,7 @@
 
 .price-compare {
     font-size: 1.5rem;
-    color: #6b7280;
+    color: var(--text-muted);
     text-decoration: line-through;
 }
 
@@ -367,7 +367,7 @@
     background: rgba(34, 197, 94, 0.1);
     border: 1px solid rgba(34, 197, 94, 0.3);
     border-radius: 8px;
-    color: #22c55e;
+    color: var(--accent-secondary);
     font-weight: 700;
     font-size: 0.9rem;
 }
@@ -411,12 +411,12 @@
 }
 
 .stock-available i {
-    color: #22c55e;
+    color: var(--accent-secondary);
     font-size: 1.25rem;
 }
 
 .stock-available span {
-    color: #22c55e;
+    color: var(--accent-secondary);
     font-weight: 600;
 }
 
@@ -426,12 +426,12 @@
 }
 
 .stock-unavailable i {
-    color: #9ca3af;
+    color: var(--text-muted);
     font-size: 1.25rem;
 }
 
 .stock-unavailable span {
-    color: #9ca3af;
+    color: var(--text-secondary);
     font-weight: 600;
 }
 
@@ -440,14 +440,14 @@
 }
 
 .product-description p {
-    color: #9ca3af;
+    color: var(--text-secondary);
     font-size: 1.05rem;
     line-height: 1.8;
 }
 
 .features-list {
-    background: #161b22;
-    border: 1px solid #2a2f3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 2rem;
@@ -456,7 +456,7 @@
 .features-title {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #e5e7eb;
+    color: var(--text-primary);
     margin-bottom: 1rem;
 }
 
@@ -470,18 +470,18 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: #9ca3af;
+    color: var(--text-secondary);
 }
 
 .features-items i {
-    color: #38bdf8;
+    color: var(--accent-primary);
     font-size: 1.1rem;
 }
 
 .order-cta-section {
     background: linear-gradient(135deg, rgba(37, 211, 102, 0.05), rgba(32, 193, 87, 0.02));
     border: 2px solid #25d366;
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     padding: 2rem;
     margin-bottom: 2rem;
 }
@@ -506,7 +506,7 @@
 
 .benefit-mini span {
     font-size: 0.85rem;
-    color: #9ca3af;
+    color: var(--text-secondary);
 }
 
 .btn-whatsapp-order {
@@ -558,18 +558,18 @@
     gap: 0.75rem;
     width: 100%;
     padding: 1.25rem;
-    background: #161b22;
-    border: 2px solid #2a2f3a;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
     border-radius: 12px;
-    color: #9ca3af;
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 700;
     transition: all 0.3s;
 }
 
 .btn-notify:hover {
-    border-color: #38bdf8;
-    color: #38bdf8;
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
 }
 
 .quick-actions {
@@ -585,10 +585,10 @@
     align-items: center;
     gap: 0.5rem;
     padding: 1rem 0.5rem;
-    background: #161b22;
-    border: 1px solid #2a2f3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    color: #9ca3af;
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 600;
@@ -597,9 +597,9 @@
 }
 
 .action-btn:hover {
-    background: #1c2128;
-    border-color: #38bdf8;
-    color: #38bdf8;
+    background: var(--bg-tertiary);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
 }
 
 .action-btn i {
@@ -617,38 +617,38 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: #161b22;
-    border: 1px solid #2a2f3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
 }
 
 .trust-item i {
     font-size: 2rem;
-    color: #38bdf8;
+    color: var(--accent-primary);
 }
 
 .trust-item strong {
     display: block;
-    color: #e5e7eb;
+    color: var(--text-primary);
     font-size: 0.95rem;
     margin-bottom: 0.25rem;
 }
 
 .trust-item span {
     display: block;
-    color: #9ca3af;
+    color: var(--text-secondary);
     font-size: 0.85rem;
 }
 
 .payment-methods {
-    background: #161b22;
-    border: 1px solid #2a2f3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.5rem;
 }
 
 .payment-title {
-    color: #9ca3af;
+    color: var(--text-secondary);
     font-size: 0.9rem;
     margin-bottom: 1rem;
     font-weight: 600;
@@ -665,8 +665,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: #0e1116;
-    border: 1px solid #2a2f3a;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
 }
 
@@ -677,11 +677,11 @@
 
 .payment-icon i {
     font-size: 1.75rem;
-    color: #38bdf8;
+    color: var(--accent-primary);
 }
 
 .payment-icon span {
-    color: #9ca3af;
+    color: var(--text-secondary);
     font-size: 0.85rem;
     font-weight: 600;
 }
@@ -693,7 +693,7 @@
 .related-title {
     font-size: 2rem;
     font-weight: 800;
-    color: #e5e7eb;
+    color: var(--text-primary);
     margin-bottom: 2rem;
     text-align: center;
 }
@@ -705,17 +705,17 @@
 }
 
 .related-card {
-    background: #161b22;
-    border: 1px solid #2a2f3a;
-    border-radius: 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     transition: all 0.3s;
 }
 
 .related-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    border-color: #38bdf8;
+    box-shadow: var(--shadow);
+    border-color: var(--accent-primary);
 }
 
 .related-link {
@@ -746,7 +746,7 @@
 .related-name {
     font-size: 1rem;
     font-weight: 600;
-    color: #e5e7eb;
+    color: var(--text-primary);
     margin-bottom: 0.75rem;
 }
 
@@ -759,12 +759,12 @@
 .related-price .price {
     font-size: 1.25rem;
     font-weight: 800;
-    color: #22c55e;
+    color: var(--accent-secondary);
 }
 
 .related-price .old-price {
     font-size: 0.9rem;
-    color: #6b7280;
+    color: var(--text-muted);
     text-decoration: line-through;
 }
 
@@ -813,13 +813,13 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: #161b22;
-        border-top: 1px solid #2a2f3a;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border-color);
         padding: 1rem;
         z-index: 1000;
         align-items: center;
         justify-content: space-between;
-        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.6);
+        box-shadow: var(--shadow-lg);
     }
     
     .mob-info {
@@ -830,12 +830,12 @@
     .mob-price {
         font-size: 1.5rem;
         font-weight: 800;
-        color: #22c55e;
+        color: var(--accent-secondary);
     }
     
     .mob-name {
         font-size: 0.85rem;
-        color: #9ca3af;
+        color: var(--text-secondary);
     }
     
     .mob-btn-order {
@@ -879,20 +879,6 @@ function switchImage(element) {
     element.classList.add('active');
 }
 
-function trackOrder(productName, productCode, price) {
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'whatsapp_order', {
-            'event_category': 'ecommerce',
-            'event_label': productName,
-            'value': price
-        });
-    }
-}
-
-function toggleWishlist(productId) {
-    alert('Product saved to wishlist!');
-}
-
 function shareProduct() {
     if (navigator.share) {
         navigator.share({
@@ -900,7 +886,7 @@ function shareProduct() {
             url: window.location.href
         });
     } else {
-        window.open('{{ product.whatsapp_share_link }}', '_blank');
+        alert('Share via WhatsApp or copy the URL from your browser');
     }
 }
 </script>
