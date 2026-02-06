@@ -1,3 +1,6 @@
+from django.db import ProgrammingError, OperationalError
+from .models import CompanyInfo, Category
+
 def global_context(request):
     """Global context processor for site-wide variables"""
     try:

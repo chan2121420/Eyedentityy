@@ -19,12 +19,6 @@ class AboutGlasses(models.Model):
 
     def __str__(self):
         return self.title
-from django.db import models
-from django.contrib.auth.models import User
-from django.urls import reverse
-from django.utils.text import slugify
-from ckeditor_uploader.fields import RichTextUploadingField
-from PIL import Image
 
 
 class Category(models.Model):
@@ -136,13 +130,14 @@ class Product(models.Model):
     
     @property
     def whatsapp_link(self):
-        from .models import CompanyInfo
+        # Import inside method to avoid circular imports
+        from django.db import ProgrammingError
+        
         try:
             company_info = CompanyInfo.objects.first()
-        except ProgrammingError:
-            company_info = None
-        
-        whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+            whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+        except (ProgrammingError, Exception):
+            whatsapp_number = '263784342632'
     
         # Build rich message with product details
         message_parts = [
@@ -189,13 +184,14 @@ class Product(models.Model):
     
     @property
     def whatsapp_quick_quote(self):
-        """
-        Generate WhatsApp link for quote request
-        """
-        from .models import CompanyInfo
+        """Generate WhatsApp link for quote request"""
+        from django.db import ProgrammingError
         
-        company_info = CompanyInfo.objects.first()
-        whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+        try:
+            company_info = CompanyInfo.objects.first()
+            whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+        except (ProgrammingError, Exception):
+            whatsapp_number = '263784342632'
         
         message = (
             f"Hi! I'd like a quote for {self.name} (Code: {self.product_code}). "
@@ -211,9 +207,7 @@ class Product(models.Model):
     
     @property
     def whatsapp_share_link(self):
-        """
-        Generate WhatsApp share link
-        """
+        """Generate WhatsApp share link"""
         message = (
             f"Check out this eyewear! 👓\n\n"
             f"{self.name}\n"
@@ -223,9 +217,11 @@ class Product(models.Model):
         
         encoded_message = urllib.parse.quote(message)
         return f"https://wa.me/?text={encoded_message}"
+    
+    def get_absolute_url(self):
+        return reverse('product_detail', kwargs={'slug': self.slug})
 
 
-# NEW MODEL: Wishlist for multiple item orders
 class Wishlist(models.Model):
     session_key = models.CharField(max_length=40, db_index=True)
     email = models.EmailField(blank=True)
@@ -243,10 +239,13 @@ class Wishlist(models.Model):
     @property
     def whatsapp_order_link(self):
         """Generate WhatsApp message for all wishlist items"""
-        from .models import CompanyInfo
+        from django.db import ProgrammingError
         
-        company_info = CompanyInfo.objects.first()
-        whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+        try:
+            company_info = CompanyInfo.objects.first()
+            whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+        except (ProgrammingError, Exception):
+            whatsapp_number = '263784342632'
         
         message_parts = [
             "🛒 *MULTIPLE ITEMS ORDER*",
@@ -293,7 +292,6 @@ class WishlistItem(models.Model):
         return f"{self.product.name} in wishlist"
 
 
-# NEW MODEL: Track WhatsApp order clicks for analytics
 class WhatsAppOrderClick(models.Model):
     product_id = models.CharField(max_length=50)
     product_name = models.CharField(max_length=200)
@@ -312,7 +310,6 @@ class WhatsAppOrderClick(models.Model):
         return f"{self.product_name} - {self.clicked_at.strftime('%Y-%m-%d %H:%M')}"
 
 
-
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='additional_images')
     image = models.ImageField(upload_to='products/gallery/')
@@ -327,10 +324,8 @@ class ProductImage(models.Model):
         return f"{self.product.name} - Image"
 
     def clean(self):
-        # Ensure a product has at most 5 additional images (plus the main image = 6 max)
         from django.core.exceptions import ValidationError
         if self.product and self.product.additional_images.exists():
-            # If this instance is new (no pk yet) count existing ones
             existing_count = self.product.additional_images.count()
             if not self.pk and existing_count >= 5:
                 raise ValidationError('A product can have at most 5 additional images.')
@@ -419,7 +414,6 @@ class ContactMessage(models.Model):
         return f"{self.name} - {self.subject}"
 
 
-# User Profile Extension
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     avatar = models.ImageField(upload_to='profiles/', blank=True, null=True)
@@ -443,21 +437,4 @@ class UserProfile(models.Model):
                     img.thumbnail(output_size)
                     img.save(self.avatar.path)
             except Exception:
-                pass  # Handle any image processing errors gracefully
-
-
-# Signal to create user profile
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    if hasattr(instance, 'profile'):
-        instance.profile.save()
-    else:
-        UserProfile.objects.create(user=instance)
+                pass
