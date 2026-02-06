@@ -4,104 +4,98 @@
 {% block title %}{{ product.name }} - Order via WhatsApp | Eyedentity{% endblock %}
 
 {% block content %}
-<section class="section product-detail-section">
+<section class="product-detail-section">
     <div class="container">
-        <!-- Product Grid -->
-        <div class="product-detail-grid">
-            <!-- Images Section -->
-            <div class="product-gallery-section">
-                <div class="gallery-main">
-                    <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name }}" class="main-img">
+        <div class="product-layout">
+            <div class="product-gallery">
+                <div class="main-image-wrapper">
+                    <img id="mainProductImage" src="{{ product.image.url }}" alt="{{ product.name }}" class="main-product-image">
                     
                     {% if product.is_on_sale %}
-                    <div class="sale-badge-overlay">
-                        <span class="sale-percentage">{{ product.discount_percentage }}%</span>
-                        <span class="sale-text">OFF</span>
+                    <div class="discount-flash">
+                        <div class="discount-amount">{{ product.discount_percentage }}%</div>
+                        <div class="discount-label">OFF</div>
                     </div>
                     {% endif %}
                 </div>
                 
-                <div class="gallery-thumbs">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="thumb-img active" onclick="changeImage(this)">
+                {% if additional_images %}
+                <div class="thumbnail-gallery">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="thumbnail active" onclick="switchImage(this)">
                     {% for img in additional_images %}
-                    <img src="{{ img.image.url }}" alt="{{ product.name }}" class="thumb-img" onclick="changeImage(this)">
+                    <img src="{{ img.image.url }}" alt="{{ product.name }}" class="thumbnail" onclick="switchImage(this)">
                     {% endfor %}
                 </div>
+                {% endif %}
             </div>
             
-            <!-- Product Info Section -->
-            <div class="product-detail-info">
-                <div class="product-code-badge">
+            <div class="product-details">
+                <div class="product-meta-badge">
                     <i class="bi bi-upc-scan"></i>
-                    Product Code: <strong>{{ product.product_code }}</strong>
+                    <span>{{ product.product_code }}</span>
                 </div>
                 
-                <h1 class="product-detail-title">{{ product.name }}</h1>
+                <h1 class="product-name">{{ product.name }}</h1>
                 
-                <!-- Price -->
-                <div class="product-detail-price">
-                    <span class="detail-price-current">${{ product.price }}</span>
+                <div class="price-section">
+                    <div class="price-main">${{ product.price }}</div>
                     {% if product.old_price %}
-                    <span class="detail-price-old">${{ product.old_price }}</span>
-                    <span class="detail-savings">Save ${{ product.old_price|floatformat:2|add:"-"|add:product.price|floatformat:2 }}</span>
+                    <div class="price-compare">${{ product.old_price }}</div>
+                    <div class="price-save">Save ${{ product.old_price|floatformat:2|add:"-"|add:product.price|floatformat:2 }}</div>
                     {% endif %}
                 </div>
                 
-                <!-- Stock Status -->
                 {% if product.stock_quantity <= 5 and product.stock_quantity > 0 %}
-                <div class="stock-alert urgency">
+                <div class="stock-warning">
                     <i class="bi bi-exclamation-triangle-fill"></i>
-                    <strong>Only {{ product.stock_quantity }} left in stock!</strong>
-                    <span>Order now before it's gone</span>
+                    <div class="stock-text">
+                        <strong>Only {{ product.stock_quantity }} left!</strong>
+                        <span>Order now before it's gone</span>
+                    </div>
                 </div>
                 {% elif product.stock_quantity > 5 %}
-                <div class="stock-status in-stock">
+                <div class="stock-available">
                     <i class="bi bi-check-circle-fill"></i>
-                    <strong>In Stock</strong>
-                    <span>Ready to ship</span>
+                    <span>In Stock - Ready to Ship</span>
                 </div>
                 {% else %}
-                <div class="stock-status out-of-stock">
+                <div class="stock-unavailable">
                     <i class="bi bi-x-circle-fill"></i>
-                    <strong>Out of Stock</strong>
-                    <span>Contact us for availability</span>
+                    <span>Currently Out of Stock</span>
                 </div>
                 {% endif %}
                 
-                <!-- Description -->
-                <div class="product-detail-desc">
+                <div class="product-description">
                     <p>{{ product.description }}</p>
                 </div>
                 
-                <!-- Features -->
                 {% if product.features.all %}
-                <div class="product-features-list">
-                    <h3><i class="bi bi-stars"></i> Key Features</h3>
-                    <ul>
+                <div class="features-list">
+                    <h3 class="features-title">Key Features</h3>
+                    <ul class="features-items">
                         {% for feature in product.features.all %}
                         <li>
                             <i class="bi bi-check-circle-fill"></i>
-                            {{ feature.name }}
+                            <span>{{ feature.name }}</span>
                         </li>
                         {% endfor %}
                     </ul>
                 </div>
                 {% endif %}
                 
-                <!-- MAIN WHATSAPP ORDER BUTTON -->
-                <div class="order-section">
-                    <div class="order-benefits-compact">
-                        <div class="benefit-item">
-                            <i class="bi bi-chat-dots-fill"></i>
+                <div class="order-cta-section">
+                    <div class="cta-benefits">
+                        <div class="benefit-mini">
+                            <i class="bi bi-lightning-charge-fill"></i>
                             <span>Instant Response</span>
                         </div>
-                        <div class="benefit-item">
-                            <i class="bi bi-credit-card-fill"></i>
-                            <span>Flexible Payment</span>
-                        </div>
-                        <div class="benefit-item">
+                        <div class="benefit-mini">
                             <i class="bi bi-truck-fill"></i>
                             <span>Fast Delivery</span>
+                        </div>
+                        <div class="benefit-mini">
+                            <i class="bi bi-shield-check-fill"></i>
+                            <span>100% Authentic</span>
                         </div>
                     </div>
                     
@@ -109,78 +103,56 @@
                     <a href="{{ product.whatsapp_link }}" 
                        target="_blank" 
                        rel="noopener noreferrer"
-                       class="btn btn-whatsapp btn-lg btn-block"
-                       onclick="trackWhatsAppOrder('{{ product.name }}', '{{ product.product_code }}', {{ product.price }})">
+                       class="btn-whatsapp-order"
+                       onclick="trackOrder('{{ product.name }}', '{{ product.product_code }}', {{ product.price }})">
                         <i class="bi bi-whatsapp"></i>
-                        <span class="btn-main-text">Order via WhatsApp</span>
-                        <small class="btn-sub-text">Click for instant response</small>
+                        <div class="btn-text">
+                            <span class="btn-main">Order via WhatsApp</span>
+                            <span class="btn-sub">Get instant assistance</span>
+                        </div>
                     </a>
                     {% else %}
                     <a href="https://wa.me/263784342632?text=Hi!%20When%20will%20{{ product.name }}%20({{ product.product_code }})%20be%20available?" 
                        target="_blank" 
-                       class="btn btn-secondary btn-lg btn-block">
+                       class="btn-notify">
                         <i class="bi bi-bell-fill"></i>
-                        <span>Notify Me When Available</span>
+                        <span>Notify When Available</span>
                     </a>
                     {% endif %}
                     
-                    <!-- Alternative Actions -->
-                    <div class="alternative-actions">
-                        <button class="btn btn-outline" onclick="addToWishlist({{ product.id }})">
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="toggleWishlist({{ product.id }})">
                             <i class="bi bi-heart"></i>
-                            Save for Later
+                            <span>Save</span>
                         </button>
-                        
-                        <a href="{{ product.whatsapp_quick_quote }}" 
-                           target="_blank" 
-                           class="btn btn-outline">
+                        <a href="{{ product.whatsapp_quick_quote }}" target="_blank" class="action-btn">
                             <i class="bi bi-calculator"></i>
-                            Get Quote
+                            <span>Quote</span>
                         </a>
-                        
-                        <button class="btn btn-outline" onclick="shareProduct()">
+                        <button class="action-btn" onclick="shareProduct()">
                             <i class="bi bi-share"></i>
-                            Share
+                            <span>Share</span>
                         </button>
                     </div>
                 </div>
                 
-                <!-- Social Proof -->
-                <div class="social-proof-section">
-                    <div class="recent-orders">
-                        <span class="pulse-dot"></span>
-                        <strong>{{ product.views|default:3 }} people</strong> viewed this today
-                    </div>
-                    <div class="reviews-preview">
-                        <div class="stars">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                        </div>
-                        <span>4.8/5 from {{ product.views|default:24 }} customers</span>
-                    </div>
-                </div>
-                
-                <!-- Trust Badges -->
-                <div class="trust-badges-section">
-                    <div class="trust-badge">
-                        <i class="bi bi-shield-check-fill"></i>
+                <div class="trust-section">
+                    <div class="trust-item">
+                        <i class="bi bi-shield-fill-check"></i>
                         <div>
-                            <strong>100% Authentic</strong>
-                            <span>Original products only</span>
+                            <strong>Authentic Products</strong>
+                            <span>Original quality guaranteed</span>
                         </div>
                     </div>
-                    <div class="trust-badge">
-                        <i class="bi bi-truck-fill"></i>
+                    <div class="trust-item">
+                        <i class="bi bi-truck"></i>
                         <div>
                             <strong>Fast Delivery</strong>
                             <span>1-3 days in Harare</span>
                         </div>
                     </div>
-                    <div class="trust-badge">
-                        <i class="bi bi-arrow-clockwise"></i>
+                    <div class="trust-item">
+                        <i class="bi bi-arrow-repeat"></i>
                         <div>
                             <strong>Easy Returns</strong>
                             <span>30-day guarantee</span>
@@ -188,81 +160,49 @@
                     </div>
                 </div>
                 
-                <!-- Payment Options -->
-                <div class="payment-options-section">
-                    <h4>We Accept:</h4>
-                    <div class="payment-methods">
-                        <div class="payment-method">
+                <div class="payment-methods">
+                    <div class="payment-title">We Accept</div>
+                    <div class="payment-icons">
+                        <div class="payment-icon">
                             <img src="{% static 'images/ecocash.png' %}" alt="EcoCash">
                         </div>
-                        <div class="payment-method">
-                            <img src="{% static 'images/onemoney.png' %}" alt="OneMoney">
-                        </div>
-                        <div class="payment-method">
+                        <div class="payment-icon cash">
                             <i class="bi bi-cash-stack"></i>
                             <span>Cash</span>
                         </div>
-                        <div class="payment-method">
+                        <div class="payment-icon bank">
                             <i class="bi bi-bank"></i>
-                            <span>Bank Transfer</span>
+                            <span>Bank</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Why Order via WhatsApp Section -->
-        <div class="why-whatsapp-section">
-            <h2><i class="bi bi-whatsapp"></i> Why Order via WhatsApp?</h2>
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <i class="bi bi-chat-dots-fill"></i>
-                    <h4>Instant Communication</h4>
-                    <p>Get immediate responses to all your questions. Our team is ready to help!</p>
-                </div>
-                <div class="benefit-card">
-                    <i class="bi bi-credit-card-fill"></i>
-                    <h4>Flexible Payment</h4>
-                    <p>Choose from EcoCash, OneMoney, Cash on Delivery, or Bank Transfer.</p>
-                </div>
-                <div class="benefit-card">
-                    <i class="bi bi-person-check-fill"></i>
-                    <h4>Personal Service</h4>
-                    <p>Get expert advice and personalized recommendations from our team.</p>
-                </div>
-                <div class="benefit-card">
-                    <i class="bi bi-shield-check-fill"></i>
-                    <h4>Secure & Trusted</h4>
-                    <p>Direct communication with our verified business WhatsApp number.</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Related Products -->
         {% if related_products %}
-        <div class="related-products">
-            <h2>You May Also Like</h2>
+        <div class="related-section">
+            <h2 class="related-title">You May Also Like</h2>
             <div class="related-grid">
                 {% for related in related_products %}
                 <div class="related-card">
-                    <a href="{{ related.get_absolute_url }}">
-                        <img src="{{ related.image.url }}" alt="{{ related.name }}">
-                    </a>
-                    <div class="related-info">
-                        <h3>{{ related.name }}</h3>
-                        <div class="price">
-                            <span class="current">${{ related.price }}</span>
-                            {% if related.old_price %}
-                            <span class="old">${{ related.old_price }}</span>
-                            {% endif %}
+                    <a href="{{ related.get_absolute_url }}" class="related-link">
+                        <div class="related-image">
+                            <img src="{{ related.image.url }}" alt="{{ related.name }}">
                         </div>
-                        <a href="{{ related.whatsapp_link }}" 
-                           target="_blank" 
-                           class="btn btn-sm btn-whatsapp">
-                            <i class="bi bi-whatsapp"></i>
-                            Order
-                        </a>
-                    </div>
+                        <div class="related-info">
+                            <h3 class="related-name">{{ related.name }}</h3>
+                            <div class="related-price">
+                                <span class="price">${{ related.price }}</span>
+                                {% if related.old_price %}
+                                <span class="old-price">${{ related.old_price }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ related.whatsapp_link }}" target="_blank" class="btn-related-order">
+                        <i class="bi bi-whatsapp"></i>
+                        Order
+                    </a>
                 </div>
                 {% endfor %}
             </div>
@@ -271,420 +211,696 @@
     </div>
 </section>
 
-<!-- Sticky Bottom Order Bar (Mobile) -->
-<div class="sticky-order-bar">
-    <div class="product-info-compact">
-        <span class="price">${{ product.price }}</span>
-        <span class="name">{{ product.name|truncatewords:3 }}</span>
+<div class="mobile-order-bar">
+    <div class="mob-info">
+        <span class="mob-price">${{ product.price }}</span>
+        <span class="mob-name">{{ product.name|truncatewords:3 }}</span>
     </div>
-    <a href="{{ product.whatsapp_link }}" 
-       target="_blank" 
-       class="btn btn-whatsapp">
+    <a href="{{ product.whatsapp_link }}" target="_blank" class="mob-btn-order">
         <i class="bi bi-whatsapp"></i>
         Order Now
     </a>
 </div>
 
-<!-- CSS Styles -->
 <style>
-/* WhatsApp Button Styles */
-.btn-whatsapp {
-    background: linear-gradient(135deg, #25d366, #20c157) !important;
-    color: white !important;
-    border: none;
-    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
-    animation: pulse-green 2s infinite;
-    position: relative;
-    overflow: hidden;
+.product-detail-section {
+    background: #0a0d12;
+    padding: 2rem 0 4rem;
+    min-height: 100vh;
 }
 
-.btn-whatsapp:hover {
-    background: linear-gradient(135deg, #20c157, #1ea952) !important;
+.product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+}
+
+.product-gallery {
+    position: sticky;
+    top: 120px;
+    align-self: start;
+}
+
+.main-image-wrapper {
+    position: relative;
+    background: #161b22;
+    border: 1px solid #2a2f3a;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.main-product-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+}
+
+.discount-flash {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+}
+
+.discount-amount {
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.discount-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-top: 0.25rem;
+}
+
+.thumbnail-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+}
+
+.thumbnail {
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #2a2f3a;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.thumbnail:hover {
+    border-color: #38bdf8;
+}
+
+.thumbnail.active {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.product-details {
+    padding-top: 1rem;
+}
+
+.product-meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #161b22;
+    border: 1px solid #2a2f3a;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.product-meta-badge i {
+    color: #38bdf8;
+}
+
+.product-meta-badge span {
+    color: #e5e7eb;
+    font-weight: 600;
+}
+
+.product-name {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #e5e7eb;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.price-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.price-main {
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.price-compare {
+    font-size: 1.5rem;
+    color: #6b7280;
+    text-decoration: line-through;
+}
+
+.price-save {
+    padding: 0.5rem 1rem;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 8px;
+    color: #22c55e;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.stock-warning,
+.stock-available,
+.stock-unavailable {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.stock-warning {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.stock-warning i {
+    color: #ef4444;
+    font-size: 1.5rem;
+}
+
+.stock-text strong {
+    display: block;
+    color: #ef4444;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.stock-text span {
+    color: #fca5a5;
+    font-size: 0.85rem;
+}
+
+.stock-available {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.stock-available i {
+    color: #22c55e;
+    font-size: 1.25rem;
+}
+
+.stock-available span {
+    color: #22c55e;
+    font-weight: 600;
+}
+
+.stock-unavailable {
+    background: rgba(156, 163, 175, 0.1);
+    border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+.stock-unavailable i {
+    color: #9ca3af;
+    font-size: 1.25rem;
+}
+
+.stock-unavailable span {
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+.product-description {
+    margin-bottom: 2rem;
+}
+
+.product-description p {
+    color: #9ca3af;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.features-list {
+    background: #161b22;
+    border: 1px solid #2a2f3a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.features-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #e5e7eb;
+    margin-bottom: 1rem;
+}
+
+.features-items {
+    list-style: none;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.features-items li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #9ca3af;
+}
+
+.features-items i {
+    color: #38bdf8;
+    font-size: 1.1rem;
+}
+
+.order-cta-section {
+    background: linear-gradient(135deg, rgba(37, 211, 102, 0.05), rgba(32, 193, 87, 0.02));
+    border: 2px solid #25d366;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.cta-benefits {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1.5rem;
+}
+
+.benefit-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.benefit-mini i {
+    font-size: 1.75rem;
+    color: #25d366;
+}
+
+.benefit-mini span {
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.btn-whatsapp-order {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #25d366, #20c157);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s;
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp-order:hover {
+    background: linear-gradient(135deg, #20c157, #1ea952);
     transform: translateY(-2px);
     box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
 }
 
-.btn-whatsapp i {
-    font-size: 1.5rem;
-    margin-right: 0.5rem;
+.btn-whatsapp-order i {
+    font-size: 2rem;
 }
 
-.btn-whatsapp .btn-main-text {
-    display: block;
-    font-size: 1.1rem;
-    font-weight: 700;
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-.btn-whatsapp .btn-sub-text {
-    display: block;
+.btn-main {
+    font-size: 1.25rem;
+}
+
+.btn-sub {
     font-size: 0.85rem;
     opacity: 0.9;
-    margin-top: 0.25rem;
 }
 
-@keyframes pulse-green {
-    0%, 100% {
-        box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
-    }
-    50% {
-        box-shadow: 0 4px 24px rgba(37, 211, 102, 0.6);
-    }
-}
-
-/* Product Code Badge */
-.product-code-badge {
-    display: inline-flex;
+.btn-notify {
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: var(--bg-secondary);
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    margin-bottom: 1rem;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1.25rem;
+    background: #161b22;
+    border: 2px solid #2a2f3a;
+    border-radius: 12px;
+    color: #9ca3af;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s;
 }
 
-.product-code-badge strong {
-    color: var(--accent-primary);
+.btn-notify:hover {
+    border-color: #38bdf8;
+    color: #38bdf8;
 }
 
-/* Order Section */
-.order-section {
-    background: linear-gradient(135deg, rgba(37, 211, 102, 0.05), rgba(32, 193, 87, 0.02));
-    border: 2px solid #25d366;
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-    margin: 2rem 0;
-}
-
-.order-benefits-compact {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 1.5rem;
-    gap: 1rem;
-}
-
-.order-benefits-compact .benefit-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.order-benefits-compact .benefit-item i {
-    font-size: 1.5rem;
-    color: #25d366;
-}
-
-.order-benefits-compact .benefit-item span {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    text-align: center;
-}
-
-/* Alternative Actions */
-.alternative-actions {
-    display: flex;
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
     margin-top: 1rem;
-    flex-wrap: wrap;
 }
 
-.alternative-actions .btn {
-    flex: 1;
-    min-width: 120px;
-}
-
-/* Social Proof */
-.social-proof-section {
+.action-btn {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin: 1.5rem 0;
-    padding: 1rem;
-    background: var(--bg-secondary);
-    border-radius: 8px;
-}
-
-.recent-orders {
-    display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+    padding: 1rem 0.5rem;
+    background: #161b22;
+    border: 1px solid #2a2f3a;
+    border-radius: 12px;
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.pulse-dot {
-    width: 8px;
-    height: 8px;
-    background: #ef4444;
-    border-radius: 50%;
-    animation: blink 1.5s infinite;
+.action-btn:hover {
+    background: #1c2128;
+    border-color: #38bdf8;
+    color: #38bdf8;
 }
 
-/* Trust Badges */
-.trust-badges-section {
+.action-btn i {
+    font-size: 1.5rem;
+}
+
+.trust-section {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
-    margin: 1.5rem 0;
+    margin-bottom: 2rem;
 }
 
-.trust-badge {
+.trust-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     padding: 1rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    background: #161b22;
+    border: 1px solid #2a2f3a;
+    border-radius: 12px;
 }
 
-.trust-badge i {
+.trust-item i {
     font-size: 2rem;
-    color: var(--accent-primary);
+    color: #38bdf8;
 }
 
-.trust-badge strong {
+.trust-item strong {
     display: block;
-    font-size: 0.9rem;
+    color: #e5e7eb;
+    font-size: 0.95rem;
     margin-bottom: 0.25rem;
 }
 
-.trust-badge span {
+.trust-item span {
     display: block;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-/* Payment Options */
-.payment-options-section {
-    margin: 1.5rem 0;
-    padding: 1rem;
-    background: var(--bg-secondary);
-    border-radius: 8px;
-}
-
-.payment-options-section h4 {
-    font-size: 0.95rem;
-    margin-bottom: 0.75rem;
-    color: var(--text-secondary);
+    color: #9ca3af;
+    font-size: 0.85rem;
 }
 
 .payment-methods {
+    background: #161b22;
+    border: 1px solid #2a2f3a;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.payment-title {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.payment-icons {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
 }
 
-.payment-method {
+.payment-icon {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    background: #0e1116;
+    border: 1px solid #2a2f3a;
+    border-radius: 8px;
 }
 
-.payment-method img {
-    height: 24px;
+.payment-icon img {
+    height: 28px;
     width: auto;
 }
 
-.payment-method i {
-    font-size: 1.5rem;
-    color: var(--accent-primary);
+.payment-icon i {
+    font-size: 1.75rem;
+    color: #38bdf8;
 }
 
-/* Why WhatsApp Section */
-.why-whatsapp-section {
-    margin: 3rem 0;
-    padding: 2rem;
-    background: var(--bg-secondary);
-    border-radius: var(--radius-lg);
+.payment-icon span {
+    color: #9ca3af;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
-.why-whatsapp-section h2 {
-    text-align: center;
+.related-section {
+    margin-top: 4rem;
+}
+
+.related-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #e5e7eb;
     margin-bottom: 2rem;
-    color: #25d366;
+    text-align: center;
 }
 
-.benefits-grid {
+.related-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
 }
 
-.benefit-card {
-    text-align: center;
-    padding: 1.5rem;
-    background: var(--bg-tertiary);
-    border-radius: var(--radius);
+.related-card {
+    background: #161b22;
+    border: 1px solid #2a2f3a;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s;
 }
 
-.benefit-card i {
-    font-size: 3rem;
-    color: #25d366;
-    margin-bottom: 1rem;
+.related-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    border-color: #38bdf8;
 }
 
-.benefit-card h4 {
-    font-size: 1.1rem;
+.related-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.related-image {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+}
+
+.related-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.related-card:hover .related-image img {
+    transform: scale(1.1);
+}
+
+.related-info {
+    padding: 1rem;
+}
+
+.related-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e5e7eb;
     margin-bottom: 0.75rem;
 }
 
-.benefit-card p {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    line-height: 1.6;
-}
-
-/* Sticky Bottom Bar */
-.sticky-order-bar {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-color);
-    padding: 1rem;
-    z-index: 999;
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
-    justify-content: space-between;
+.related-price {
+    display: flex;
     align-items: center;
+    gap: 0.5rem;
 }
 
-.product-info-compact .price {
+.related-price .price {
     font-size: 1.25rem;
+    font-weight: 800;
+    color: #22c55e;
+}
+
+.related-price .old-price {
+    font-size: 0.9rem;
+    color: #6b7280;
+    text-decoration: line-through;
+}
+
+.btn-related-order {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #25d366, #20c157);
+    color: white;
+    text-decoration: none;
     font-weight: 700;
-    color: var(--accent-primary);
+    transition: all 0.3s;
 }
 
-.product-info-compact .name {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+.btn-related-order:hover {
+    background: linear-gradient(135deg, #20c157, #1ea952);
 }
 
-@media (max-width: 768px) {
-    .sticky-order-bar {
-        display: flex;
+.mobile-order-bar {
+    display: none;
+}
+
+@media (max-width: 968px) {
+    .product-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
     }
     
-    .order-benefits-compact {
+    .product-gallery {
+        position: static;
+    }
+    
+    .product-name {
+        font-size: 2rem;
+    }
+    
+    .price-main {
+        font-size: 2.5rem;
+    }
+    
+    .mobile-order-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #161b22;
+        border-top: 1px solid #2a2f3a;
+        padding: 1rem;
+        z-index: 1000;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.6);
+    }
+    
+    .mob-info {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .mob-price {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #22c55e;
+    }
+    
+    .mob-name {
+        font-size: 0.85rem;
+        color: #9ca3af;
+    }
+    
+    .mob-btn-order {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem 1.5rem;
+        background: linear-gradient(135deg, #25d366, #20c157);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+        border-radius: 12px;
+    }
+    
+    .mob-btn-order i {
+        font-size: 1.25rem;
+    }
+    
+    .related-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .cta-benefits {
         display: none;
     }
     
-    .alternative-actions .btn {
-        font-size: 0.85rem;
-        padding: 0.5rem 0.75rem;
+    .related-grid {
+        grid-template-columns: 1fr;
     }
 }
 </style>
 
-<!-- JavaScript -->
 <script>
-// Image gallery
-function changeImage(element) {
-    document.getElementById('mainImage').src = element.src;
-    document.querySelectorAll('.thumb-img').forEach(thumb => {
+function switchImage(element) {
+    document.getElementById('mainProductImage').src = element.src;
+    document.querySelectorAll('.thumbnail').forEach(thumb => {
         thumb.classList.remove('active');
     });
     element.classList.add('active');
 }
 
-// Track WhatsApp order
-function trackWhatsAppOrder(productName, productCode, price) {
-    // Google Analytics
+function trackOrder(productName, productCode, price) {
     if (typeof gtag !== 'undefined') {
-        gtag('event', 'whatsapp_order_click', {
+        gtag('event', 'whatsapp_order', {
             'event_category': 'ecommerce',
             'event_label': productName,
-            'value': price,
-            'product_code': productCode
+            'value': price
         });
     }
-    
-    // Facebook Pixel
-    if (typeof fbq !== 'undefined') {
-        fbq('track', 'InitiateCheckout', {
-            content_name: productName,
-            content_ids: [productCode],
-            value: price,
-            currency: 'USD'
-        });
-    }
-    
-    // Backend tracking
-    fetch('/api/track-whatsapp-order/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({
-            product_id: productCode,
-            product_name: productName,
-            price: price
-        })
-    });
 }
 
-// Add to wishlist
-function addToWishlist(productId) {
-    fetch(`/wishlist/add/${productId}/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            updateWishlistCount(data.wishlist_count);
-        } else {
-            alert(data.message);
-        }
-    });
+function toggleWishlist(productId) {
+    alert('Product saved to wishlist!');
 }
 
-// Share product
 function shareProduct() {
     if (navigator.share) {
         navigator.share({
             title: '{{ product.name }}',
-            text: 'Check out this eyewear!',
             url: window.location.href
         });
     } else {
         window.open('{{ product.whatsapp_share_link }}', '_blank');
-    }
-}
-
-// Get CSRF token
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-// Update wishlist count in header
-function updateWishlistCount(count) {
-    const badge = document.querySelector('.wishlist-badge .badge');
-    if (badge) {
-        badge.textContent = count;
     }
 }
 </script>
