@@ -27,32 +27,21 @@
 </section>
 
 {% if sale_products %}
-<section class="section sale-section">
+<section class="section">
     <div class="container">
-        <div class="sale-banner">
-            <i class="bi bi-fire"></i>
-            <span>Limited Time Sale - Up to 40% OFF Selected Items</span>
-        </div>
+        <h2 class="section-title">Limited Time Sale</h2>
+        <p class="section-subtitle">Save up to 40% on selected items</p>
         
-        <div class="products-slider">
+        <div class="grid grid-3">
             {% for product in sale_products %}
-            <div class="product-card">
+            <div class="card product-card">
                 <div class="product-badge">{{ product.discount_percentage }}% OFF</div>
-                <a href="{{ product.get_absolute_url }}" class="product-img-link">
+                <a href="{{ product.get_absolute_url }}">
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
                 </a>
                 <div class="product-info">
                     <h3 class="product-name">{{ product.name }}</h3>
                     <p class="product-desc">{{ product.description|truncatewords:12 }}</p>
-                    <div class="product-meta">
-                        {% if product.features.all %}
-                        <div class="product-features">
-                            {% for feature in product.features.all|slice:":2" %}
-                            <span class="badge badge-primary">{{ feature }}</span>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
                     <div class="product-price">
                         <span class="price-current">${{ product.price }}</span>
                         <span class="price-old">${{ product.old_price }}</span>
@@ -69,26 +58,7 @@
 </section>
 {% endif %}
 
-{% if about_glasses_cards %}
-<section class="section about-section">
-    <div class="container">
-        <h2 class="section-title">Why Choose Our Eyewear</h2>
-        <div class="about-grid">
-            {% for card in about_glasses_cards|slice:":3" %}
-            <div class="about-card">
-                <div class="about-icon">
-                    <i class="bi bi-eyeglasses"></i>
-                </div>
-                <h3>{{ card.title }}</h3>
-                <p>{{ card.content|truncatewords:25 }}</p>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<section class="section categories-section">
+<section class="section">
     <div class="container">
         <h2 class="section-title">Shop by Category</h2>
         <p class="section-subtitle">Find the perfect eyewear for your needs</p>
@@ -110,17 +80,17 @@
             {% endfor %}
         </div>
         
-        <div class="text-center" style="margin-top: 2rem;">
+        <div style="text-align: center; margin-top: 2rem;">
             <a href="{% url 'categories' %}" class="btn btn-outline btn-lg">View All Categories</a>
         </div>
     </div>
 </section>
 
 {% if testimonials %}
-<section class="section testimonials-section">
+<section class="section">
     <div class="container">
         <h2 class="section-title">What Our Customers Say</h2>
-        <div class="testimonials-grid">
+        <div class="grid grid-3">
             {% for testimonial in testimonials|slice:":3" %}
             <div class="testimonial-card">
                 <div class="testimonial-stars">
@@ -149,7 +119,7 @@
 </section>
 {% endif %}
 
-<section class="section features-section">
+<section class="section">
     <div class="container">
         <h2 class="section-title">Eye Health Matters</h2>
         <div class="grid grid-3">
@@ -179,383 +149,4 @@
         </div>
     </div>
 </section>
-
-<style>
-.hero {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(34, 197, 94, 0.05));
-    padding: 6rem 0 4rem;
-}
-
-.hero-content {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.hero-title {
-    font-size: 3.5rem;
-    font-weight: 800;
-    margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.hero-subtitle {
-    font-size: 1.25rem;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-    line-height: 1.8;
-}
-
-.hero-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: center;
-    margin-bottom: 2.5rem;
-}
-
-.hero-tag {
-    padding: 0.5rem 1.25rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 24px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-}
-
-.hero-tag:hover {
-    background: var(--bg-tertiary);
-    border-color: var(--accent-primary);
-    color: var(--accent-primary);
-}
-
-.hero-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.sale-section {
-    background: var(--bg-secondary);
-}
-
-.sale-banner {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    padding: 1.25rem 2rem;
-    border-radius: var(--radius);
-    text-align: center;
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-}
-
-.sale-banner i {
-    font-size: 1.5rem;
-}
-
-.products-slider {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.product-card {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    overflow: hidden;
-    position: relative;
-    transition: all 0.3s;
-}
-
-.product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-}
-
-.product-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: #ef4444;
-    color: white;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 0.8rem;
-    z-index: 10;
-}
-
-.product-img-link {
-    display: block;
-}
-
-.product-img {
-    width: 100%;
-    height: 280px;
-    object-fit: cover;
-    transition: transform 0.3s;
-}
-
-.product-card:hover .product-img {
-    transform: scale(1.05);
-}
-
-.product-info {
-    padding: 1.5rem;
-}
-
-.product-name {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: var(--text-primary);
-}
-
-.product-desc {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-    line-height: 1.6;
-}
-
-.product-features {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-}
-
-.product-price {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
-}
-
-.price-current {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--accent-primary);
-}
-
-.price-old {
-    font-size: 1.25rem;
-    color: var(--text-muted);
-    text-decoration: line-through;
-}
-
-.about-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.about-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 2rem;
-    text-align: center;
-    transition: all 0.3s;
-}
-
-.about-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-}
-
-.about-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-}
-
-.about-icon i {
-    font-size: 2.5rem;
-    color: var(--bg-primary);
-}
-
-.about-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-.about-card p {
-    color: var(--text-secondary);
-    line-height: 1.7;
-}
-
-.category-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    overflow: hidden;
-    text-decoration: none;
-    transition: all 0.3s;
-    display: block;
-}
-
-.category-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-    border-color: var(--accent-primary);
-}
-
-.category-img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.category-placeholder {
-    width: 100%;
-    height: 200px;
-    background: var(--bg-tertiary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.category-placeholder i {
-    font-size: 4rem;
-    color: var(--accent-primary);
-}
-
-.category-info {
-    padding: 1.5rem;
-    text-align: center;
-}
-
-.category-info h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.testimonial-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 2rem;
-}
-
-.testimonial-stars {
-    color: #f59e0b;
-    font-size: 1.25rem;
-    margin-bottom: 1.5rem;
-}
-
-.testimonial-text {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    font-style: italic;
-}
-
-.testimonial-author {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.author-avatar {
-    width: 48px;
-    height: 48px;
-    background: var(--accent-primary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: var(--bg-primary);
-}
-
-.author-name {
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.25rem;
-}
-
-.author-location {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-
-.feature-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 2rem;
-    text-align: center;
-}
-
-.feature-icon {
-    width: 72px;
-    height: 72px;
-    background: rgba(56, 189, 248, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-}
-
-.feature-icon i {
-    font-size: 2rem;
-    color: var(--accent-primary);
-}
-
-.feature-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-.feature-card p {
-    color: var(--text-secondary);
-    line-height: 1.7;
-}
-
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 2.5rem;
-    }
-    
-    .hero-subtitle {
-        font-size: 1.1rem;
-    }
-    
-    .products-slider,
-    .about-grid,
-    .testimonials-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
 {% endblock %}
