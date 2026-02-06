@@ -135,7 +135,8 @@ class Product(models.Model):
         
         try:
             company_info = CompanyInfo.objects.first()
-            whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+            # CRITICAL FIX: Remove all spaces from WhatsApp number
+            whatsapp_number = company_info.whatsapp.replace(' ', '').replace('-', '') if company_info else '263784342632'
         except (ProgrammingError, Exception):
             whatsapp_number = '263784342632'
     
@@ -189,7 +190,7 @@ class Product(models.Model):
         
         try:
             company_info = CompanyInfo.objects.first()
-            whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+            whatsapp_number = company_info.whatsapp.replace(' ', '').replace('-', '') if company_info else '263784342632'
         except (ProgrammingError, Exception):
             whatsapp_number = '263784342632'
         
@@ -243,7 +244,7 @@ class Wishlist(models.Model):
         
         try:
             company_info = CompanyInfo.objects.first()
-            whatsapp_number = company_info.whatsapp if company_info else '263784342632'
+            whatsapp_number = company_info.whatsapp.replace(' ', '').replace('-', '') if company_info else '263784342632'
         except (ProgrammingError, Exception):
             whatsapp_number = '263784342632'
         
@@ -355,7 +356,7 @@ class CompanyInfo(models.Model):
     description = RichTextUploadingField()
     address = models.TextField()
     phone = models.CharField(max_length=20)
-    whatsapp = models.CharField(max_length=20, help_text="WhatsApp number without + sign")
+    whatsapp = models.CharField(max_length=20, help_text="WhatsApp number (e.g., 263784342632)")
     email = models.EmailField(blank=True)
     opening_hours = models.TextField()
     map_embed = models.TextField(blank=True, help_text="Google Maps embed code")
@@ -384,6 +385,11 @@ class CompanyInfo(models.Model):
         # Ensure only one CompanyInfo instance exists
         if not self.pk and CompanyInfo.objects.exists():
             raise ValueError("Only one CompanyInfo instance is allowed")
+        
+        # Clean WhatsApp number
+        if self.whatsapp:
+            self.whatsapp = self.whatsapp.replace(' ', '').replace('-', '').replace('+', '')
+        
         super().save(*args, **kwargs)
 
 
