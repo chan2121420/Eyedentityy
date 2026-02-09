@@ -30,18 +30,25 @@
             </div>
             
             <div class="product-details">
-                <div class="product-meta-badge">
-                    <i class="bi bi-upc-scan"></i>
-                    <span>{{ product.product_code }}</span>
-                </div>
-                
-                <h1 class="product-name">{{ product.name }}</h1>
-                
-                <div class="price-section">
-                    <div class="price-main">${{ product.price }}</div>
+                <div class="product-header">
+                    <div class="product-meta-badge">
+                        <i class="bi bi-upc-scan"></i>
+                        <span>{{ product.product_code }}</span>
+                    </div>
+                    
+                    <h1 class="product-name">{{ product.name }}</h1>
+                    
+                    <div class="price-section">
+                        <div class="price-main">${{ product.price }}</div>
+                        {% if product.old_price %}
+                        <div class="price-old">${{ product.old_price }}</div>
+                        {% endif %}
+                    </div>
+                    
                     {% if product.old_price %}
-                    <div class="price-compare">${{ product.old_price }}</div>
-                    <div class="price-save">Save ${{ product.old_price|floatformat:2|add:"-"|add:product.price|floatformat:2 }}</div>
+                    <div class="savings-badge">
+                        Save ${{ product.old_price|floatformat:2|add:"-"|add:product.price|floatformat:2 }}
+                    </div>
                     {% endif %}
                 </div>
                 
@@ -49,7 +56,7 @@
                 <div class="stock-warning">
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     <div class="stock-text">
-                        <strong>Only {{ product.stock_quantity }} left!</strong>
+                        <strong>Only {{ product.stock_quantity }} left in stock!</strong>
                         <span>Order now before it's gone</span>
                     </div>
                 </div>
@@ -66,12 +73,13 @@
                 {% endif %}
                 
                 <div class="product-description">
+                    <h3>Product Description</h3>
                     <p>{{ product.description }}</p>
                 </div>
                 
                 {% if product.features.all %}
                 <div class="features-list">
-                    <h3 class="features-title">Key Features</h3>
+                    <h3 class="features-title"><i class="bi bi-stars"></i> Key Features</h3>
                     <ul class="features-items">
                         {% for feature in product.features.all %}
                         <li>
@@ -83,74 +91,59 @@
                 </div>
                 {% endif %}
                 
-                <div class="order-cta-section">
-                    <div class="cta-benefits">
-                        <div class="benefit-mini">
-                            <i class="bi bi-lightning-charge-fill"></i>
-                            <span>Instant Response</span>
-                        </div>
-                        <div class="benefit-mini">
-                            <i class="bi bi-truck-fill"></i>
-                            <span>Fast Delivery</span>
-                        </div>
-                        <div class="benefit-mini">
-                            <i class="bi bi-shield-check-fill"></i>
-                            <span>100% Authentic</span>
-                        </div>
-                    </div>
-                    
+                <div class="order-section">
                     {% if product.stock_quantity > 0 %}
                     <a href="{{ product.whatsapp_link }}" 
                        target="_blank" 
                        rel="noopener noreferrer"
-                       class="btn-whatsapp-order">
+                       class="btn-whatsapp-main">
                         <i class="bi bi-whatsapp"></i>
-                        <div class="btn-text">
-                            <span class="btn-main">Order via WhatsApp</span>
-                            <span class="btn-sub">Get instant assistance</span>
+                        <div class="btn-content">
+                            <span class="btn-title">Order via WhatsApp</span>
+                            <span class="btn-subtitle">Get instant response from our team</span>
                         </div>
                     </a>
                     {% else %}
                     <a href="https://wa.me/263784342632?text=Hi!%20When%20will%20{{ product.name }}%20({{ product.product_code }})%20be%20available?" 
                        target="_blank" 
-                       class="btn-notify">
+                       class="btn-notify-main">
                         <i class="bi bi-bell-fill"></i>
                         <span>Notify When Available</span>
                     </a>
                     {% endif %}
                     
-                    <div class="quick-actions">
+                    <div class="action-buttons">
                         <button class="action-btn">
                             <i class="bi bi-heart"></i>
                             <span>Save</span>
+                        </button>
+                        <button class="action-btn" onclick="shareProduct()">
+                            <i class="bi bi-share"></i>
+                            <span>Share</span>
                         </button>
                         <a href="{{ product.whatsapp_quick_quote }}" target="_blank" class="action-btn">
                             <i class="bi bi-calculator"></i>
                             <span>Quote</span>
                         </a>
-                        <button class="action-btn" onclick="shareProduct()">
-                            <i class="bi bi-share"></i>
-                            <span>Share</span>
-                        </button>
                     </div>
                 </div>
                 
-                <div class="trust-section">
-                    <div class="trust-item">
+                <div class="product-guarantees">
+                    <div class="guarantee-item">
                         <i class="bi bi-shield-fill-check"></i>
                         <div>
                             <strong>Authentic Products</strong>
-                            <span>Original quality guaranteed</span>
+                            <span>100% original quality</span>
                         </div>
                     </div>
-                    <div class="trust-item">
+                    <div class="guarantee-item">
                         <i class="bi bi-truck"></i>
                         <div>
                             <strong>Fast Delivery</strong>
                             <span>1-3 days in Harare</span>
                         </div>
                     </div>
-                    <div class="trust-item">
+                    <div class="guarantee-item">
                         <i class="bi bi-arrow-repeat"></i>
                         <div>
                             <strong>Easy Returns</strong>
@@ -159,17 +152,17 @@
                     </div>
                 </div>
                 
-                <div class="payment-methods">
-                    <div class="payment-title">We Accept</div>
-                    <div class="payment-icons">
-                        <div class="payment-icon">
+                <div class="payment-section">
+                    <h4>Payment Methods</h4>
+                    <div class="payment-options">
+                        <div class="payment-item">
                             <img src="{% static 'images/ecocash.png' %}" alt="EcoCash">
                         </div>
-                        <div class="payment-icon cash">
+                        <div class="payment-item">
                             <i class="bi bi-cash-stack"></i>
                             <span>Cash</span>
                         </div>
-                        <div class="payment-icon bank">
+                        <div class="payment-item">
                             <i class="bi bi-bank"></i>
                             <span>Bank</span>
                         </div>
@@ -179,18 +172,18 @@
         </div>
         
         {% if related_products %}
-        <div class="related-section">
-            <h2 class="related-title">You May Also Like</h2>
-            <div class="related-grid">
+        <div class="related-products-section">
+            <h2 class="section-heading">You May Also Like</h2>
+            <div class="related-products-grid">
                 {% for related in related_products %}
-                <div class="related-card">
-                    <a href="{{ related.get_absolute_url }}" class="related-link">
-                        <div class="related-image">
+                <div class="related-product-card">
+                    <a href="{{ related.get_absolute_url }}" class="related-product-link">
+                        <div class="related-product-image">
                             <img src="{{ related.image.url }}" alt="{{ related.name }}">
                         </div>
-                        <div class="related-info">
-                            <h3 class="related-name">{{ related.name }}</h3>
-                            <div class="related-price">
+                        <div class="related-product-info">
+                            <h3>{{ related.name }}</h3>
+                            <div class="related-product-price">
                                 <span class="price">${{ related.price }}</span>
                                 {% if related.old_price %}
                                 <span class="old-price">${{ related.old_price }}</span>
@@ -200,7 +193,7 @@
                     </a>
                     <a href="{{ related.whatsapp_link }}" target="_blank" class="btn-related-order">
                         <i class="bi bi-whatsapp"></i>
-                        Order
+                        Order Now
                     </a>
                 </div>
                 {% endfor %}
@@ -210,12 +203,12 @@
     </div>
 </section>
 
-<div class="mobile-order-bar">
-    <div class="mob-info">
-        <span class="mob-price">${{ product.price }}</span>
-        <span class="mob-name">{{ product.name|truncatewords:3 }}</span>
+<div class="mobile-bottom-bar">
+    <div class="mobile-price-info">
+        <span class="mobile-price">${{ product.price }}</span>
+        <span class="mobile-product-name">{{ product.name|truncatewords:3 }}</span>
     </div>
-    <a href="{{ product.whatsapp_link }}" target="_blank" class="mob-btn-order">
+    <a href="{{ product.whatsapp_link }}" target="_blank" class="mobile-order-btn">
         <i class="bi bi-whatsapp"></i>
         Order Now
     </a>
@@ -230,25 +223,25 @@
 
 .product-layout {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 3rem;
     margin-bottom: 4rem;
 }
 
 .product-gallery {
     position: sticky;
-    top: 160px;
+    top: 140px;
     align-self: start;
 }
 
 .main-image-wrapper {
     position: relative;
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 16px;
     overflow: hidden;
     margin-bottom: 1rem;
     padding: 2rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .main-product-image {
@@ -260,25 +253,25 @@
 
 .discount-flash {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
+    top: 1rem;
+    right: 1rem;
     background: linear-gradient(135deg, #ef4444, #dc2626);
     color: white;
-    padding: 1rem;
-    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
     text-align: center;
-    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.5);
     z-index: 10;
 }
 
 .discount-amount {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 900;
     line-height: 1;
 }
 
 .discount-label {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 700;
     margin-top: 0.25rem;
 }
@@ -292,7 +285,7 @@
 .thumbnail {
     aspect-ratio: 1;
     object-fit: contain;
-    border-radius: 12px;
+    border-radius: 10px;
     border: 2px solid var(--border-color);
     cursor: pointer;
     transition: all 0.2s;
@@ -302,6 +295,7 @@
 
 .thumbnail:hover {
     border-color: var(--accent-primary);
+    transform: scale(1.05);
 }
 
 .thumbnail.active {
@@ -310,7 +304,14 @@
 }
 
 .product-details {
-    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.product-header {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .product-meta-badge {
@@ -322,8 +323,8 @@
     padding: 0.5rem 1rem;
     border-radius: 8px;
     color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
 }
 
 .product-meta-badge i {
@@ -336,10 +337,10 @@
 }
 
 .product-name {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 800;
     color: var(--text-primary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     line-height: 1.2;
 }
 
@@ -347,12 +348,11 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
 }
 
 .price-main {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 900;
     background: linear-gradient(135deg, var(--accent-secondary), #16a34a);
     -webkit-background-clip: text;
@@ -360,15 +360,16 @@
     background-clip: text;
 }
 
-.price-compare {
-    font-size: 1.5rem;
+.price-old {
+    font-size: 1.25rem;
     color: var(--text-muted);
     text-decoration: line-through;
 }
 
-.price-save {
+.savings-badge {
+    display: inline-block;
     padding: 0.5rem 1rem;
-    background: rgba(34, 197, 94, 0.1);
+    background: rgba(34, 197, 94, 0.15);
     border: 1px solid rgba(34, 197, 94, 0.3);
     border-radius: 8px;
     color: var(--accent-secondary);
@@ -382,9 +383,8 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 1rem 1.25rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 10px;
 }
 
 .stock-warning {
@@ -394,8 +394,7 @@
 
 .stock-warning i {
     color: #ef4444;
-    font-size: 1.5rem;
-    flex-shrink: 0;
+    font-size: 1.25rem;
 }
 
 .stock-text {
@@ -405,8 +404,7 @@
 
 .stock-text strong {
     color: #ef4444;
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
 }
 
 .stock-text span {
@@ -436,7 +434,6 @@
 
 .stock-unavailable i {
     color: var(--text-muted);
-    font-size: 1.25rem;
 }
 
 .stock-unavailable span {
@@ -444,29 +441,38 @@
     font-weight: 600;
 }
 
-.product-description {
-    margin-bottom: 2rem;
+.product-description h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
 }
 
 .product-description p {
     color: var(--text-secondary);
-    font-size: 1.05rem;
-    line-height: 1.8;
+    font-size: 1rem;
+    line-height: 1.7;
 }
 
 .features-list {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+    padding: 1.25rem;
 }
 
 .features-title {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.features-title i {
+    color: var(--accent-primary);
 }
 
 .features-items {
@@ -477,49 +483,27 @@
 
 .features-items li {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.75rem;
     color: var(--text-secondary);
+    font-size: 0.95rem;
 }
 
 .features-items i {
     color: var(--accent-primary);
-    font-size: 1.1rem;
+    font-size: 1rem;
     flex-shrink: 0;
+    margin-top: 0.2rem;
 }
 
-.order-cta-section {
+.order-section {
     background: linear-gradient(135deg, rgba(37, 211, 102, 0.05), rgba(32, 193, 87, 0.02));
     border: 2px solid #25d366;
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-    margin-bottom: 2rem;
+    border-radius: 12px;
+    padding: 1.5rem;
 }
 
-.cta-benefits {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 1.5rem;
-}
-
-.benefit-mini {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.benefit-mini i {
-    font-size: 1.75rem;
-    color: #25d366;
-}
-
-.benefit-mini span {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-}
-
-.btn-whatsapp-order {
+.btn-whatsapp-main {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -528,40 +512,42 @@
     padding: 1.25rem;
     background: linear-gradient(135deg, #25d366, #20c157);
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     color: white;
     text-decoration: none;
     font-weight: 700;
     transition: all 0.3s;
     box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+    margin-bottom: 1rem;
 }
 
-.btn-whatsapp-order:hover {
+.btn-whatsapp-main:hover {
     background: linear-gradient(135deg, #20c157, #1ea952);
     transform: translateY(-2px);
     box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
 }
 
-.btn-whatsapp-order i {
-    font-size: 2rem;
+.btn-whatsapp-main i {
+    font-size: 1.75rem;
 }
 
-.btn-text {
+.btn-content {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
-.btn-main {
-    font-size: 1.25rem;
+.btn-title {
+    font-size: 1.1rem;
 }
 
-.btn-sub {
+.btn-subtitle {
     font-size: 0.85rem;
     opacity: 0.9;
+    font-weight: 500;
 }
 
-.btn-notify {
+.btn-notify-main {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -570,23 +556,23 @@
     padding: 1.25rem;
     background: var(--bg-secondary);
     border: 2px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 10px;
     color: var(--text-secondary);
     text-decoration: none;
     font-weight: 700;
     transition: all 0.3s;
+    margin-bottom: 1rem;
 }
 
-.btn-notify:hover {
+.btn-notify-main:hover {
     border-color: var(--accent-primary);
     color: var(--accent-primary);
 }
 
-.quick-actions {
+.action-buttons {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
-    margin-top: 1rem;
 }
 
 .action-btn {
@@ -594,10 +580,10 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    padding: 1rem 0.5rem;
+    padding: 0.875rem 0.5rem;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 8px;
     color: var(--text-secondary);
     text-decoration: none;
     font-size: 0.85rem;
@@ -613,64 +599,64 @@
 }
 
 .action-btn i {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
 }
 
-.trust-section {
+.product-guarantees {
     display: grid;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 0.75rem;
 }
 
-.trust-item {
+.guarantee-item {
     display: flex;
     align-items: center;
     gap: 1rem;
     padding: 1rem;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
-.trust-item i {
-    font-size: 2rem;
+.guarantee-item i {
+    font-size: 1.75rem;
     color: var(--accent-primary);
+    flex-shrink: 0;
 }
 
-.trust-item strong {
+.guarantee-item strong {
     display: block;
     color: var(--text-primary);
     font-size: 0.95rem;
     margin-bottom: 0.25rem;
 }
 
-.trust-item span {
+.guarantee-item span {
     display: block;
     color: var(--text-secondary);
     font-size: 0.85rem;
 }
 
-.payment-methods {
+.payment-section {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
+    border-radius: 10px;
+    padding: 1.25rem;
 }
 
-.payment-title {
+.payment-section h4 {
     color: var(--text-secondary);
     font-size: 0.9rem;
     margin-bottom: 1rem;
     font-weight: 600;
 }
 
-.payment-icons {
+.payment-options {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
 }
 
-.payment-icon {
+.payment-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -680,27 +666,27 @@
     border-radius: 8px;
 }
 
-.payment-icon img {
-    height: 28px;
+.payment-item img {
+    height: 24px;
     width: auto;
 }
 
-.payment-icon i {
-    font-size: 1.75rem;
+.payment-item i {
+    font-size: 1.5rem;
     color: var(--accent-primary);
 }
 
-.payment-icon span {
+.payment-item span {
     color: var(--text-secondary);
     font-size: 0.85rem;
     font-weight: 600;
 }
 
-.related-section {
+.related-products-section {
     margin-top: 4rem;
 }
 
-.related-title {
+.section-heading {
     font-size: 2rem;
     font-weight: 800;
     color: var(--text-primary);
@@ -708,74 +694,74 @@
     text-align: center;
 }
 
-.related-grid {
+.related-products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
 }
 
-.related-card {
+.related-product-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
+    border-radius: 12px;
     overflow: hidden;
     transition: all 0.3s;
 }
 
-.related-card:hover {
+.related-product-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow);
     border-color: var(--accent-primary);
 }
 
-.related-link {
+.related-product-link {
     text-decoration: none;
     color: inherit;
 }
 
-.related-image {
+.related-product-image {
     aspect-ratio: 4/3;
     overflow: hidden;
     background: #ffffff;
     padding: 1rem;
 }
 
-.related-image img {
+.related-product-image img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     transition: transform 0.3s;
 }
 
-.related-card:hover .related-image img {
-    transform: scale(1.1);
+.related-product-card:hover .related-product-image img {
+    transform: scale(1.05);
 }
 
-.related-info {
+.related-product-info {
     padding: 1rem;
     background: var(--bg-secondary);
 }
 
-.related-name {
+.related-product-info h3 {
     font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 0.75rem;
 }
 
-.related-price {
+.related-product-price {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.related-price .price {
+.related-product-price .price {
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--accent-secondary);
 }
 
-.related-price .old-price {
+.related-product-price .old-price {
     font-size: 0.9rem;
     color: var(--text-muted);
     text-decoration: line-through;
@@ -798,7 +784,11 @@
     background: linear-gradient(135deg, #20c157, #1ea952);
 }
 
-.mobile-order-bar {
+.btn-related-order i {
+    font-size: 1.1rem;
+}
+
+.mobile-bottom-bar {
     display: none;
 }
 
@@ -813,14 +803,14 @@
     }
     
     .product-name {
-        font-size: 2rem;
+        font-size: 1.75rem;
     }
     
     .price-main {
-        font-size: 2.5rem;
+        font-size: 2rem;
     }
     
-    .mobile-order-bar {
+    .mobile-bottom-bar {
         display: flex;
         position: fixed;
         bottom: 0;
@@ -832,26 +822,26 @@
         z-index: 1000;
         align-items: center;
         justify-content: space-between;
-        box-shadow: var(--shadow-lg);
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
     }
     
-    .mob-info {
+    .mobile-price-info {
         display: flex;
         flex-direction: column;
     }
     
-    .mob-price {
+    .mobile-price {
         font-size: 1.5rem;
         font-weight: 800;
         color: var(--accent-secondary);
     }
     
-    .mob-name {
+    .mobile-product-name {
         font-size: 0.85rem;
         color: var(--text-secondary);
     }
     
-    .mob-btn-order {
+    .mobile-order-btn {
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -860,24 +850,24 @@
         color: white;
         text-decoration: none;
         font-weight: 700;
-        border-radius: 12px;
+        border-radius: 10px;
     }
     
-    .mob-btn-order i {
+    .mobile-order-btn i {
         font-size: 1.25rem;
     }
     
-    .related-grid {
+    .related-products-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 640px) {
-    .cta-benefits {
-        display: none;
+    .thumbnail-gallery {
+        grid-template-columns: repeat(3, 1fr);
     }
     
-    .related-grid {
+    .related-products-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -899,7 +889,10 @@ function shareProduct() {
             url: window.location.href
         });
     } else {
-        alert('Share via WhatsApp or copy the URL from your browser');
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Link copied to clipboard!');
+        });
     }
 }
 </script>
