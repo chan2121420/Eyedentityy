@@ -1,224 +1,229 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ product.name }} - Order via WhatsApp | Eyedentity{% endblock %}
+{% block title %}{{ product.name }} - Eyedentity Eyewear{% endblock %}
 
 {% block content %}
-<section class="product-detail-section">
-    <div class="container">
-        <!-- Breadcrumb -->
-        <nav class="breadcrumb-nav" aria-label="breadcrumb">
-            <ol class="breadcrumb-list">
-                <li><a href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a></li>
-                <li><a href="{% url 'shop' %}">Shop</a></li>
-                {% if product.category %}
-                <li><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
-                {% endif %}
-                <li class="active">{{ product.name|truncatewords:4 }}</li>
-            </ol>
-        </nav>
-
-        <div class="product-layout">
-            <!-- Product Gallery -->
-            <div class="product-gallery">
-                <div class="main-image-wrapper">
-                    <img id="mainProductImage" src="{{ product.image.url }}" alt="{{ product.name }}" class="main-product-image">
-                    
-                    {% if product.is_on_sale %}
-                    <div class="discount-flash">
-                        <div class="discount-amount">{{ product.discount_percentage }}%</div>
-                        <div class="discount-label">OFF</div>
-                    </div>
-                    {% endif %}
-                </div>
-                
-                {% if additional_images %}
-                <div class="thumbnail-gallery">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="thumbnail active" onclick="switchImage(this)">
-                    {% for img in additional_images %}
-                    <img src="{{ img.image.url }}" alt="{{ product.name }}" class="thumbnail" onclick="switchImage(this)">
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-            
-            <!-- Product Details -->
-            <div class="product-details">
-                <div class="product-meta-badge">
-                    <i class="bi bi-upc-scan"></i>
-                    <span>{{ product.product_code }}</span>
-                </div>
-                
-                <h1 class="product-name">{{ product.name }}</h1>
-                
-                <div class="price-section">
-                    <div class="price-main">${{ product.price }}</div>
-                    {% if product.old_price %}
-                    <div class="price-compare">${{ product.old_price }}</div>
-                    <div class="price-save">Save ${{ product.old_price|floatformat:2|add:"-"|add:product.price|floatformat:2 }}</div>
-                    {% endif %}
-                </div>
-                
-                <!-- Stock Status -->
-                {% if product.stock_quantity <= 5 and product.stock_quantity > 0 %}
-                <div class="stock-warning">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <div class="stock-text">
-                        <strong>Only {{ product.stock_quantity }} left!</strong>
-                        <span>Order now before it's gone</span>
-                    </div>
-                </div>
-                {% elif product.stock_quantity > 5 %}
-                <div class="stock-available">
-                    <i class="bi bi-check-circle-fill"></i>
-                    <span>In Stock</span>
-                </div>
-                {% else %}
-                <div class="stock-unavailable">
-                    <i class="bi bi-x-circle-fill"></i>
-                    <span>Currently Out of Stock</span>
-                </div>
-                {% endif %}
-                
-                <!-- Description -->
-                <div class="product-description">
-                    <p>{{ product.description }}</p>
-                </div>
-                
-                <!-- Features -->
-                {% if product.features.all %}
-                <div class="features-list">
-                    <h3 class="features-title">Key Features</h3>
-                    <ul class="features-items">
-                        {% for feature in product.features.all %}
-                        <li>
-                            <i class="bi bi-check-circle-fill"></i>
-                            <span>{{ feature.name }}</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-                
-                <!-- Order CTA Section -->
-                <div class="order-cta-section">
-                    <div class="cta-benefits">
-                        <div class="benefit-mini">
-                            <i class="bi bi-lightning-charge-fill"></i>
-                            <span>Instant Response</span>
+<div class="product-page">
+    <!-- Hero Section with Image -->
+    <section class="product-hero">
+        <div class="container-fluid">
+            <div class="product-hero-grid">
+                <!-- Image Gallery -->
+                <div class="gallery-section">
+                    <div class="main-gallery">
+                        <div class="main-image-container">
+                            {% if product.is_on_sale %}
+                            <div class="sale-flash">
+                                <div class="flash-content">
+                                    <span class="flash-percent">{{ product.discount_percentage }}%</span>
+                                    <span class="flash-text">OFF</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <img id="mainImage" src="{{ product.image.url }}" alt="{{ product.name }}" class="main-image">
                         </div>
-                        <div class="benefit-mini">
-                            <i class="bi bi-truck-fill"></i>
-                            <span>Fast Delivery</span>
+                        
+                        {% if additional_images %}
+                        <div class="thumbnail-strip">
+                            <button class="thumb-nav prev" onclick="scrollThumbs(-1)">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <div class="thumbnails-container" id="thumbContainer">
+                                <img src="{{ product.image.url }}" class="thumb active" onclick="changeImage(this)" alt="{{ product.name }}">
+                                {% for img in additional_images %}
+                                <img src="{{ img.image.url }}" class="thumb" onclick="changeImage(this)" alt="{{ product.name }}">
+                                {% endfor %}
+                            </div>
+                            <button class="thumb-nav next" onclick="scrollThumbs(1)">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
                         </div>
-                        <div class="benefit-mini">
-                            <i class="bi bi-shield-check-fill"></i>
-                            <span>100% Authentic</span>
-                        </div>
-                    </div>
-                    
-                    {% if product.stock_quantity > 0 %}
-                    <a href="{{ product.whatsapp_link }}" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       class="btn-whatsapp-order">
-                        <i class="bi bi-whatsapp"></i>
-                        <div class="btn-text">
-                            <span class="btn-main">Order via WhatsApp</span>
-                            <span class="btn-sub">Get instant assistance</span>
-                        </div>
-                    </a>
-                    {% else %}
-                    <a href="https://wa.me/263784342632?text=Hi!%20When%20will%20{{ product.name }}%20({{ product.product_code }})%20be%20available?" 
-                       target="_blank" 
-                       class="btn-notify">
-                        <i class="bi bi-bell-fill"></i>
-                        <span>Notify When Available</span>
-                    </a>
-                    {% endif %}
-                    
-                    <div class="quick-actions">
-                        <button class="action-btn" onclick="shareProduct()">
-                            <i class="bi bi-share"></i>
-                            <span>Share</span>
-                        </button>
-                        <a href="{{ product.whatsapp_quick_quote }}" target="_blank" class="action-btn">
-                            <i class="bi bi-calculator"></i>
-                            <span>Quote</span>
-                        </a>
+                        {% endif %}
                     </div>
                 </div>
                 
-                <!-- Trust Badges -->
-                <div class="trust-section">
-                    <div class="trust-item">
-                        <i class="bi bi-shield-fill-check"></i>
-                        <div>
-                            <strong>Authentic Products</strong>
-                            <span>Original quality guaranteed</span>
+                <!-- Product Info -->
+                <div class="info-section">
+                    <div class="info-sticky">
+                        <!-- Breadcrumb -->
+                        <nav class="product-breadcrumb">
+                            <a href="{% url 'home' %}">Home</a>
+                            <span>/</span>
+                            <a href="{% url 'shop' %}">Shop</a>
+                            {% if product.category %}
+                            <span>/</span>
+                            <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a>
+                            {% endif %}
+                        </nav>
+                        
+                        <!-- Product Code -->
+                        <div class="product-code">
+                            <i class="bi bi-tag"></i>
+                            <span>{{ product.product_code }}</span>
                         </div>
-                    </div>
-                    <div class="trust-item">
-                        <i class="bi bi-truck"></i>
-                        <div>
-                            <strong>Fast Delivery</strong>
-                            <span>1-3 days in Harare</span>
+                        
+                        <!-- Title -->
+                        <h1 class="product-title">{{ product.name }}</h1>
+                        
+                        <!-- Price Block -->
+                        <div class="price-block">
+                            <div class="current-price">${{ product.price }}</div>
+                            {% if product.old_price %}
+                            <div class="price-details">
+                                <span class="old-price">${{ product.old_price }}</span>
+                                <span class="savings">Save ${{ product.old_price|floatformat:2|add:"-"|add:product.price|floatformat:2 }}</span>
+                            </div>
+                            {% endif %}
                         </div>
-                    </div>
-                    <div class="trust-item">
-                        <i class="bi bi-arrow-repeat"></i>
-                        <div>
-                            <strong>Easy Returns</strong>
-                            <span>30-day guarantee</span>
+                        
+                        <!-- Stock Status -->
+                        <div class="stock-status">
+                            {% if product.stock_quantity <= 5 and product.stock_quantity > 0 %}
+                            <div class="status-badge urgent">
+                                <i class="bi bi-lightning-fill"></i>
+                                <div>
+                                    <strong>Only {{ product.stock_quantity }} left in stock</strong>
+                                    <span>Order now before it's gone</span>
+                                </div>
+                            </div>
+                            {% elif product.stock_quantity > 5 %}
+                            <div class="status-badge success">
+                                <i class="bi bi-check-circle-fill"></i>
+                                <span>In Stock </span>
+                            </div>
+                            {% else %}
+                            <div class="status-badge unavailable">
+                                <i class="bi bi-x-circle-fill"></i>
+                                <span>Out of Stock</span>
+                            </div>
+                            {% endif %}
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Payment Methods -->
-                <div class="payment-methods">
-                    <div class="payment-title">We Accept</div>
-                    <div class="payment-icons">
-                        <div class="payment-icon">
-                            <img src="{% static 'images/ecocash.png' %}" alt="EcoCash">
+                        
+                        <!-- Description -->
+                        <div class="product-description">
+                            <p>{{ product.description }}</p>
                         </div>
-                        <div class="payment-icon cash">
-                            <i class="bi bi-cash-stack"></i>
-                            <span>Cash</span>
+                        
+                        <!-- Features -->
+                        {% if product.features.all %}
+                        <div class="features-block">
+                            <h3>What Makes It Special</h3>
+                            <ul class="features-list">
+                                {% for feature in product.features.all %}
+                                <li>
+                                    <i class="bi bi-check2"></i>
+                                    <span>{{ feature.name }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
                         </div>
-                        <div class="payment-icon bank">
-                            <i class="bi bi-bank"></i>
-                            <span>Bank</span>
+                        {% endif %}
+                        
+                        <!-- CTA Block -->
+                        <div class="cta-block">
+                            {% if product.stock_quantity > 0 %}
+                            <a href="{{ product.whatsapp_link }}" target="_blank" class="btn-primary-order">
+                                <i class="bi bi-whatsapp"></i>
+                                <span>Order via WhatsApp</span>
+                            </a>
+                            {% else %}
+                            <a href="https://wa.me/263784342632?text=Hi!%20When%20will%20{{ product.name }}%20be%20available?" 
+                               target="_blank" class="btn-secondary-order">
+                                <i class="bi bi-bell"></i>
+                                <span>Get Notified</span>
+                            </a>
+                            {% endif %}
+                            
+                            <div class="secondary-actions">
+                                <button class="action-icon" onclick="shareProduct()">
+                                    <i class="bi bi-share"></i>
+                                    <span>Share</span>
+                                </button>
+                                <a href="{{ product.whatsapp_quick_quote }}" target="_blank" class="action-icon">
+                                    <i class="bi bi-calculator"></i>
+                                    <span>Get Quote</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Trust Signals -->
+                        <div class="trust-signals">
+                            <div class="signal">
+                                <i class="bi bi-shield-check"></i>
+                                <div>
+                                    <strong>100% Authentic</strong>
+                                    <span>Guaranteed genuine products</span>
+                                </div>
+                            </div>
+                            <div class="signal">
+                                <i class="bi bi-truck"></i>
+                                <div>
+                                    <strong>Fast Delivery</strong>
+                                    <span>1-3 days in Harare</span>
+                                </div>
+                            </div>
+                            <div class="signal">
+                                <i class="bi bi-arrow-repeat"></i>
+                                <div>
+                                    <strong>30-Day Returns</strong>
+                                    <span>Easy return policy</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Methods -->
+                        <div class="payment-info">
+                            <div class="payment-label">We Accept</div>
+                            <div class="payment-methods">
+                                <div class="method">
+                                    <img src="{% static 'images/ecocash.png' %}" alt="EcoCash">
+                                </div>
+                                <div class="method">
+                                    <i class="bi bi-cash-coin"></i>
+                                    <span>Cash</span>
+                                </div>
+                                <div class="method">
+                                    <i class="bi bi-bank"></i>
+                                    <span>Bank</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Related Products -->
-        {% if related_products %}
-        <div class="related-section">
-            <h2 class="related-title">You May Also Like</h2>
-            <div class="related-grid">
+    </section>
+    
+    <!-- Related Products -->
+    {% if related_products %}
+    <section class="related-products">
+        <div class="container">
+            <h2 class="section-heading">Complete Your Look</h2>
+            <div class="products-carousel">
                 {% for related in related_products %}
-                <div class="related-card">
-                    <a href="{{ related.get_absolute_url }}" class="related-link">
-                        <div class="related-image">
+                <div class="product-item">
+                    <a href="{{ related.get_absolute_url }}" class="item-link">
+                        <div class="item-image">
                             {% if related.is_on_sale %}
-                            <div class="related-badge">-{{ related.discount_percentage }}%</div>
+                            <span class="discount-tag">-{{ related.discount_percentage }}%</span>
                             {% endif %}
                             <img src="{{ related.image.url }}" alt="{{ related.name }}">
+                            <div class="image-overlay">
+                                <span>View Details</span>
+                            </div>
                         </div>
-                        <div class="related-info">
-                            <h3 class="related-name">{{ related.name }}</h3>
-                            <div class="related-price">
+                        <div class="item-info">
+                            <h3>{{ related.name|truncatewords:5 }}</h3>
+                            <div class="item-price">
                                 <span class="price">${{ related.price }}</span>
                                 {% if related.old_price %}
-                                <span class="old-price">${{ related.old_price }}</span>
+                                <span class="old">${{ related.old_price }}</span>
                                 {% endif %}
                             </div>
                         </div>
                     </a>
-                    <a href="{{ related.whatsapp_link }}" target="_blank" class="btn-related-order">
+                    <a href="{{ related.whatsapp_link }}" target="_blank" class="quick-order">
                         <i class="bi bi-whatsapp"></i>
                         Order
                     </a>
@@ -226,17 +231,17 @@
                 {% endfor %}
             </div>
         </div>
-        {% endif %}
-    </div>
-</section>
+    </section>
+    {% endif %}
+</div>
 
-<!-- Mobile Order Bar -->
-<div class="mobile-order-bar">
-    <div class="mob-info">
-        <span class="mob-price">${{ product.price }}</span>
-        <span class="mob-name">{{ product.name|truncatewords:3 }}</span>
+<!-- Mobile Sticky Bar -->
+<div class="mobile-sticky-bar">
+    <div class="bar-info">
+        <div class="bar-price">${{ product.price }}</div>
+        <div class="bar-name">{{ product.name|truncatewords:3 }}</div>
     </div>
-    <a href="{{ product.whatsapp_link }}" target="_blank" class="mob-btn-order">
+    <a href="{{ product.whatsapp_link }}" target="_blank" class="bar-cta">
         <i class="bi bi-whatsapp"></i>
         Order Now
     </a>
@@ -246,257 +251,307 @@
 
 {% block extra_css %}
 <style>
-/* ========== PRODUCT DETAIL PAGE STYLES ========== */
-.product-detail-section {
-    background: var(--bg-primary);
-    padding: 2rem 0 4rem;
+/* ===== PRODUCT PAGE REVAMP ===== */
+
+.product-page {
+    background: linear-gradient(180deg, #0a0d12 0%, #0e1116 100%);
     min-height: 100vh;
+    padding-bottom: 4rem;
 }
 
-/* Breadcrumb */
-.breadcrumb-nav {
-    margin-bottom: 2rem;
+/* Hero Section */
+.product-hero {
+    padding: 2rem 0;
 }
 
-.breadcrumb-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    list-style: none;
-    padding: 1rem 1.5rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-}
-
-.breadcrumb-list li {
-    display: flex;
-    align-items: center;
-}
-
-.breadcrumb-list li:not(:last-child)::after {
-    content: "›";
-    margin-left: 0.5rem;
-    color: var(--text-muted);
-}
-
-.breadcrumb-list a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.breadcrumb-list a:hover {
-    color: var(--accent-primary);
-}
-
-.breadcrumb-list .active {
-    color: var(--text-primary);
-}
-
-/* Product Layout */
-.product-layout {
+.product-hero-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.2fr 1fr;
     gap: 4rem;
-    margin-bottom: 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
 }
 
-/* Gallery */
-.product-gallery {
+/* Gallery Section */
+.gallery-section {
     position: sticky;
-    top: 160px;
-    align-self: start;
+    top: 140px;
+    height: fit-content;
 }
 
-.main-image-wrapper {
+.main-image-container {
     position: relative;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
+    background: #161b22;
+    border-radius: 24px;
     overflow: hidden;
-    margin-bottom: 1rem;
+    border: 1px solid #2a2f3a;
+    margin-bottom: 1.5rem;
 }
 
-.main-product-image {
+.sale-flash {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 10;
+}
+
+.flash-content {
+    background: linear-gradient(135deg, #ff3b30, #ff2d55);
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(255, 45, 85, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.flash-percent {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 1;
+    color: white;
+}
+
+.flash-text {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+    margin-top: 0.25rem;
+}
+
+.main-image {
     width: 100%;
     aspect-ratio: 1;
     object-fit: cover;
     display: block;
 }
 
-.discount-flash {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    padding: 1rem;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+/* Thumbnail Strip */
+.thumbnail-strip {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
 }
 
-.discount-amount {
-    font-size: 2rem;
-    font-weight: 900;
-    line-height: 1;
+.thumbnails-container {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
 }
 
-.discount-label {
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-top: 0.25rem;
+.thumbnails-container::-webkit-scrollbar {
+    display: none;
 }
 
-.thumbnail-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 0.75rem;
-}
-
-.thumbnail {
-    aspect-ratio: 1;
+.thumb {
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     border-radius: 12px;
-    border: 2px solid var(--border-color);
+    border: 2px solid #2a2f3a;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.thumb:hover {
+    border-color: #38bdf8;
+    transform: translateY(-4px);
+}
+
+.thumb.active {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2);
+}
+
+.thumb-nav {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1c2128;
+    border: 1px solid #2a2f3a;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.thumbnail:hover {
-    border-color: var(--accent-primary);
+.thumb-nav:hover {
+    background: #2a2f3a;
+    color: #38bdf8;
+    border-color: #38bdf8;
 }
 
-.thumbnail.active {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
-}
-
-/* Product Details */
-.product-details {
+/* Info Section */
+.info-section {
     padding-top: 1rem;
 }
 
-.product-meta-badge {
+.info-sticky {
+    position: sticky;
+    top: 140px;
+}
+
+.product-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.product-breadcrumb a {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.product-breadcrumb a:hover {
+    color: #38bdf8;
+}
+
+.product-breadcrumb span {
+    color: #6b7280;
+}
+
+.product-code {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
     padding: 0.5rem 1rem;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.3);
     border-radius: 8px;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+    color: #38bdf8;
+    font-size: 0.85rem;
+    font-weight: 600;
     margin-bottom: 1.5rem;
 }
 
-.product-meta-badge i {
-    color: var(--accent-primary);
-}
-
-.product-name {
-    font-size: 2.5rem;
+.product-title {
+    font-size: 2.75rem;
     font-weight: 800;
-    color: var(--text-primary);
+    line-height: 1.1;
+    color: #ffffff;
     margin-bottom: 1.5rem;
-    line-height: 1.2;
+    letter-spacing: -0.02em;
 }
 
-.price-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
+/* Price Block */
+.price-block {
+    margin-bottom: 2rem;
 }
 
-.price-main {
-    font-size: 3rem;
+.current-price {
+    font-size: 3.5rem;
     font-weight: 900;
-    background: linear-gradient(135deg, var(--accent-secondary), #16a34a);
+    background: linear-gradient(135deg, #22c55e, #10b981);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    line-height: 1;
+    margin-bottom: 0.5rem;
 }
 
-.price-compare {
+.price-details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.old-price {
     font-size: 1.5rem;
-    color: var(--text-muted);
+    color: #6b7280;
     text-decoration: line-through;
 }
 
-.price-save {
+.savings {
     padding: 0.5rem 1rem;
     background: rgba(34, 197, 94, 0.1);
     border: 1px solid rgba(34, 197, 94, 0.3);
     border-radius: 8px;
-    color: var(--accent-secondary);
+    color: #22c55e;
     font-weight: 700;
     font-size: 0.9rem;
 }
 
 /* Stock Status */
-.stock-warning,
-.stock-available,
-.stock-unavailable {
+.stock-status {
+    margin-bottom: 2rem;
+}
+
+.status-badge {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.25rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    border: 1px solid;
 }
 
-.stock-warning {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+.status-badge.urgent {
+    background: rgba(255, 45, 85, 0.1);
+    border-color: rgba(255, 45, 85, 0.3);
 }
 
-.stock-warning i {
-    color: #ef4444;
-    font-size: 1.5rem;
+.status-badge.urgent i {
+    color: #ff2d55;
+    font-size: 1.75rem;
 }
 
-.stock-text strong {
+.status-badge.urgent strong {
     display: block;
-    color: #ef4444;
-    font-size: 1rem;
+    color: #ff2d55;
+    font-size: 1.05rem;
     margin-bottom: 0.25rem;
 }
 
-.stock-text span {
-    color: #fca5a5;
-    font-size: 0.85rem;
+.status-badge.urgent span {
+    color: #ff9aa2;
+    font-size: 0.9rem;
 }
 
-.stock-available {
+.status-badge.success {
     background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-color: rgba(34, 197, 94, 0.3);
 }
 
-.stock-available i {
-    color: var(--accent-secondary);
-    font-size: 1.25rem;
+.status-badge.success i {
+    color: #22c55e;
+    font-size: 1.5rem;
 }
 
-.stock-available span {
-    color: var(--accent-secondary);
+.status-badge.success span {
+    color: #22c55e;
     font-weight: 600;
 }
 
-.stock-unavailable {
-    background: rgba(156, 163, 175, 0.1);
-    border: 1px solid rgba(156, 163, 175, 0.3);
+.status-badge.unavailable {
+    background: rgba(107, 114, 128, 0.1);
+    border-color: rgba(107, 114, 128, 0.3);
 }
 
-.stock-unavailable i {
-    color: var(--text-muted);
-    font-size: 1.25rem;
+.status-badge.unavailable i {
+    color: #6b7280;
+    font-size: 1.5rem;
 }
 
-.stock-unavailable span {
-    color: var(--text-secondary);
+.status-badge.unavailable span {
+    color: #9ca3af;
     font-weight: 600;
 }
 
@@ -506,159 +561,110 @@
 }
 
 .product-description p {
-    color: var(--text-secondary);
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     line-height: 1.8;
+    color: #d1d5db;
 }
 
 /* Features */
-.features-list {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+.features-block {
+    margin-bottom: 2.5rem;
 }
 
-.features-title {
+.features-block h3 {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: #ffffff;
     margin-bottom: 1rem;
 }
 
-.features-items {
+.features-list {
     list-style: none;
     display: grid;
     gap: 0.75rem;
 }
 
-.features-items li {
+.features-list li {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: var(--text-secondary);
+    color: #d1d5db;
+    font-size: 1rem;
 }
 
-.features-items i {
-    color: var(--accent-primary);
-    font-size: 1.1rem;
+.features-list i {
+    color: #38bdf8;
+    font-size: 1.25rem;
+    flex-shrink: 0;
 }
 
-/* Order CTA */
-.order-cta-section {
-    background: linear-gradient(135deg, rgba(37, 211, 102, 0.05), rgba(32, 193, 87, 0.02));
-    border: 2px solid #25d366;
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-    margin-bottom: 2rem;
+/* CTA Block */
+.cta-block {
+    margin-bottom: 2.5rem;
 }
 
-.cta-benefits {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 1.5rem;
-}
-
-.benefit-mini {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.benefit-mini i {
-    font-size: 1.75rem;
-    color: #25d366;
-}
-
-.benefit-mini span {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    text-align: center;
-}
-
-.btn-whatsapp-order {
+.btn-primary-order,
+.btn-secondary-order {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.75rem;
     width: 100%;
-    padding: 1.25rem;
-    background: linear-gradient(135deg, #25d366, #20c157);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    text-decoration: none;
+    padding: 1.5rem;
+    border-radius: 16px;
+    font-size: 1.25rem;
     font-weight: 700;
+    text-decoration: none;
     transition: all 0.3s;
-    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+    margin-bottom: 1rem;
 }
 
-.btn-whatsapp-order:hover {
+.btn-primary-order {
+    background: linear-gradient(135deg, #25d366, #20c157);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.3);
+}
+
+.btn-primary-order:hover {
     background: linear-gradient(135deg, #20c157, #1ea952);
     transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
+    box-shadow: 0 12px 32px rgba(37, 211, 102, 0.4);
     color: white;
 }
 
-.btn-whatsapp-order i {
-    font-size: 2rem;
+.btn-primary-order i {
+    font-size: 1.75rem;
 }
 
-.btn-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+.btn-secondary-order {
+    background: #1c2128;
+    border: 2px solid #2a2f3a;
+    color: #9ca3af;
 }
 
-.btn-main {
-    font-size: 1.25rem;
+.btn-secondary-order:hover {
+    border-color: #38bdf8;
+    color: #38bdf8;
+    background: #2a2f3a;
 }
 
-.btn-sub {
-    font-size: 0.85rem;
-    opacity: 0.9;
-}
-
-.btn-notify {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    width: 100%;
-    padding: 1.25rem;
-    background: var(--bg-secondary);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-weight: 700;
-    transition: all 0.3s;
-}
-
-.btn-notify:hover {
-    border-color: var(--accent-primary);
-    color: var(--accent-primary);
-}
-
-.quick-actions {
+.secondary-actions {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
-    margin-top: 1rem;
 }
 
-.action-btn {
+.action-icon {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    padding: 1rem 0.5rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    padding: 1rem;
+    background: #1c2128;
+    border: 1px solid #2a2f3a;
     border-radius: 12px;
-    color: var(--text-secondary);
+    color: #9ca3af;
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 600;
@@ -666,203 +672,223 @@
     transition: all 0.2s;
 }
 
-.action-btn:hover {
-    background: var(--bg-tertiary);
-    border-color: var(--accent-primary);
-    color: var(--accent-primary);
+.action-icon:hover {
+    background: #2a2f3a;
+    border-color: #38bdf8;
+    color: #38bdf8;
 }
 
-.action-btn i {
+.action-icon i {
     font-size: 1.5rem;
 }
 
-/* Trust Section */
-.trust-section {
+/* Trust Signals */
+.trust-signals {
     display: grid;
     gap: 1rem;
     margin-bottom: 2rem;
 }
 
-.trust-item {
+.signal {
     display: flex;
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: #161b22;
+    border: 1px solid #2a2f3a;
     border-radius: 12px;
 }
 
-.trust-item i {
+.signal i {
     font-size: 2rem;
-    color: var(--accent-primary);
+    color: #38bdf8;
     flex-shrink: 0;
 }
 
-.trust-item strong {
+.signal strong {
     display: block;
-    color: var(--text-primary);
+    color: #ffffff;
     font-size: 0.95rem;
     margin-bottom: 0.25rem;
 }
 
-.trust-item span {
+.signal span {
     display: block;
-    color: var(--text-secondary);
+    color: #9ca3af;
     font-size: 0.85rem;
 }
 
-/* Payment Methods */
-.payment-methods {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+/* Payment Info */
+.payment-info {
+    background: #161b22;
+    border: 1px solid #2a2f3a;
+    border-radius: 16px;
     padding: 1.5rem;
 }
 
-.payment-title {
-    color: var(--text-secondary);
+.payment-label {
+    color: #9ca3af;
     font-size: 0.9rem;
-    margin-bottom: 1rem;
     font-weight: 600;
+    margin-bottom: 1rem;
 }
 
-.payment-icons {
+.payment-methods {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
 }
 
-.payment-icon {
+.method {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    background: #1c2128;
+    border: 1px solid #2a2f3a;
+    border-radius: 10px;
 }
 
-.payment-icon img {
-    height: 28px;
-    width: auto;
+.method img {
+    height: 24px;
 }
 
-.payment-icon i {
-    font-size: 1.75rem;
-    color: var(--accent-primary);
+.method i {
+    font-size: 1.5rem;
+    color: #38bdf8;
 }
 
-.payment-icon span {
-    color: var(--text-secondary);
+.method span {
+    color: #d1d5db;
     font-size: 0.85rem;
     font-weight: 600;
 }
 
 /* Related Products */
-.related-section {
-    margin-top: 4rem;
+.related-products {
+    padding: 4rem 0;
+    background: #0e1116;
 }
 
-.related-title {
-    font-size: 2rem;
+.section-heading {
+    font-size: 2.5rem;
     font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 2rem;
     text-align: center;
+    color: #ffffff;
+    margin-bottom: 3rem;
 }
 
-.related-grid {
+.products-carousel {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
 }
 
-.related-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
+.product-item {
+    background: #161b22;
+    border: 1px solid #2a2f3a;
+    border-radius: 20px;
     overflow: hidden;
     transition: all 0.3s;
 }
 
-.related-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-    border-color: var(--accent-primary);
+.product-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    border-color: #38bdf8;
 }
 
-.related-link {
+.item-link {
     text-decoration: none;
     color: inherit;
 }
 
-.related-image {
-    aspect-ratio: 4/3;
-    overflow: hidden;
+.item-image {
     position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
 }
 
-.related-badge {
+.discount-tag {
     position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    background: #ef4444;
+    top: 1rem;
+    right: 1rem;
+    background: #ff2d55;
     color: white;
-    padding: 0.375rem 0.625rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
     font-weight: 700;
     z-index: 2;
 }
 
-.related-image img {
+.item-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s;
+    transition: transform 0.5s;
 }
 
-.related-card:hover .related-image img {
+.product-item:hover .item-image img {
     transform: scale(1.1);
 }
 
-.related-info {
-    padding: 1rem;
+.image-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(14, 17, 22, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
-.related-name {
-    font-size: 1rem;
+.product-item:hover .image-overlay {
+    opacity: 1;
+}
+
+.image-overlay span {
+    color: #38bdf8;
     font-weight: 600;
-    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.item-info {
+    padding: 1.5rem;
+}
+
+.item-info h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
     margin-bottom: 0.75rem;
 }
 
-.related-price {
+.item-price {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    gap: 0.75rem;
 }
 
-.related-price .price {
-    font-size: 1.25rem;
+.item-price .price {
+    font-size: 1.5rem;
     font-weight: 800;
-    color: var(--accent-secondary);
+    color: #22c55e;
 }
 
-.related-price .old-price {
-    font-size: 0.9rem;
-    color: var(--text-muted);
+.item-price .old {
+    font-size: 1rem;
+    color: #6b7280;
     text-decoration: line-through;
 }
 
-.btn-related-order {
+.quick-order {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.875rem;
+    padding: 1rem;
     background: linear-gradient(135deg, #25d366, #20c157);
     color: white;
     text-decoration: none;
@@ -870,104 +896,118 @@
     transition: all 0.3s;
 }
 
-.btn-related-order:hover {
+.quick-order:hover {
     background: linear-gradient(135deg, #20c157, #1ea952);
     color: white;
 }
 
-/* Mobile Order Bar */
-.mobile-order-bar {
+/* Mobile Sticky Bar */
+.mobile-sticky-bar {
     display: none;
 }
 
-/* ========== RESPONSIVE ========== */
-@media (max-width: 968px) {
-    .product-layout {
+/* Responsive */
+@media (max-width: 1024px) {
+    .product-hero-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 3rem;
     }
     
-    .product-gallery {
+    .gallery-section,
+    .info-sticky {
         position: static;
     }
     
-    .product-name {
-        font-size: 2rem;
+    .product-title {
+        font-size: 2.25rem;
     }
     
-    .price-main {
-        font-size: 2.5rem;
+    .current-price {
+        font-size: 2.75rem;
     }
     
-    .mobile-order-bar {
+    .mobile-sticky-bar {
         display: flex;
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        background: var(--bg-secondary);
-        border-top: 1px solid var(--border-color);
-        padding: 1rem;
-        z-index: 1000;
+        background: #161b22;
+        border-top: 1px solid #2a2f3a;
+        padding: 1rem 1.5rem;
         align-items: center;
         justify-content: space-between;
-        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.3);
     }
     
-    .mob-info {
-        display: flex;
-        flex-direction: column;
+    .bar-info {
+        flex: 1;
     }
     
-    .mob-price {
-        font-size: 1.5rem;
+    .bar-price {
+        font-size: 1.75rem;
         font-weight: 800;
-        color: var(--accent-secondary);
+        color: #22c55e;
+        line-height: 1;
+        margin-bottom: 0.25rem;
     }
     
-    .mob-name {
+    .bar-name {
         font-size: 0.85rem;
-        color: var(--text-secondary);
+        color: #9ca3af;
     }
     
-    .mob-btn-order {
+    .bar-cta {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.875rem 1.5rem;
+        padding: 1rem 2rem;
         background: linear-gradient(135deg, #25d366, #20c157);
         color: white;
         text-decoration: none;
         font-weight: 700;
         border-radius: 12px;
+        white-space: nowrap;
     }
     
-    .mob-btn-order i {
+    .bar-cta i {
         font-size: 1.25rem;
     }
     
-    .related-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .product-page {
+        padding-bottom: 6rem;
     }
 }
 
 @media (max-width: 640px) {
-    .cta-benefits {
-        flex-direction: column;
-        gap: 1rem;
+    .product-hero-grid {
+        padding: 0 1rem;
     }
     
-    .benefit-mini {
-        flex-direction: row;
-        justify-content: flex-start;
+    .product-title {
+        font-size: 1.75rem;
     }
     
-    .related-grid {
+    .current-price {
+        font-size: 2.25rem;
+    }
+    
+    .thumbnails-container {
+        gap: 0.5rem;
+    }
+    
+    .thumb {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .products-carousel {
         grid-template-columns: 1fr;
     }
     
-    .quick-actions {
-        grid-template-columns: 1fr;
+    .bar-cta {
+        padding: 0.875rem 1.5rem;
     }
 }
 </style>
@@ -975,27 +1015,51 @@
 
 {% block extra_js %}
 <script>
-function switchImage(element) {
-    document.getElementById('mainProductImage').src = element.src;
-    document.querySelectorAll('.thumbnail').forEach(thumb => {
-        thumb.classList.remove('active');
+function changeImage(thumb) {
+    document.getElementById('mainImage').src = thumb.src;
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+}
+
+function scrollThumbs(direction) {
+    const container = document.getElementById('thumbContainer');
+    const scrollAmount = 120;
+    container.scrollBy({
+        left: direction * scrollAmount,
+        behavior: 'smooth'
     });
-    element.classList.add('active');
 }
 
 function shareProduct() {
     if (navigator.share) {
         navigator.share({
             title: '{{ product.name }}',
-            text: '{{ product.description|truncatewords:20 }}',
+            text: '{{ product.description|truncatewords:15 }}',
             url: window.location.href
-        }).catch(err => console.log('Share cancelled'));
+        }).catch(() => {});
     } else {
-        // Fallback - copy to clipboard
         navigator.clipboard.writeText(window.location.href).then(() => {
-            alert('Product link copied to clipboard!');
+            alert('Link copied to clipboard!');
         });
     }
+}
+
+// Image zoom on hover (desktop only)
+if (window.innerWidth > 1024) {
+    const mainImage = document.getElementById('mainImage');
+    const container = mainImage.parentElement;
+    
+    container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        mainImage.style.transformOrigin = `${x}% ${y}%`;
+        mainImage.style.transform = 'scale(1.5)';
+    });
+    
+    container.addEventListener('mouseleave', () => {
+        mainImage.style.transform = 'scale(1)';
+    });
 }
 </script>
 {% endblock %}
