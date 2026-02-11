@@ -36,14 +36,14 @@ class ProductImageInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = [
-        'name', 'category', 'price', 'old_price', 'discount_display', 
+        'name', 'product_code', 'category', 'price', 'old_price', 'discount_display', 
         'is_featured', 'is_on_sale', 'is_active', 'stock_quantity', 'created_at'
     ]
     list_filter = [
         'category', 'lens_type', 'is_featured', 'is_on_sale', 
         'is_active', 'created_at'
     ]
-    search_fields = ['name', 'description']
+    search_fields = ['name', 'description', 'product_code']
     prepopulated_fields = {'slug': ('name',)}
     list_editable = ['is_featured', 'is_active', 'stock_quantity']
     filter_horizontal = ['features']
@@ -52,7 +52,8 @@ class ProductAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'slug', 'category', 'description', 'image')
+            'fields': ('name', 'slug', 'product_code', 'category', 'description', 'image'),
+            'description': 'Enter your physical product code (e.g., EYE-PHO-042, SKU-12345) in the Product Code field.'
         }),
         ('Pricing', {
             'fields': ('price', 'old_price')
@@ -63,9 +64,14 @@ class ProductAdmin(admin.ModelAdmin):
                 'lens_material', 'uv_protection'
             )
         }),
+        ('WhatsApp Messages', {
+            'fields': ('whatsapp_message', 'whatsapp_share_message'),
+            'description': 'Customize WhatsApp messages for ordering and sharing. Use {product_name}, {product_code}, {price}, {url} as placeholders in share message. Make sure you entered the product code above.',
+            'classes': ('collapse',)
+        }),
         ('Business Settings', {
             'fields': (
-                'stock_quantity', 'whatsapp_message', 'is_featured', 
+                'stock_quantity', 'is_featured', 
                 'is_on_sale', 'is_active'
             )
         }),

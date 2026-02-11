@@ -87,7 +87,9 @@ class Product(models.Model):
     
     # Business fields
     stock_quantity = models.PositiveIntegerField(default=0)
+    product_code = models.CharField(max_length=50, unique=True, blank=True, help_text="Your physical product code (e.g., EYE-PHO-042, SKU-12345)")
     whatsapp_message = models.TextField(blank=True, help_text="Custom WhatsApp message for this product")
+    whatsapp_share_message = models.TextField(blank=True, help_text="Custom WhatsApp share message (leave blank for auto-generated)")
     is_featured = models.BooleanField(default=False)
     is_on_sale = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -118,15 +120,6 @@ class Product(models.Model):
             discount = ((self.old_price - self.price) / self.old_price) * 100
             return round(discount)
         return 0
-
-    @property
-    def product_code(self):
-        """
-        Generate unique product code for easy reference
-        Format: EYE-CAT-0001
-        """
-        category_prefix = self.category.slug[:3].upper() if self.category else 'GEN'
-        return f"EYE-{category_prefix}-{self.id:04d}"
     
     @property
     def whatsapp_link(self):
@@ -140,33 +133,42 @@ class Product(models.Model):
         except (ProgrammingError, Exception):
             whatsapp_number = '263784342632'
     
-        # Build rich message with product details
-        message_parts = [
-            "🛒 *ORDER REQUEST*",
-            "",
-            f"📦 Product: {self.name}",
-            f"🔢 Code: {self.product_code}",
-            f"💰 Price: ${self.price}",
-        ]
+        # Use custom message if provided, otherwise use default
+        if self.whatsapp_message:
+            message = self.whatsapp_message
+        else:
+            # Build rich message with product details
+            message_parts = [
+                "🛒 *ORDER REQUEST*",
+                "",
+                f"📦 Product: {self.name}",
+            ]
+            
+            # Add product code if available
+            if self.product_code:
+                message_parts.append(f"🔢 Code: {self.product_code}")
+            
+            message_parts.append(f"💰 Price: ${self.price}")
+            
+            # Add savings if on sale
+            if self.old_price and self.old_price > self.price:
+                savings = float(self.old_price) - float(self.price)
+                message_parts.append(f"💸 You Save: ${savings:.2f}")
+            
+            # Add urgency if low stock
+            if self.stock_quantity <= 5 and self.stock_quantity > 0:
+                message_parts.append(f"⚠️ Only {self.stock_quantity} left in stock!")
+            
+            # Add product link
+            message_parts.extend([
+                "",
+                f"📱 View product: {self.get_full_url()}",
+                "",
+                "Hi! I'd like to order this product. Please confirm availability and delivery options.",
+            ])
+            
+            message = "\n".join(message_parts)
         
-        # Add savings if on sale
-        if self.old_price and self.old_price > self.price:
-            savings = float(self.old_price) - float(self.price)
-            message_parts.append(f"💸 You Save: ${savings:.2f}")
-        
-        # Add urgency if low stock
-        if self.stock_quantity <= 5 and self.stock_quantity > 0:
-            message_parts.append(f"⚠️ Only {self.stock_quantity} left in stock!")
-        
-        # Add product link
-        message_parts.extend([
-            "",
-            f"📱 View product: {self.get_full_url()}",
-            "",
-            "Hi! I'd like to order this product. Please confirm availability and delivery options.",
-        ])
-        
-        message = "\n".join(message_parts)
         encoded_message = urllib.parse.quote(message)
         
         return f"https://wa.me/{whatsapp_number}?text={encoded_message}"
@@ -194,27 +196,69 @@ class Product(models.Model):
         except (ProgrammingError, Exception):
             whatsapp_number = '263784342632'
         
-        message = (
-            f"Hi! I'd like a quote for {self.name} (Code: {self.product_code}). "
-            f"Please provide:\n"
-            f"- Availability\n"
-            f"- Delivery cost to my location\n"
-            f"- Payment options\n"
-            f"- Total price"
-        )
+        # Build message with product code if available
+        message_parts = [f"Hi! I'd like a quote for {self.name}"]
+        
+        if self.product_code:
+            message_parts[0] += f" (Code: {self.product_code})"
+        
+        message_parts.extend([
+            ". Please provide:",
+            "- Availability",
+            "- Delivery cost to my location",
+            "- Payment options",
+            "- Total price"
+        ])
+        
+        message = "\n".join(message_parts)
         
         encoded_message = urllib.parse.quote(message)
         return f"https://wa.me/{whatsapp_number}?text={encoded_message}"
     
     @property
     def whatsapp_share_link(self):
-        """Generate WhatsApp share link"""
-        message = (
-            f"Check out this eyewear! 👓\n\n"
-            f"{self.name}\n"
-            f"Only ${self.price}\n"
-            f"{self.get_full_url()}"
-        )
+        """Generate WhatsApp share link with product image"""
+        from django.db import ProgrammingError
+        
+        # Use custom share message if provided
+        if self.whatsapp_share_message:
+            message = self.whatsapp_share_message.format(
+                product_name=self.name,
+                product_code=self.product_code if self.product_code else 'N/A',
+                price=self.price,
+                url=self.get_full_url()
+            )
+        else:
+            # Default share message with product details
+            message_parts = [
+                f"👓 Check out this eyewear! 👓",
+                "",
+                f"*{self.name}*",
+            ]
+            
+            # Add product code if available
+            if self.product_code:
+                message_parts.append(f"Code: {self.product_code}")
+            
+            message_parts.append(f"Price: ${self.price}")
+            
+            # Add discount info if on sale
+            if self.old_price and self.old_price > self.price:
+                message_parts.append(f"🔥 Save {self.discount_percentage}% (Was ${self.old_price})")
+            
+            # Add features if available
+            if self.features.exists():
+                features_list = ", ".join([f.name for f in self.features.all()[:3]])
+                message_parts.append(f"✨ Features: {features_list}")
+            
+            message_parts.extend([
+                "",
+                f"View details: {self.get_full_url()}",
+                "",
+                "🛒 Shop premium eyewear at Eyedentity!",
+            ])
+            
+            message = "\n".join(message_parts)
         
         encoded_message = urllib.parse.quote(message)
         return f"https://wa.me/?text={encoded_message}"
