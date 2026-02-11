@@ -87,7 +87,7 @@ class Product(models.Model):
     
     # Business fields
     stock_quantity = models.PositiveIntegerField(default=0)
-    product_code = models.CharField(max_length=50, unique=True, blank=True, help_text="Your physical product code (e.g., EYE-PHO-042, SKU-12345)")
+    product_code = models.CharField(max_length=50, unique=True, blank=True, null=True , help_text="Your physical product code (e.g., EYE-PHO-042, SKU-12345)")
     whatsapp_message = models.TextField(blank=True, help_text="Custom WhatsApp message for this product")
     whatsapp_share_message = models.TextField(blank=True, help_text="Custom WhatsApp share message (leave blank for auto-generated)")
     is_featured = models.BooleanField(default=False)
