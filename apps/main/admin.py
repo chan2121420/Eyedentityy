@@ -122,7 +122,7 @@ class CompanyInfoAdmin(admin.ModelAdmin):
     list_display = ['name', 'phone', 'email', 'updated_at']
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'tagline', 'description', 'logo')
+            'fields': ('name', 'tagline', 'description', 'logo', 'hero_image')
         }),
         ('Contact Details', {
             'fields': ('address', 'phone', 'whatsapp', 'email', 'opening_hours')

@@ -182,21 +182,27 @@
 
 <style>
 .hero {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(34, 197, 94, 0.05));
-    padding: 6rem 0 4rem;
-}
+    {% if company_info.hero_image %}
+     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                url("{{ company_info.hero_image.url }}");
+    {% else %}
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url("{% static 'images/EYD 6.jpg' %}");
+     {% endif %}
 
-.hero-content {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 10rem 0 8rem;
+    position: relative;
+    color: #ffffff; 
 }
 
 .hero-title {
     font-size: 3.5rem;
     font-weight: 800;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    background: linear-gradient(135deg, #ffffff, #e0e0e0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -204,9 +210,32 @@
 
 .hero-subtitle {
     font-size: 1.25rem;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.9)
     margin-bottom: 2rem;
     line-height: 1.8;
+}
+
+.hero-tag {
+    padding: 0.5rem 1.25rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.hero-tag:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #ffffff;
+    color: #ffffff;
+}
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .hero-links {
@@ -215,23 +244,6 @@
     gap: 0.75rem;
     justify-content: center;
     margin-bottom: 2.5rem;
-}
-
-.hero-tag {
-    padding: 0.5rem 1.25rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 24px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-}
-
-.hero-tag:hover {
-    background: var(--bg-tertiary);
-    border-color: var(--accent-primary);
-    color: var(--accent-primary);
 }
 
 .hero-actions {

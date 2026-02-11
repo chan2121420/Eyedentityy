@@ -71,6 +71,7 @@ class Product(models.Model):
     ]
 
     name = models.CharField(max_length=200)
+    product_code = models.CharField(max_length=50, unique=True, blank=True, null=True , help_text="Your physical product code (e.g., EYE-PHO-042, SKU-12345)")
     slug = models.SlugField(unique=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     description = models.TextField()
@@ -87,7 +88,6 @@ class Product(models.Model):
     
     # Business fields
     stock_quantity = models.PositiveIntegerField(default=0)
-    product_code = models.CharField(max_length=50, unique=True, blank=True, null=True , help_text="Your physical product code (e.g., EYE-PHO-042, SKU-12345)")
     whatsapp_message = models.TextField(blank=True, help_text="Custom WhatsApp message for this product")
     whatsapp_share_message = models.TextField(blank=True, help_text="Custom WhatsApp share message (leave blank for auto-generated)")
     is_featured = models.BooleanField(default=False)
@@ -405,6 +405,7 @@ class CompanyInfo(models.Model):
     opening_hours = models.TextField()
     map_embed = models.TextField(blank=True, help_text="Google Maps embed code")
     logo = models.ImageField(upload_to='company/', blank=True)
+    hero_image = models.ImageField(upload_to='company/hero/', blank=True)
     
     # Social media
     facebook_url = models.URLField(blank=True)
