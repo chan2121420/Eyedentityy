@@ -1,20 +1,13 @@
-"""
-Django settings for Eyedentity project - FIXED VERSION
-"""
 import dj_database_url
 import os
 from pathlib import Path
+from django.contrib.messages import constants as messages
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-dev-key")
 
-# Quick-start development settings - unsuitable for production
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = os.environ.get("DEBUG", "True") == "False"
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -25,7 +18,6 @@ ALLOWED_HOSTS = [
     'www.eyedentity.co.zw'
 ]
 
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -35,22 +27,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.sitemaps',
-    
-    # Third-party apps
     'ckeditor',
     'ckeditor_uploader',
     'crispy_forms',
     'crispy_bootstrap5',
-
-    # Cloudinary/S3 storage
     'storages',
-    
-    # Local apps
     'apps.main',
     'apps.blog',
 ]
 
-# Only add debug toolbar if DEBUG is True
 if DEBUG:
     INSTALLED_APPS += ['debug_toolbar']
 
@@ -65,7 +50,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Only add debug toolbar middleware if DEBUG is True
 if DEBUG:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
@@ -91,9 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Eyedentity.wsgi.application'
 
-
-# Database
-# Uses "Pooler" connection for high performance on Render/Fly
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
@@ -101,124 +82,92 @@ DATABASES = {
     )
 }
 
-
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Africa/Harare'
 USE_I18N = True
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# Handled by Whitenoise
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 SUPABASE_PROJECT_ID = 'jmzrevalerojybgvxfas'
 AWS_STORAGE_BUCKET_NAME = 'media'
-
 AWS_ACCESS_KEY_ID = os.environ.get('SUPABASE_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_SECRET_ACCESS_KEY')
-
 AWS_S3_ENDPOINT_URL = f'https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3'
-
 AWS_S3_REGION_NAME = 'us-east-1'
 AWS_S3_ADDRESSING_STYLE = "path"
-AWS_QUERYSTRING_AUTH = False  # Make URLs public
+AWS_QUERYSTRING_AUTH = False
 AWS_S3_FILE_OVERWRITE = False
-
 AWS_S3_CUSTOM_DOMAIN = f'{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}'
-
-# Media URL
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
-
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 AWS_DEFAULT_ACL = 'public-read'
 AWS_S3_VERIFY = True
 
+if DEBUG:
+    MEDIA_URL = '/media/'
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+else:
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Site ID (required for django.contrib.sites)
 SITE_ID = 1
 
-# CKEditor settings
+SECURE_SSL_REDIRECT = False
+SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 CKEDITOR_UPLOAD_PATH = ''
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
-
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
         'height': 300,
         'width': '100%',
         'extraPlugins': ','.join([
-            'uploadimage',
-            'div',
-            'autolink',
-            'autoembed',
-            'embedsemantic',
-            'autogrow',
-            'widget',
-            'lineutils',
-            'clipboard',
-            'dialog',
-            'dialogui',
-            'elementspath'
+            'uploadimage', 'div', 'autolink', 'autoembed',
+            'embedsemantic', 'autogrow', 'widget', 'lineutils',
+            'clipboard', 'dialog', 'dialogui', 'elementspath'
         ]),
-        'removePlugins': ','.join([
-            'stylesheetparser',
-        ]),
+        'removePlugins': ','.join(['stylesheetparser']),
     },
     'awesome_ckeditor': {
         'toolbar': 'Basic',
     },
 }
 
-# Crispy forms settings
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
-# Security settings (for production)
-if not DEBUG:
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_REDIRECT_EXEMPT = []
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
 
-# Logging configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -263,11 +212,6 @@ LOGGING = {
     },
 }
 
-# Create logs directory if it doesn't exist
-LOGS_DIR = BASE_DIR / 'logs'
-LOGS_DIR.mkdir(exist_ok=True)
-
-# Cache settings
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -275,13 +219,10 @@ CACHES = {
     }
 }
 
-# Session settings
 SESSION_COOKIE_AGE = 1209600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
 
-# Message framework settings
-from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.DEBUG: 'debug',
     messages.INFO: 'info',
@@ -290,25 +231,17 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-# Pagination settings
 PAGINATE_BY = 12
 
-# SEO settings
 DEFAULT_META_DESCRIPTION = "Eyedentity Eyewear - Premium eyewear solutions in Harare, Zimbabwe. Stylish, protective, and uniquely you."
 DEFAULT_META_KEYWORDS = "eyewear, glasses, sunglasses, Harare, Zimbabwe, blue light, photochromic, polarized"
 
-# File upload settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
-# Image processing settings
 THUMBNAIL_SIZE = (300, 300)
 PRODUCT_IMAGE_SIZE = (800, 600)
 BLOG_IMAGE_SIZE = (1200, 600)
 
-# Debug Toolbar settings (only if DEBUG is True)
 if DEBUG:
-    INTERNAL_IPS = [
-        '127.0.0.1',
-        'localhost',
-    ]
+    INTERNAL_IPS = ['127.0.0.1', 'localhost']
