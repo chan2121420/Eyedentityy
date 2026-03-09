@@ -393,3 +393,4 @@ WARNING 2026-03-07 09:50:30,576 log 282677 139909901842112 Bad Request: /favicon
 WARNING 2026-03-07 09:50:30,576 basehttp 282677 139909901842112 "GET /favicon.ico HTTP/1.1" 400 143
 INFO 2026-03-07 10:19:32,346 autoreload 282677 139910220112384 /home/chantel/Documents/Eyedentity/Eyedentity/settings.py changed, reloading.
 INFO 2026-03-07 10:19:32,700 autoreload 299280 140173080048128 Watching for file changes with StatReloader
+INFO 2026-03-09 12:13:36,925 autoreload 699407 140121827136000 Watching for file changes with StatReloader

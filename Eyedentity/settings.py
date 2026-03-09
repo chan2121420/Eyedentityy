@@ -75,7 +75,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'eyedentity',
-        'USER': 'chan',
+        'USER': 'postgres',
         'PASSWORD': 'admin123',
         'HOST': 'localhost',
         'PORT': '5432',
