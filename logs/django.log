@@ -227,3 +227,169 @@ INFO 2026-03-04 09:51:03,643 basehttp 36808 139818536265408 code 400, message Ba
 ERROR 2026-03-04 09:51:03,643 basehttp 36808 139818536265408 You're accessing the development server over HTTPS, but it only supports HTTP.
 INFO 2026-03-04 09:51:03,646 basehttp 36808 139818519480000 code 400, message Bad request version ('k')
 ERROR 2026-03-04 09:51:03,646 basehttp 36808 139818519480000 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2026-03-04 15:54:54,516 autoreload 191724 140633424048640 Watching for file changes with StatReloader
+ERROR 2026-03-04 15:55:00,144 exception 191724 140633353217728 Invalid HTTP_HOST header: '0.0.0.0:8102'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+                                 ~~~~~~~~~~~~~~~~^^
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8102'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-04 15:55:00,147 log 191724 140633353217728 Bad Request: /
+WARNING 2026-03-04 15:55:00,147 basehttp 191724 140633353217728 "GET / HTTP/1.1" 400 143
+ERROR 2026-03-04 15:55:00,176 exception 191724 140633344825024 Invalid HTTP_HOST header: '0.0.0.0:8102'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+                                 ~~~~~~~~~~~~~~~~^^
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8102'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-04 15:55:00,177 log 191724 140633344825024 Bad Request: /favicon.ico
+WARNING 2026-03-04 15:55:00,177 basehttp 191724 140633344825024 "GET /favicon.ico HTTP/1.1" 400 143
+INFO 2026-03-07 09:39:30,025 autoreload 282241 139821365449216 Watching for file changes with StatReloader
+ERROR 2026-03-07 09:39:33,606 exception 282241 139821295068864 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+                                 ~~~~~~~~~~~~~~~~^^
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:39:33,610 log 282241 139821295068864 Bad Request: /
+WARNING 2026-03-07 09:39:33,610 basehttp 282241 139821295068864 "GET / HTTP/1.1" 400 143
+ERROR 2026-03-07 09:39:33,686 exception 282241 139821286676160 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/security.py", line 28, in process_request
+    host = self.redirect_host or request.get_host()
+                                 ~~~~~~~~~~~~~~~~^^
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:39:33,687 log 282241 139821286676160 Bad Request: /favicon.ico
+WARNING 2026-03-07 09:39:33,688 basehttp 282241 139821286676160 "GET /favicon.ico HTTP/1.1" 400 143
+INFO 2026-03-07 09:40:16,257 autoreload 282241 139821365449216 /home/chantel/Documents/Eyedentity/Eyedentity/settings.py changed, reloading.
+INFO 2026-03-07 09:40:16,561 autoreload 282677 139910220112384 Watching for file changes with StatReloader
+ERROR 2026-03-07 09:40:20,280 exception 282677 139910149301952 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:40:20,281 log 282677 139910149301952 Bad Request: /
+WARNING 2026-03-07 09:40:20,282 basehttp 282677 139910149301952 "GET / HTTP/1.1" 400 143
+ERROR 2026-03-07 09:40:20,309 exception 282677 139910140909248 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:40:20,310 log 282677 139910140909248 Bad Request: /favicon.ico
+WARNING 2026-03-07 09:40:20,310 basehttp 282677 139910140909248 "GET /favicon.ico HTTP/1.1" 400 143
+ERROR 2026-03-07 09:40:21,281 exception 282677 139910140909248 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:40:21,282 log 282677 139910140909248 Bad Request: /
+WARNING 2026-03-07 09:40:21,282 basehttp 282677 139910140909248 "GET / HTTP/1.1" 400 143
+ERROR 2026-03-07 09:40:21,304 exception 282677 139910149301952 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:40:21,305 log 282677 139910149301952 Bad Request: /favicon.ico
+WARNING 2026-03-07 09:40:21,305 basehttp 282677 139910149301952 "GET /favicon.ico HTTP/1.1" 400 143
+ERROR 2026-03-07 09:40:22,133 exception 282677 139910132516544 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:40:22,133 log 282677 139910132516544 Bad Request: /
+WARNING 2026-03-07 09:40:22,133 basehttp 282677 139910132516544 "GET / HTTP/1.1" 400 143
+ERROR 2026-03-07 09:40:22,153 exception 282677 139910124123840 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:40:22,154 log 282677 139910124123840 Bad Request: /favicon.ico
+WARNING 2026-03-07 09:40:22,154 basehttp 282677 139910124123840 "GET /favicon.ico HTTP/1.1" 400 143
+ERROR 2026-03-07 09:50:30,551 exception 282677 139910115731136 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:50:30,552 log 282677 139910115731136 Bad Request: /
+WARNING 2026-03-07 09:50:30,552 basehttp 282677 139910115731136 "GET / HTTP/1.1" 400 143
+ERROR 2026-03-07 09:50:30,575 exception 282677 139909901842112 Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/chantel/Documents/Eyedentity/venv/lib/python3.13/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8100'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
+WARNING 2026-03-07 09:50:30,576 log 282677 139909901842112 Bad Request: /favicon.ico
+WARNING 2026-03-07 09:50:30,576 basehttp 282677 139909901842112 "GET /favicon.ico HTTP/1.1" 400 143
+INFO 2026-03-07 10:19:32,346 autoreload 282677 139910220112384 /home/chantel/Documents/Eyedentity/Eyedentity/settings.py changed, reloading.
+INFO 2026-03-07 10:19:32,700 autoreload 299280 140173080048128 Watching for file changes with StatReloader
