@@ -212,13 +212,13 @@
         <span class="whatsapp-text">Need help? Chat with us!</span>
     </a>
 
-    <!-- Social Proof Notification -->
+    {% comment %} <!-- Social Proof Notification -->
     <div id="socialProof" class="social-proof-notification" style="display: none;">
         <div class="social-proof-content">
             <i class="bi bi-check-circle-fill"></i>
             <span class="social-proof-text"></span>
         </div>
-    </div>
+    </div> {% endcomment %}
 
     <!-- Footer -->
     <footer class="main-footer">
@@ -319,7 +319,8 @@
             }
         });
         
-        // Social Proof Notifications
+        /*
+         // Social Proof Notifications
         const socialProofMessages = [
             "John from Harare just purchased Photochromic Glasses",
             "Sarah from Bulawayo ordered Anti-Blue Light Glasses",
@@ -343,7 +344,8 @@
         
         // Show social proof every 15 seconds
         setInterval(showSocialProof, 15000);
-        setTimeout(showSocialProof, 5000); // First one after 5 seconds
+        setTimeout(showSocialProof, 5000); // First one after 5 seconds {% endcomment %}
+        */
         
         // Lazy Loading Images
         if ('loading' in HTMLImageElement.prototype) {
