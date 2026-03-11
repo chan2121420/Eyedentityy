@@ -210,13 +210,15 @@
         <span class="whatsapp-text">Need help? Chat with us!</span>
     </a>
 
-    {% comment %} <!-- Social Proof Notification -->
+    <!-- Social Proof Notification (disabled) -->
+    <!--
     <div id="socialProof" class="social-proof-notification" style="display: none;">
         <div class="social-proof-content">
             <i class="bi bi-check-circle-fill"></i>
             <span class="social-proof-text"></span>
         </div>
-    </div> {% endcomment %}
+    </div>
+    -->
 
     <!-- Footer -->
     <footer class="main-footer">
@@ -273,7 +275,7 @@
                     <span class="badge-label">We Accept:</span>
                     <div class="payment-icons">
                         <img src="{% static 'images/ecocash.png' %}" alt="EcoCash" loading="lazy">
-                        {% comment %} <img src="{% static 'images/onemoney.png' %}" alt="OneMoney" loading="lazy"> {% endcomment %}
+                        <!-- <img src="{% static 'images/onemoney.png' %}" alt="OneMoney" loading="lazy"> -->
                         <i class="bi bi-cash"></i>
                     </div>
                 </div>
@@ -316,9 +318,9 @@
                 toggleNav();
             }
         });
-        
+
+        // Social Proof Notifications (disabled)
         /*
-         // Social Proof Notifications
         const socialProofMessages = [
             "John from Harare just purchased Photochromic Glasses",
             "Sarah from Bulawayo ordered Anti-Blue Light Glasses",
@@ -342,7 +344,7 @@
         
         // Show social proof every 15 seconds
         setInterval(showSocialProof, 15000);
-        setTimeout(showSocialProof, 5000); // First one after 5 seconds {% endcomment %}
+        setTimeout(showSocialProof, 5000);
         */
         
         // Lazy Loading Images
