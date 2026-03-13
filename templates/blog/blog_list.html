@@ -4,136 +4,110 @@
             <div class="col-lg-4 col-md-6 col-6 mb-4">
 
 {% block content %}
-<section class="py-5" style="margin-top: 80px;">
+<section class="py-5 blog-section">
     <div class="container">
-        <h1 class="section-title">Eyewear Blog</h1>
-        <p class="text-center mb-5 text-light">Stay updated with the latest trends, tips, and news in eyewear fashion and eye health.</p>
-        
-        <!-- Category Filter -->
+        <div class="blog-header">
+            <p class="blog-eyebrow">Journal</p>
+            <h1 class="section-title">Eyewear Blog</h1>
+            <p class="section-subtitle" style="margin-bottom: 2rem;">Stay updated with the latest trends, tips, and news in eyewear fashion and eye health.</p>
+        </div>
+
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="text-center">
-                            <a href="{% url 'blog_list' %}" 
-                               class="btn btn-sm {% if not current_category %}btn-primary{% else %}btn-outline-primary{% endif %} me-2 mb-2">
-                                <i class="bi bi-grid me-1"></i>All Posts
-                            </a>
-                            {% for category in categories %}
-                            <a href="?category={{ category.slug }}" 
-                               class="btn btn-sm {% if current_category == category.slug %}btn-primary{% else %}btn-outline-primary{% endif %} me-2 mb-2">
-                                <i class="bi bi-tag me-1"></i>{{ category.name }}
-                            </a>
-                            {% endfor %}
-                        </div>
+                <div class="filter-bar">
+                    <div class="filter-bar-inner">
+                        <a href="{% url 'blog_list' %}"
+                           class="filter-pill {% if not current_category %}active{% endif %}">
+                            All Posts
+                        </a>
+                        {% for category in categories %}
+                        <a href="?category={{ category.slug }}"
+                           class="filter-pill {% if current_category == category.slug %}active{% endif %}">
+                            {{ category.name }}
+                        </a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Featured Post (if first page and no category filter) -->
+
         {% if not current_category and posts.number == 1 and posts %}
-        <div class="row mb-5">
+        <div class="row mb-4">
             <div class="col-12">
-                <div class="card" style="background: linear-gradient(135deg, var(--bg-accent), var(--bg-secondary));">
-                    <div class="row g-0">
-                        <div class="col-md-6">
-                            <img src="{{ posts.0.featured_image.url }}" class="img-fluid rounded-start h-100" style="object-fit: cover; min-height: 300px;" alt="{{ posts.0.title }}">
+                <a href="{{ posts.0.get_absolute_url }}" class="featured-post-card">
+                    <div class="featured-post-image">
+                        <img src="{{ posts.0.featured_image.url }}" alt="{{ posts.0.title }}">
+                    </div>
+                    <div class="featured-post-body">
+                        <div class="featured-post-meta">
+                            <span class="post-category-badge">{{ posts.0.category.name }}</span>
+                            <span class="featured-label">Featured</span>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card-body d-flex flex-column h-100">
-                                <div>
-                                    <span class="badge bg-primary mb-2">Featured Post</span>
-                                    <span class="badge bg-dark ms-2">{{ posts.0.category.name }}</span>
-                                </div>
-                                <h3 class="card-title">{{ posts.0.title }}</h3>
-                                <p class="card-text">{{ posts.0.excerpt }}</p>
-                                <div class="mt-auto">
-                                    <div class="d-flex align-items-center text-muted mb-3">
-                                        <i class="bi bi-person-fill me-2"></i>
-                                        <span class="me-3">{{ posts.0.author.get_full_name|default:posts.0.author.username }}</span>
-                                        <i class="bi bi-calendar-fill me-2"></i>
-                                        <span>{{ posts.0.created_at|date:"M d, Y" }}</span>
-                                    </div>
-                                    <a href="{{ posts.0.get_absolute_url }}" class="btn btn-primary">
-                                        Read More <i class="bi bi-arrow-right ms-2"></i>
-                                    </a>
-                                </div>
-                            </div>
+                        <h2 class="featured-post-title">{{ posts.0.title }}</h2>
+                        <p class="featured-post-excerpt">{{ posts.0.excerpt }}</p>
+                        <div class="featured-post-footer">
+                            <span class="post-author"><i class="bi bi-person"></i> {{ posts.0.author.get_full_name|default:posts.0.author.username }}</span>
+                            <span class="post-date"><i class="bi bi-calendar3"></i> {{ posts.0.created_at|date:"M d, Y" }}</span>
+                            <span class="read-more-arrow">Read article <i class="bi bi-arrow-right"></i></span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         {% endif %}
-        
-        <!-- Blog Posts Grid -->
+
         <div class="row">
             {% for post in posts %}
-            <!-- Skip first post if it's featured -->
             {% if not forloop.first or current_category or posts.number != 1 %}
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="position-relative">
-                        <img src="{{ post.featured_image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ post.title }}">
-                        {% if post.is_featured %}
-                        <div class="position-absolute top-0 start-0 m-2">
-                            <span class="badge bg-warning">Featured</span>
+                <a href="{{ post.get_absolute_url }}" class="blog-card-link">
+                    <div class="blog-card">
+                        <div class="blog-card-image">
+                            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                            {% if post.is_featured %}
+                            <span class="blog-card-badge">Featured</span>
+                            {% endif %}
                         </div>
-                        {% endif %}
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <div class="mb-2">
-                            <span class="badge bg-primary">{{ post.category.name }}</span>
-                            <small class="text-muted ms-2">
-                                <i class="bi bi-calendar me-1"></i>{{ post.created_at|date:"M d, Y" }}
-                            </small>
-                        </div>
-                        <h5 class="card-title">{{ post.title }}</h5>
-                        <p class="card-text flex-grow-1">{{ post.excerpt }}</p>
-                        
-                        <!-- Post Meta -->
-                        <div class="d-flex align-items-center text-muted mb-3">
-                            <i class="bi bi-person me-1"></i>
-                            <span class="me-3">{{ post.author.get_full_name|default:post.author.username }}</span>
-                            <i class="bi bi-eye me-1"></i>
-                            <span>{{ post.views|default:0 }}</span>
-                        </div>
-                        
-                        <div class="mt-auto">
-                            <a href="{{ post.get_absolute_url }}" class="btn btn-primary">
-                                Read More <i class="bi bi-arrow-right ms-2"></i>
-                            </a>
+                        <div class="blog-card-body">
+                            <div class="blog-card-meta">
+                                <span class="post-category-badge">{{ post.category.name }}</span>
+                                <span class="post-date-small">{{ post.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            <h3 class="blog-card-title">{{ post.title }}</h3>
+                            <p class="blog-card-excerpt">{{ post.excerpt }}</p>
+                            <div class="blog-card-footer">
+                                <span class="post-author-small"><i class="bi bi-person"></i> {{ post.author.get_full_name|default:post.author.username }}</span>
+                                <span class="post-views-small"><i class="bi bi-eye"></i> {{ post.views|default:0 }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             {% endif %}
             {% empty %}
-            <div class="col-12 text-center py-5">
-                <div class="mb-4">
-                    <i class="bi bi-journal-text" style="font-size: 4rem; color: var(--text-muted);"></i>
+            <div class="col-12">
+                <div class="empty-blog">
+                    <i class="bi bi-journal-text"></i>
+                    <h4>No blog posts available</h4>
+                    <p>Check back soon for the latest eyewear tips and trends.</p>
                 </div>
-                <h4 class="text-muted">No blog posts available</h4>
-                <p class="text-muted">Check back soon for the latest eyewear tips and trends!</p>
             </div>
             {% endfor %}
         </div>
-        
-        <!-- Pagination -->
+
         {% if posts.has_other_pages %}
         <div class="row">
             <div class="col-12">
                 <nav aria-label="Blog pagination" class="mt-4">
-                    <ul class="pagination justify-content-center">
+                    <ul class="pagination">
                         {% if posts.has_previous %}
                         <li class="page-item">
                             <a class="page-link" href="?page={{ posts.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}">
-                                <i class="bi bi-chevron-left"></i> Previous
+                                <i class="bi bi-chevron-left"></i>
                             </a>
                         </li>
                         {% endif %}
-                        
+
                         {% for num in posts.paginator.page_range %}
                         {% if posts.number == num %}
                         <li class="page-item active">
@@ -145,11 +119,11 @@
                         </li>
                         {% endif %}
                         {% endfor %}
-                        
+
                         {% if posts.has_next %}
                         <li class="page-item">
                             <a class="page-link" href="?page={{ posts.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}">
-                                Next <i class="bi bi-chevron-right"></i>
+                                <i class="bi bi-chevron-right"></i>
                             </a>
                         </li>
                         {% endif %}
@@ -159,26 +133,384 @@
         </div>
         {% endif %}
 
-        <!-- Popular Categories -->
-        <div class="row mt-5">
-            <div class="col-12">
-                <h3 class="text-center mb-4">Popular Topics</h3>
-                <div class="text-center">
-                    <a href="?category=eye-health" class="btn btn-outline-primary me-2 mb-2">
-                        <i class="bi bi-heart-pulse me-1"></i>Eye Health
-                    </a>
-                    <a href="?category=fashion" class="btn btn-outline-primary me-2 mb-2">
-                        <i class="bi bi-palette me-1"></i>Fashion Trends
-                    </a>
-                    <a href="?category=technology" class="btn btn-outline-primary me-2 mb-2">
-                        <i class="bi bi-cpu me-1"></i>Lens Technology
-                    </a>
-                    <a href="?category=tips" class="btn btn-outline-primary me-2 mb-2">
-                        <i class="bi bi-lightbulb me-1"></i>Care Tips
-                    </a>
-                </div>
+        <div class="popular-topics">
+            <h3>Popular Topics</h3>
+            <div class="topics-row">
+                <a href="?category=eye-health" class="topic-pill"><i class="bi bi-heart-pulse"></i>Eye Health</a>
+                <a href="?category=fashion" class="topic-pill"><i class="bi bi-palette"></i>Fashion Trends</a>
+                <a href="?category=technology" class="topic-pill"><i class="bi bi-cpu"></i>Lens Technology</a>
+                <a href="?category=tips" class="topic-pill"><i class="bi bi-lightbulb"></i>Care Tips</a>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+.blog-section {
+    background: var(--bg-primary);
+    min-height: 100vh;
+}
+
+.blog-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.blog-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-primary);
+    margin-bottom: 0.75rem;
+}
+
+.filter-bar {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 0.875rem 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.filter-bar-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.filter-pill {
+    padding: 0.4375rem 1rem;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.filter-pill:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+}
+
+.filter-pill.active {
+    background: var(--accent-primary-dim);
+    border-color: rgba(56, 189, 248, 0.3);
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.featured-post-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-color var(--transition), transform var(--transition);
+}
+
+.featured-post-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+}
+
+.featured-post-image {
+    overflow: hidden;
+    aspect-ratio: 16/9;
+}
+
+.featured-post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.featured-post-card:hover .featured-post-image img {
+    transform: scale(1.04);
+}
+
+.featured-post-body {
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.featured-post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.post-category-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+}
+
+.featured-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+}
+
+.featured-post-title {
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+}
+
+.featured-post-excerpt {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 1.75rem;
+}
+
+.featured-post-footer {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.post-author,
+.post-date {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.read-more-arrow {
+    margin-left: auto;
+    color: var(--accent-primary);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.blog-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.blog-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: border-color var(--transition), transform var(--transition);
+}
+
+.blog-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-strong);
+}
+
+.blog-card-image {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16/10;
+}
+
+.blog-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.blog-card:hover .blog-card-image img {
+    transform: scale(1.04);
+}
+
+.blog-card-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+}
+
+.blog-card-body {
+    padding: 1.375rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.blog-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-bottom: 0.875rem;
+}
+
+.post-date-small {
+    font-size: 0.775rem;
+    color: var(--text-muted);
+}
+
+.blog-card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.625rem;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+}
+
+.blog-card-excerpt {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.65;
+    flex-grow: 1;
+    margin-bottom: 1.125rem;
+}
+
+.blog-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding-top: 0.875rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.post-author-small,
+.post-views-small {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.empty-blog {
+    text-align: center;
+    padding: 5rem 2rem;
+}
+
+.empty-blog i {
+    font-size: 4rem;
+    color: var(--text-faint);
+    display: block;
+    margin-bottom: 1.5rem;
+}
+
+.empty-blog h4 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.empty-blog p {
+    color: var(--text-secondary);
+}
+
+.popular-topics {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.popular-topics h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+}
+
+.topics-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    justify-content: center;
+}
+
+.topic-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5625rem 1.125rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.topic-pill:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+}
+
+@media (max-width: 768px) {
+    .featured-post-card {
+        grid-template-columns: 1fr;
+    }
+
+    .featured-post-body {
+        padding: 1.5rem;
+    }
+
+    .featured-post-title {
+        font-size: 1.375rem;
+    }
+
+    .featured-post-footer {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .read-more-arrow {
+        margin-left: 0;
+    }
+}
+</style>
 {% endblock %}
