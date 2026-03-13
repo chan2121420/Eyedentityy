@@ -4,39 +4,39 @@
 {% block title %}{{ category.name }} - Products{% endblock %}
 
 {% block content %}
-<section class="section">
+<section class="section category-detail-page">
     <div class="container">
-        <div class="category-header">
+        <div class="category-page-header">
+            <a href="{% url 'categories' %}" class="back-link">
+                <i class="bi bi-arrow-left"></i> All Categories
+            </a>
             <h1 class="category-title">{{ category.name }}</h1>
             <p class="category-description">{{ category.description|default:"Discover our premium collection in this category" }}</p>
         </div>
-        
+
         <div class="products-grid">
             {% for product in products %}
             <div class="shop-product-card">
                 {% if product.is_on_sale and product.discount_percentage %}
                 <div class="product-badge">{{ product.discount_percentage }}% OFF</div>
                 {% endif %}
-                
+
                 <a href="{{ product.get_absolute_url }}" class="product-img-link">
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
                 </a>
-                
+
                 <div class="product-info">
                     <a href="{{ product.get_absolute_url }}" class="product-name-link">
                         <h3 class="product-name">{{ product.name }}</h3>
                     </a>
-                    
                     <p class="product-desc">{{ product.description|truncatewords:15 }}</p>
-                    
                     <div class="product-price">
                         <span class="price-current">${{ product.price }}</span>
                         {% if product.old_price %}
                         <span class="price-old">${{ product.old_price }}</span>
                         {% endif %}
                     </div>
-                    
-                    <a href="{{ product.whatsapp_link }}" target="_blank" class="btn btn-primary btn-block">
+                    <a href="{{ product.whatsapp_link }}" target="_blank" class="btn-order-whatsapp">
                         <i class="bi bi-whatsapp"></i>
                         Order Now
                     </a>
@@ -51,7 +51,7 @@
             </div>
             {% endfor %}
         </div>
-        
+
         {% if products.has_other_pages %}
         <nav class="pagination-nav">
             <ul class="pagination">
@@ -62,13 +62,13 @@
                     </a>
                 </li>
                 {% endif %}
-                
+
                 {% for num in products.paginator.page_range %}
                 <li class="page-item {% if products.number == num %}active{% endif %}">
                     <a class="page-link" href="?page={{ num }}">{{ num }}</a>
                 </li>
                 {% endfor %}
-                
+
                 {% if products.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ products.next_page_number }}">
@@ -83,79 +83,105 @@
 </section>
 
 <style>
-.category-header {
-    text-align: center;
+.category-detail-page {
+    background: var(--bg-primary);
+}
+
+.category-page-header {
     margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    transition: color var(--transition-fast);
+}
+
+.back-link:hover {
+    color: var(--accent-primary);
 }
 
 .category-title {
+    font-family: var(--font-display);
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.875rem;
     color: var(--text-primary);
+    letter-spacing: -0.025em;
 }
 
 .category-description {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--text-secondary);
     max-width: 600px;
-    margin: 0 auto;
+    line-height: 1.7;
 }
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(276px, 1fr));
+    gap: 1.5rem;
     margin-bottom: 3rem;
 }
 
 .shop-product-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     position: relative;
-    transition: all 0.3s;
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    display: flex;
+    flex-direction: column;
 }
 
 .shop-product-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow);
-    border-color: var(--accent-primary);
+    border-color: var(--border-strong);
 }
 
 .product-badge {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: #ef4444;
+    top: 0.875rem;
+    right: 0.875rem;
+    background: rgba(239, 68, 68, 0.9);
     color: white;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
+    padding: 0.3rem 0.65rem;
+    border-radius: 5px;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     z-index: 10;
+    letter-spacing: 0.02em;
 }
 
 .product-img-link {
     display: block;
+    overflow: hidden;
 }
 
 .product-img {
     width: 100%;
-    height: 280px;
+    height: 272px;
     object-fit: cover;
-    transition: transform 0.3s;
+    transition: transform var(--transition-slow);
 }
 
 .shop-product-card:hover .product-img {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
 .product-info {
-    padding: 1.5rem;
+    padding: 1.375rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .product-name-link {
@@ -164,71 +190,97 @@
 }
 
 .product-name {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     color: var(--text-primary);
+    letter-spacing: -0.01em;
+    line-height: 1.4;
 }
 
 .product-desc {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     color: var(--text-secondary);
     margin-bottom: 1rem;
     line-height: 1.6;
+    flex-grow: 1;
 }
 
 .product-price {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.125rem;
 }
 
 .price-current {
-    font-size: 1.75rem;
+    font-size: 1.625rem;
     font-weight: 700;
-    color: var(--accent-primary);
+    color: var(--accent-secondary);
+    letter-spacing: -0.02em;
 }
 
 .price-old {
-    font-size: 1.25rem;
+    font-size: 1.05rem;
     color: var(--text-muted);
     text-decoration: line-through;
 }
 
-.btn-block {
-    width: 100%;
+.btn-order-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.8125rem;
+    background: #25d366;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+    border: none;
+}
+
+.btn-order-whatsapp:hover {
+    background: #20c157;
+    color: white;
+}
+
+.btn-order-whatsapp i {
+    font-size: 1.125rem;
 }
 
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 5rem 2rem;
 }
 
 .empty-state i {
-    font-size: 5rem;
-    color: var(--text-muted);
+    font-size: 4.5rem;
+    color: var(--text-faint);
     margin-bottom: 1.5rem;
     display: block;
 }
 
 .empty-state h3 {
-    font-size: 1.75rem;
+    font-size: 1.625rem;
     margin-bottom: 0.75rem;
     color: var(--text-primary);
+    letter-spacing: -0.01em;
 }
 
 .empty-state p {
     color: var(--text-secondary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
 }
 
 @media (max-width: 768px) {
     .category-title {
         font-size: 2rem;
     }
-    
+
     .products-grid {
         grid-template-columns: 1fr;
     }
