@@ -1,5 +1,5 @@
 .trust-banner {
-    background: var(--bg-secondary);
+    background: var(--bg-secondary) !important;
     color: var(--text-secondary);
     padding: 0.625rem 0;
     position: fixed;
@@ -66,6 +66,8 @@
     height: 40px;
     border-radius: var(--radius-sm);
     transition: background var(--transition-fast);
+    flex-shrink: 0;
+    outline: none;
 }
 
 .nav-menu-btn:hover {
@@ -73,15 +75,17 @@
 }
 
 .hamburger-line {
-    display: block;
+    display: block !important;
     width: 22px;
     height: 2px;
     background: var(--text-secondary);
     border-radius: 2px;
+    flex-shrink: 0;
     transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
                 opacity 200ms ease,
                 background var(--transition-fast);
     transform-origin: center;
+    pointer-events: none;
 }
 
 .nav-menu-btn:hover .hamburger-line {
@@ -103,6 +107,16 @@
     background: var(--text-primary);
 }
 
+@media (min-width: 769px) {
+    .nav-menu-btn {
+        display: none !important;
+    }
+
+    .mobile-menu {
+        display: none !important;
+    }
+}
+
 @media (max-width: 768px) {
     .nav-menu-btn {
         display: flex;
@@ -114,13 +128,14 @@
 }
 
 .mobile-menu {
-    display: none;
-    flex-direction: column;
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-color);
     max-height: 0;
     overflow: hidden;
-    transition: max-height 350ms cubic-bezier(0.16, 1, 0.3, 1);
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border-top: 0px solid var(--border-color);
+    transition: max-height 350ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-top-width 350ms ease;
+    display: none;
 }
 
 @media (max-width: 768px) {
@@ -131,6 +146,7 @@
 
 .mobile-menu.open {
     max-height: 520px;
+    border-top-width: 1px;
 }
 
 .mobile-menu-links {

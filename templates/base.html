@@ -46,6 +46,27 @@
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <link rel="stylesheet" href="{% static 'css/enhancements.css' %}">
 
+    <style>
+        /* Critical overrides - cannot be overridden by cached external CSS */
+        .trust-banner {
+            background: #111318 !important;
+            background-image: none !important;
+        }
+        @media (min-width: 769px) {
+            .mobile-menu { display: none !important; max-height: 0 !important; }
+            .nav-menu-btn { display: none !important; }
+        }
+        @media (max-width: 768px) {
+            .desktop-nav { display: none !important; }
+            .nav-menu-btn { display: flex !important; }
+        }
+        .mobile-menu:not(.open) { max-height: 0 !important; overflow: hidden !important; }
+        .hamburger-line { display: block !important; width: 22px; height: 2px; background: #8b93a8; border-radius: 2px; flex-shrink: 0; }
+        .nav-menu-btn.open .hamburger-line:nth-child(1) { transform: translateY(7px) rotate(45deg); background: #f0f2f7; }
+        .nav-menu-btn.open .hamburger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .nav-menu-btn.open .hamburger-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: #f0f2f7; }
+    </style>
+
     {% block extra_css %}{% endblock %}
 
     {% block structured_data %}
