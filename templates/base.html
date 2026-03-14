@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>{% block title %}Eyedentity Zee Eyewear{% endblock %}</title>
+    <title>{% block title %}Eyedentity Eyewear | Premium Eyewear in Harare, Zimbabwe{% endblock %}</title>
     <meta name="title" content="{% block meta_title %}Eyedentity Eyewear - Premium Eyewear Solutions in Zimbabwe{% endblock %}">
     <meta name="description" content="{% block description %}Shop premium photochromic, polarized, anti-blue light glasses and optical frames in Harare, Zimbabwe. Quality eyewear for style and protection. Same-day delivery available.{% endblock %}">
     <meta name="keywords" content="{% block keywords %}eyewear Zimbabwe, glasses Harare, photochromic glasses, polarized sunglasses, blue light glasses, optical frames, prescription glasses Zimbabwe, sunglasses Harare{% endblock %}">
@@ -147,31 +147,63 @@
                 <a class="nav-link" href="{% url 'blog_list' %}">Blog</a>
                 <a class="nav-link" href="{% url 'about' %}">About</a>
             </div>
+
+            <button class="nav-menu-btn" id="navMenuBtn" onclick="openOffcanvas()" aria-label="Open navigation menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
-    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
-        <a class="nav-link" href="{% url 'home' %}">
-            <i class="bi bi-house"></i>
-            <span>Home</span>
-        </a>
-        <a class="nav-link" href="{% url 'categories' %}">
-            <i class="bi bi-grid"></i>
-            <span>Categories</span>
-        </a>
-        <a class="nav-link" href="{% url 'shop' %}">
-            <i class="bi bi-shop"></i>
-            <span>Shop</span>
-        </a>
-        <a class="nav-link" href="{% url 'blog_list' %}">
-            <i class="bi bi-journal-text"></i>
-            <span>Blog</span>
-        </a>
-        <a class="nav-link" href="{% url 'about' %}">
-            <i class="bi bi-info-circle"></i>
-            <span>About</span>
-        </a>
-    </nav>
+    <div class="offcanvas-backdrop" id="offcanvasBackdrop" onclick="closeOffcanvas()"></div>
+
+    <div class="offcanvas-nav" id="offcanvasNav" role="dialog" aria-modal="true" aria-label="Navigation menu">
+        <div class="offcanvas-header">
+            <a href="{% url 'home' %}" onclick="closeOffcanvas()">
+                <img src="{% static 'images/White bold.png' %}" alt="Eyedentity Eyewear" height="38" width="auto">
+            </a>
+            <button class="offcanvas-close" onclick="closeOffcanvas()" aria-label="Close navigation menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <nav class="offcanvas-links">
+            <a class="offcanvas-link" href="{% url 'home' %}" onclick="closeOffcanvas()">
+                <i class="bi bi-house"></i>
+                <span>Home</span>
+                <i class="bi bi-chevron-right offcanvas-arrow"></i>
+            </a>
+            <a class="offcanvas-link" href="{% url 'categories' %}" onclick="closeOffcanvas()">
+                <i class="bi bi-grid"></i>
+                <span>Categories</span>
+                <i class="bi bi-chevron-right offcanvas-arrow"></i>
+            </a>
+            <a class="offcanvas-link" href="{% url 'shop' %}" onclick="closeOffcanvas()">
+                <i class="bi bi-shop"></i>
+                <span>Shop</span>
+                <i class="bi bi-chevron-right offcanvas-arrow"></i>
+            </a>
+            <a class="offcanvas-link" href="{% url 'blog_list' %}" onclick="closeOffcanvas()">
+                <i class="bi bi-journal-text"></i>
+                <span>Blog</span>
+                <i class="bi bi-chevron-right offcanvas-arrow"></i>
+            </a>
+            <a class="offcanvas-link" href="{% url 'about' %}" onclick="closeOffcanvas()">
+                <i class="bi bi-info-circle"></i>
+                <span>About</span>
+                <i class="bi bi-chevron-right offcanvas-arrow"></i>
+            </a>
+        </nav>
+
+        <div class="offcanvas-footer">
+            <a href="https://wa.me/263784342632?text=Hi!%20I'm%20interested%20in%20your%20eyewear%20collection"
+               target="_blank" rel="noopener noreferrer" class="offcanvas-whatsapp">
+                <i class="bi bi-whatsapp"></i>
+                Chat with us on WhatsApp
+            </a>
+        </div>
+    </div>
 
     <main class="main-content" role="main">
         {% block content %}{% endblock %}
@@ -259,6 +291,24 @@
     </footer>
 
     <script>
+        function openOffcanvas() {
+            document.getElementById('offcanvasNav').classList.add('open');
+            document.getElementById('offcanvasBackdrop').classList.add('open');
+            document.getElementById('navMenuBtn').setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeOffcanvas() {
+            document.getElementById('offcanvasNav').classList.remove('open');
+            document.getElementById('offcanvasBackdrop').classList.remove('open');
+            document.getElementById('navMenuBtn').setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeOffcanvas();
+        });
+
         if ('loading' in HTMLImageElement.prototype) {
             const images = document.querySelectorAll('img[loading="lazy"]');
             images.forEach(img => {
