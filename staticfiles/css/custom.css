@@ -81,23 +81,6 @@ body {
     width: auto;
 }
 
-.nav-toggle {
-    display: none;
-    background: none;
-    border: 1px solid var(--border-strong);
-    color: var(--text-secondary);
-    font-size: 1.25rem;
-    cursor: pointer;
-    padding: 0.5rem 0.625rem;
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-}
-
-.nav-toggle:hover {
-    border-color: var(--accent-primary);
-    color: var(--accent-primary);
-    background: var(--accent-primary-dim);
-}
 
 .nav-links {
     display: flex;
@@ -156,12 +139,6 @@ body {
 }
 
 @media (max-width: 768px) {
-    .nav-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
     .desktop-nav {
         display: none;
     }
