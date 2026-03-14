@@ -148,62 +148,47 @@
                 <a class="nav-link" href="{% url 'about' %}">About</a>
             </div>
 
-            <button class="nav-menu-btn" id="navMenuBtn" onclick="openOffcanvas()" aria-label="Open navigation menu" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="nav-menu-btn" id="navMenuBtn" onclick="toggleMobileMenu()" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
             </button>
+        </div>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-links">
+                <a class="mobile-menu-link" href="{% url 'home' %}" onclick="toggleMobileMenu()">
+                    <span>Home</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+                <a class="mobile-menu-link" href="{% url 'categories' %}" onclick="toggleMobileMenu()">
+                    <span>Categories</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+                <a class="mobile-menu-link" href="{% url 'shop' %}" onclick="toggleMobileMenu()">
+                    <span>Shop</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+                <a class="mobile-menu-link" href="{% url 'blog_list' %}" onclick="toggleMobileMenu()">
+                    <span>Blog</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+                <a class="mobile-menu-link" href="{% url 'about' %}" onclick="toggleMobileMenu()">
+                    <span>About</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="mobile-menu-footer">
+                <a href="https://wa.me/263784342632?text=Hi!%20I'm%20interested%20in%20your%20eyewear%20collection"
+                   target="_blank" rel="noopener" class="mobile-menu-whatsapp" onclick="toggleMobileMenu()">
+                    <i class="bi bi-whatsapp"></i>
+                    Chat with us
+                </a>
+            </div>
         </div>
     </nav>
 
-    <div class="offcanvas-backdrop" id="offcanvasBackdrop" onclick="closeOffcanvas()"></div>
-
-    <div class="offcanvas-nav" id="offcanvasNav" role="dialog" aria-modal="true" aria-label="Navigation menu">
-        <div class="offcanvas-header">
-            <a href="{% url 'home' %}" onclick="closeOffcanvas()">
-                <img src="{% static 'images/White bold.png' %}" alt="Eyedentity Eyewear" height="38" width="auto">
-            </a>
-            <button class="offcanvas-close" onclick="closeOffcanvas()" aria-label="Close navigation menu">
-                <i class="bi bi-x-lg"></i>
-            </button>
-        </div>
-
-        <nav class="offcanvas-links">
-            <a class="offcanvas-link" href="{% url 'home' %}" onclick="closeOffcanvas()">
-                <i class="bi bi-house"></i>
-                <span>Home</span>
-                <i class="bi bi-chevron-right offcanvas-arrow"></i>
-            </a>
-            <a class="offcanvas-link" href="{% url 'categories' %}" onclick="closeOffcanvas()">
-                <i class="bi bi-grid"></i>
-                <span>Categories</span>
-                <i class="bi bi-chevron-right offcanvas-arrow"></i>
-            </a>
-            <a class="offcanvas-link" href="{% url 'shop' %}" onclick="closeOffcanvas()">
-                <i class="bi bi-shop"></i>
-                <span>Shop</span>
-                <i class="bi bi-chevron-right offcanvas-arrow"></i>
-            </a>
-            <a class="offcanvas-link" href="{% url 'blog_list' %}" onclick="closeOffcanvas()">
-                <i class="bi bi-journal-text"></i>
-                <span>Blog</span>
-                <i class="bi bi-chevron-right offcanvas-arrow"></i>
-            </a>
-            <a class="offcanvas-link" href="{% url 'about' %}" onclick="closeOffcanvas()">
-                <i class="bi bi-info-circle"></i>
-                <span>About</span>
-                <i class="bi bi-chevron-right offcanvas-arrow"></i>
-            </a>
-        </nav>
-
-        <div class="offcanvas-footer">
-            <a href="https://wa.me/263784342632?text=Hi!%20I'm%20interested%20in%20your%20eyewear%20collection"
-               target="_blank" rel="noopener noreferrer" class="offcanvas-whatsapp">
-                <i class="bi bi-whatsapp"></i>
-                Chat with us on WhatsApp
-            </a>
-        </div>
-    </div>
+    <div class="offcanvas-backdrop" id="offcanvasBackdrop" onclick="toggleMobileMenu()"></div>
 
     <main class="main-content" role="main">
         {% block content %}{% endblock %}
@@ -291,22 +276,22 @@
     </footer>
 
     <script>
-        function openOffcanvas() {
-            document.getElementById('offcanvasNav').classList.add('open');
-            document.getElementById('offcanvasBackdrop').classList.add('open');
-            document.getElementById('navMenuBtn').setAttribute('aria-expanded', 'true');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeOffcanvas() {
-            document.getElementById('offcanvasNav').classList.remove('open');
-            document.getElementById('offcanvasBackdrop').classList.remove('open');
-            document.getElementById('navMenuBtn').setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const btn = document.getElementById('navMenuBtn');
+            const backdrop = document.getElementById('offcanvasBackdrop');
+            const isOpen = menu.classList.toggle('open');
+            btn.classList.toggle('open', isOpen);
+            backdrop.classList.toggle('open', isOpen);
+            btn.setAttribute('aria-expanded', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
         }
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeOffcanvas();
+            if (e.key === 'Escape') {
+                const menu = document.getElementById('mobileMenu');
+                if (menu.classList.contains('open')) toggleMobileMenu();
+            }
         });
 
         if ('loading' in HTMLImageElement.prototype) {
