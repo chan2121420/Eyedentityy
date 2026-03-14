@@ -421,3 +421,16 @@ Traceback (most recent call last):
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0:8102'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
 WARNING 2026-03-13 20:11:59,146 log 11958 139978879260352 Bad Request: /favicon.ico
 WARNING 2026-03-13 20:11:59,146 basehttp 11958 139978879260352 "GET /favicon.ico HTTP/1.1" 400 82608
+INFO 2026-03-13 20:14:36,106 autoreload 14721 140353328103936 Watching for file changes with StatReloader
+INFO 2026-03-13 20:14:38,305 basehttp 14721 140353147496128 code 400, message Bad request syntax ('\x16\x03\x01\x06à\x01\x00\x06Ü\x03\x037Î\x91')
+ERROR 2026-03-13 20:14:38,305 basehttp 14721 140353147496128 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2026-03-13 20:14:38,306 basehttp 14721 140353147496128 code 400, message Bad request version ('\x00\x02\x01\x00\x00\x17\x00\x00\x003\x04ï\x04íjj\x00\x01\x00\x11ì\x04Àé·««±|¾õº\x99Ð\x18´\x17$')
+ERROR 2026-03-13 20:14:38,306 basehttp 14721 140353147496128 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2026-03-13 20:14:40,050 basehttp 14721 140353155888832 code 400, message Bad request version ('\x8fäoÜUU\x02\x99-¢4·´\x8a|\x03C$¶[\x9f;»guâÇ"x')
+ERROR 2026-03-13 20:14:40,050 basehttp 14721 140353155888832 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2026-03-13 20:14:40,051 basehttp 14721 140353155888832 code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x06à\x01\x00\x06Ü\x03\x03å\x8aJ¦[\x9f¿ÉÞt¹uý©\x17Í\x1bâó¦%\x9e')
+ERROR 2026-03-13 20:14:40,051 basehttp 14721 140353155888832 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2026-03-13 20:14:40,052 basehttp 14721 140353155888832 code 400, message Bad request version ('\x94i©\x9fý÷>}Ô}gXi°\x08^9µ\x9dv')
+ERROR 2026-03-13 20:14:40,052 basehttp 14721 140353155888832 You're accessing the development server over HTTPS, but it only supports HTTP.
+INFO 2026-03-13 20:14:40,053 basehttp 14721 140353155888832 code 400, message Bad request version ('ZE\x15\x86Ó\x92ÛaD5\x12!ñb¿\x18¡Ss&\x95]b¸\x1a¬ªvÔh\x90uÃ)r\x17×¶DÀ¢\x1bì¢\x82')
+ERROR 2026-03-13 20:14:40,053 basehttp 14721 140353155888832 You're accessing the development server over HTTPS, but it only supports HTTP.

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>{% block title %}Eyedentity Eyewear | Premium Eyewear in Harare, Zimbabwe{% endblock %}</title>
+    <title>{% block title %}Eyedentity Zee Eyewear{% endblock %}</title>
     <meta name="title" content="{% block meta_title %}Eyedentity Eyewear - Premium Eyewear Solutions in Zimbabwe{% endblock %}">
     <meta name="description" content="{% block description %}Shop premium photochromic, polarized, anti-blue light glasses and optical frames in Harare, Zimbabwe. Quality eyewear for style and protection. Same-day delivery available.{% endblock %}">
     <meta name="keywords" content="{% block keywords %}eyewear Zimbabwe, glasses Harare, photochromic glasses, polarized sunglasses, blue light glasses, optical frames, prescription glasses Zimbabwe, sunglasses Harare{% endblock %}">
@@ -140,10 +140,6 @@
                 <img src="{% static 'images/White bold.png' %}" alt="Eyedentity Eyewear Logo" height="44" width="auto">
             </a>
 
-            <button class="nav-toggle" type="button" onclick="toggleNav()" aria-label="Toggle navigation menu" aria-expanded="false">
-                <i class="bi bi-list"></i>
-            </button>
-
             <div class="nav-links desktop-nav">
                 <a class="nav-link" href="{% url 'home' %}">Home</a>
                 <a class="nav-link" href="{% url 'categories' %}">Categories</a>
@@ -152,29 +148,29 @@
                 <a class="nav-link" href="{% url 'about' %}">About</a>
             </div>
         </div>
+    </nav>
 
-        <div class="mobile-nav" id="mobileNav">
-            <a class="nav-link" href="{% url 'home' %}">
-                <i class="bi bi-house"></i>
-                <span>Home</span>
-            </a>
-            <a class="nav-link" href="{% url 'categories' %}">
-                <i class="bi bi-grid"></i>
-                <span>Categories</span>
-            </a>
-            <a class="nav-link" href="{% url 'shop' %}">
-                <i class="bi bi-shop"></i>
-                <span>Shop</span>
-            </a>
-            <a class="nav-link" href="{% url 'blog_list' %}">
-                <i class="bi bi-journal-text"></i>
-                <span>Blog</span>
-            </a>
-            <a class="nav-link" href="{% url 'about' %}">
-                <i class="bi bi-info-circle"></i>
-                <span>About</span>
-            </a>
-        </div>
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+        <a class="nav-link" href="{% url 'home' %}">
+            <i class="bi bi-house"></i>
+            <span>Home</span>
+        </a>
+        <a class="nav-link" href="{% url 'categories' %}">
+            <i class="bi bi-grid"></i>
+            <span>Categories</span>
+        </a>
+        <a class="nav-link" href="{% url 'shop' %}">
+            <i class="bi bi-shop"></i>
+            <span>Shop</span>
+        </a>
+        <a class="nav-link" href="{% url 'blog_list' %}">
+            <i class="bi bi-journal-text"></i>
+            <span>Blog</span>
+        </a>
+        <a class="nav-link" href="{% url 'about' %}">
+            <i class="bi bi-info-circle"></i>
+            <span>About</span>
+        </a>
     </nav>
 
     <main class="main-content" role="main">
@@ -263,24 +259,6 @@
     </footer>
 
     <script>
-        function toggleNav() {
-            const mobileNav = document.getElementById('mobileNav');
-            const toggle = document.querySelector('.nav-toggle');
-            const icon = toggle.querySelector('i');
-            const isActive = mobileNav.classList.toggle('active');
-            icon.className = isActive ? 'bi bi-x' : 'bi bi-list';
-            toggle.setAttribute('aria-expanded', isActive);
-            document.body.style.overflow = isActive ? 'hidden' : '';
-        }
-
-        document.addEventListener('click', function(e) {
-            const nav = document.querySelector('.main-nav');
-            const mobileNav = document.getElementById('mobileNav');
-            if (!nav.contains(e.target) && mobileNav.classList.contains('active')) {
-                toggleNav();
-            }
-        });
-
         if ('loading' in HTMLImageElement.prototype) {
             const images = document.querySelectorAll('img[loading="lazy"]');
             images.forEach(img => {
