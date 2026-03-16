@@ -1,0 +1,143 @@
+/*
+ * mobile-first.css
+ * Drop this file in static/css/ and add:
+ *   <link rel="stylesheet" href="{% static 'css/mobile-first.css' %}">
+ * AFTER enhancements.css in base.html
+ *
+ * This patches the existing styles to be truly mobile-first.
+ */
+
+/* ===================================
+   GLOBAL MOBILE BASE SIZES
+   =================================== */
+
+html {
+    font-size: 15px;          /* slightly smaller base for compact mobile */
+}
+
+body {
+    line-height: 1.65;
+}
+
+/* Section padding — tighter on mobile */
+.section {
+    padding: 2.5rem 0;
+}
+
+/* Section titles */
+.section-title {
+    font-size: 1.75rem;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.625rem;
+}
+
+.section-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+}
+
+/* Container — comfortable side padding on mobile */
+.container {
+    padding: 0 1.25rem;
+}
+
+/* Buttons — full tap target on mobile */
+.btn {
+    min-height: 44px;              /* iOS recommended tap target */
+    font-size: 0.875rem;
+    padding: 0.625rem 1.125rem;
+}
+
+.btn-lg {
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.925rem;
+}
+
+/* Grid — single column on mobile by default */
+.grid-2,
+.grid-3,
+.grid-4 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+/* ===================================
+   NAV — TRUST BANNER ADJUSTMENT
+   Top offset: trust banner (41px) + main nav (64px) = 105px total
+   =================================== */
+
+/* The sticky cats in home.html need to be below the combined header */
+@media (max-width: 768px) {
+    .sticky-cats {
+        top: 105px;    /* trust (41) + nav (64) */
+    }
+}
+
+/* ===================================
+   CARDS — MOBILE TOUCH OPTIMISATION
+   =================================== */
+
+.card,
+.blog-card,
+.product-card-modern,
+.shop-product-card {
+    /* slightly larger border-radius on mobile for softer feel */
+    border-radius: 14px;
+}
+
+/* ===================================
+   FORMS — LARGER TOUCH TARGETS
+   =================================== */
+
+.form-control,
+.form-select {
+    min-height: 48px;
+    font-size: 1rem;     /* prevents iOS zoom-on-focus */
+    border-radius: var(--radius);
+}
+
+/* ===================================
+   FOOTER — COMPACT ON MOBILE
+   =================================== */
+
+.main-footer {
+    margin-top: 3rem;
+    padding: 2.5rem 0 1.5rem;
+}
+
+.footer-grid {
+    gap: 1.75rem;
+}
+
+/* ===================================
+   TABLET breakpoint (640px)
+   =================================== */
+
+@media (min-width: 640px) {
+    html { font-size: 15.5px; }
+
+    .section { padding: 3.5rem 0; }
+    .section-title { font-size: 2rem; }
+
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===================================
+   DESKTOP breakpoint (1024px)
+   =================================== */
+
+@media (min-width: 1024px) {
+    html { font-size: 16px; }
+
+    .section { padding: 5rem 0; }
+    .section-title { font-size: 2.5rem; }
+    .section-subtitle { font-size: 1.05rem; margin-bottom: 3.5rem; }
+
+    .container { padding: 0 2rem; }
+
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+}
