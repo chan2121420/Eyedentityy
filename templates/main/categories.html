@@ -8,21 +8,30 @@
     <div class="container">
         <div class="categories-header">
             <p class="categories-eyebrow">Browse</p>
-            <h1 class="section-title">Product Categories</h1>
-            <p class="section-subtitle">Explore our diverse range of eyewear categories designed for every lifestyle and need</p>
+            <h1 class="section-title">Categories</h1>
+            <p class="section-subtitle">Find eyewear for every lifestyle and need</p>
         </div>
 
-        <div class="categories-grid">
+        <!-- Sticky category label bar -->
+        <div class="sticky-label-bar" id="stickyLabelBar">
+            <div class="sticky-label-inner">
+                <span class="sticky-label-text" id="stickyLabelText">All Categories</span>
+                <a href="{% url 'shop' %}" class="sticky-label-cta">Shop All →</a>
+            </div>
+        </div>
+
+        <div class="categories-grid" id="categoriesGrid">
             {% for category in categories %}
-            <a href="{% url 'category_detail' category.slug %}" class="category-card-large">
+            <a href="{% url 'category_detail' category.slug %}"
+               class="category-card-large"
+               data-category="{{ category.name }}">
                 {% if category.image %}
-                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-large-img">
+                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-large-img" loading="lazy">
                 {% else %}
                 <div class="category-large-placeholder">
                     <i class="bi bi-eyeglasses"></i>
                 </div>
                 {% endif %}
-
                 <div class="category-large-overlay">
                     <div class="category-large-content">
                         <h2>{{ category.name }}</h2>
@@ -36,7 +45,7 @@
             {% empty %}
             <div class="empty-state-full">
                 <i class="bi bi-grid"></i>
-                <h3>No Categories Available</h3>
+                <h3>No Categories Yet</h3>
                 <p>Please check back soon for our product categories</p>
             </div>
             {% endfor %}
@@ -45,13 +54,18 @@
 </section>
 
 <style>
+/* ===================================
+   MOBILE-FIRST CATEGORIES PAGE
+   =================================== */
+
 .categories-page {
     background: var(--bg-primary);
+    padding-top: 2.5rem;
 }
 
 .categories-header {
     text-align: center;
-    margin-bottom: 3.5rem;
+    margin-bottom: 2rem;
 }
 
 .categories-eyebrow {
@@ -60,18 +74,77 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--accent-primary);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
+/* --- STICKY LABEL BAR --- */
+.sticky-label-bar {
+    position: sticky;
+    /* sits below trust banner (41px) + nav (64px) = 105px */
+    top: 105px;
+    z-index: 800;
+    background: rgba(10, 11, 13, 0.97);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 0;
+    margin-bottom: 1.5rem;
+    /* negative margin to break out of container */
+    margin-left: -2rem;
+    margin-right: -2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.sticky-label-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.sticky-label-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sticky-label-text::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.sticky-label-cta {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity var(--transition-fast);
+}
+
+.sticky-label-cta:hover { opacity: 0.75; }
+
+/* --- CATEGORIES GRID --- */
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 1.125rem;
 }
 
 .category-card-large {
     position: relative;
-    height: 320px;
+    height: 200px;
     border-radius: var(--radius-xl);
     overflow: hidden;
     text-decoration: none;
@@ -81,7 +154,7 @@
 }
 
 .category-card-large:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 }
 
@@ -90,11 +163,10 @@
     height: 100%;
     object-fit: cover;
     transition: transform var(--transition-slow);
+    display: block;
 }
 
-.category-card-large:hover .category-large-img {
-    transform: scale(1.06);
-}
+.category-card-large:hover .category-large-img { transform: scale(1.05); }
 
 .category-large-placeholder {
     width: 100%;
@@ -105,44 +177,42 @@
     justify-content: center;
 }
 
-.category-large-placeholder i {
-    font-size: 5rem;
-    color: var(--text-faint);
-}
+.category-large-placeholder i { font-size: 4rem; color: var(--text-faint); }
 
 .category-large-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(10, 11, 13, 0.95) 0%, rgba(10, 11, 13, 0.3) 60%, transparent 100%);
+    background: linear-gradient(to top, rgba(10,11,13,0.95) 0%, rgba(10,11,13,0.25) 55%, transparent 100%);
     display: flex;
     align-items: flex-end;
-    padding: 2rem;
+    padding: 1.375rem;
 }
 
 .category-large-content h2 {
     font-family: var(--font-display);
-    font-size: 1.625rem;
+    font-size: 1.375rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     color: var(--text-primary);
     letter-spacing: -0.02em;
+    line-height: 1.2;
 }
 
 .category-large-content p {
-    font-size: 0.9rem;
-    color: rgba(240, 242, 247, 0.7);
-    margin-bottom: 1rem;
-    line-height: 1.5;
+    font-size: 0.825rem;
+    color: rgba(240,242,247,0.65);
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
 }
 
 .category-count-badge {
     display: inline-block;
-    padding: 0.375rem 0.875rem;
-    background: rgba(56, 189, 248, 0.15);
-    border: 1px solid rgba(56, 189, 248, 0.25);
+    padding: 0.3rem 0.75rem;
+    background: rgba(56,189,248,0.15);
+    border: 1px solid rgba(56,189,248,0.25);
     border-radius: 20px;
     color: var(--accent-primary);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
     backdrop-filter: blur(8px);
 }
@@ -150,40 +220,104 @@
 .empty-state-full {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 6rem 2rem;
+    padding: 5rem 2rem;
 }
 
 .empty-state-full i {
-    font-size: 5rem;
+    font-size: 4rem;
     color: var(--text-faint);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
     display: block;
 }
 
 .empty-state-full h3 {
-    font-size: 1.75rem;
-    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
     color: var(--text-primary);
     letter-spacing: -0.01em;
 }
 
-.empty-state-full p {
-    color: var(--text-secondary);
-    font-size: 1.05rem;
+.empty-state-full p { color: var(--text-secondary); }
+
+/* ===================================
+   TABLET (min 640px)
+   =================================== */
+@media (min-width: 640px) {
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .category-card-large { height: 240px; }
 }
 
-@media (max-width: 768px) {
+/* ===================================
+   DESKTOP (min 1024px)
+   =================================== */
+@media (min-width: 1024px) {
     .categories-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
     }
 
-    .category-card-large {
-        height: 280px;
-    }
+    .category-card-large { height: 300px; }
 
-    .category-large-content h2 {
-        font-size: 1.375rem;
+    .category-large-content h2 { font-size: 1.625rem; }
+
+    .sticky-label-bar {
+        margin-left: -2rem;
+        margin-right: -2rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .sticky-label-bar {
+        margin-left: -2rem;
+        margin-right: -2rem;
+    }
+}
+
+/* Mobile: on smaller screens the bar breaks out of padding */
+@media (max-width: 640px) {
+    .sticky-label-bar {
+        margin-left: -1.25rem;
+        margin-right: -1.25rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
     }
 }
 </style>
+
+{% block extra_js %}
+<script>
+// Update the sticky label as the user scrolls past each category card
+(function() {
+    const bar = document.getElementById('stickyLabelBar');
+    const labelText = document.getElementById('stickyLabelText');
+    const cards = document.querySelectorAll('.category-card-large[data-category]');
+    if (!bar || !cards.length) return;
+
+    function updateLabel() {
+        const scrollY = window.scrollY || window.pageYOffset;
+        const barBottom = bar.getBoundingClientRect().bottom + scrollY;
+        let active = null;
+
+        cards.forEach(card => {
+            const cardTop = card.getBoundingClientRect().top + scrollY;
+            if (cardTop <= barBottom) {
+                active = card.getAttribute('data-category');
+            }
+        });
+
+        if (active) {
+            labelText.textContent = active;
+        } else {
+            labelText.textContent = 'All Categories';
+        }
+    }
+
+    window.addEventListener('scroll', updateLabel, { passive: true });
+    updateLabel();
+})();
+</script>
+{% endblock %}
+
 {% endblock %}
