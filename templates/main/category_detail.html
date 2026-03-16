@@ -4,8 +4,28 @@
 {% block title %}{{ category.name }} - Products{% endblock %}
 
 {% block content %}
+
+<!-- ===== STICKY CATEGORY IDENTITY BAR ===== -->
+<div class="sticky-category-bar" id="stickyCategoryBar">
+    <div class="sticky-category-inner">
+        <div class="sticky-category-left">
+            <a href="{% url 'categories' %}" class="sticky-back-link" aria-label="All categories">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <span class="sticky-category-name">{{ category.name }}</span>
+            {% if category.product_count %}
+            <span class="sticky-product-count">{{ category.product_count }} item{{ category.product_count|pluralize }}</span>
+            {% endif %}
+        </div>
+        <div class="sticky-category-right">
+            <a href="{% url 'shop' %}" class="sticky-shop-all">All Products →</a>
+        </div>
+    </div>
+</div>
+
 <section class="section category-detail-page">
     <div class="container">
+
         <div class="category-page-header">
             <a href="{% url 'categories' %}" class="back-link">
                 <i class="bi bi-arrow-left"></i> All Categories
@@ -22,14 +42,14 @@
                 {% endif %}
 
                 <a href="{{ product.get_absolute_url }}" class="product-img-link">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img" loading="lazy">
                 </a>
 
                 <div class="product-info">
                     <a href="{{ product.get_absolute_url }}" class="product-name-link">
                         <h3 class="product-name">{{ product.name }}</h3>
                     </a>
-                    <p class="product-desc">{{ product.description|truncatewords:15 }}</p>
+                    <p class="product-desc">{{ product.description|truncatewords:12 }}</p>
                     <div class="product-price">
                         <span class="price-current">${{ product.price }}</span>
                         {% if product.old_price %}
@@ -45,7 +65,7 @@
             {% empty %}
             <div class="empty-state">
                 <i class="bi bi-inbox"></i>
-                <h3>No Products Available</h3>
+                <h3>No Products Yet</h3>
                 <p>Check back soon for new products in this category</p>
                 <a href="{% url 'shop' %}" class="btn btn-primary">Browse All Products</a>
             </div>
@@ -62,13 +82,11 @@
                     </a>
                 </li>
                 {% endif %}
-
                 {% for num in products.paginator.page_range %}
                 <li class="page-item {% if products.number == num %}active{% endif %}">
                     <a class="page-link" href="?page={{ num }}">{{ num }}</a>
                 </li>
                 {% endfor %}
-
                 {% if products.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ products.next_page_number }}">
@@ -79,55 +97,153 @@
             </ul>
         </nav>
         {% endif %}
+
     </div>
 </section>
 
 <style>
+/* ===================================
+   STICKY CATEGORY IDENTITY BAR
+   Shows the current category name as
+   users scroll through products
+   =================================== */
+
+.sticky-category-bar {
+    position: sticky;
+    top: 105px;   /* trust (41px) + nav (64px) */
+    z-index: 900;
+    background: rgba(10, 11, 13, 0.97);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sticky-category-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0.625rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 44px;
+}
+
+.sticky-category-left {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-width: 0;
+}
+
+.sticky-back-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+}
+
+.sticky-back-link:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+}
+
+.sticky-category-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sticky-product-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.15rem 0.5rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.sticky-category-right { flex-shrink: 0; }
+
+.sticky-shop-all {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity var(--transition-fast);
+}
+
+.sticky-shop-all:hover { opacity: 0.75; }
+
+/* ===================================
+   CATEGORY DETAIL PAGE
+   =================================== */
+
 .category-detail-page {
     background: var(--bg-primary);
+    padding-top: 2rem;
 }
 
 .category-page-header {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 .back-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.45rem;
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     font-weight: 500;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.125rem;
     transition: color var(--transition-fast);
 }
 
-.back-link:hover {
-    color: var(--accent-primary);
-}
+.back-link:hover { color: var(--accent-primary); }
 
 .category-title {
     font-family: var(--font-display);
-    font-size: 2.5rem;
+    font-size: 1.875rem;
     font-weight: 700;
-    margin-bottom: 0.875rem;
+    margin-bottom: 0.625rem;
     color: var(--text-primary);
     letter-spacing: -0.025em;
+    line-height: 1.15;
 }
 
 .category-description {
-    font-size: 1.05rem;
+    font-size: 0.925rem;
     color: var(--text-secondary);
-    max-width: 600px;
-    line-height: 1.7;
+    line-height: 1.65;
 }
+
+/* ===================================
+   PRODUCTS GRID — MOBILE FIRST
+   =================================== */
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(276px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+    grid-template-columns: 1fr 1fr;   /* 2 columns on mobile */
+    gap: 1rem;
+    margin-bottom: 2.5rem;
 }
 
 .shop-product-card {
@@ -142,21 +258,21 @@
 }
 
 .shop-product-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     box-shadow: var(--shadow);
     border-color: var(--border-strong);
 }
 
 .product-badge {
     position: absolute;
-    top: 0.875rem;
-    right: 0.875rem;
+    top: 0.625rem;
+    right: 0.625rem;
     background: rgba(239, 68, 68, 0.9);
     color: white;
-    padding: 0.3rem 0.65rem;
-    border-radius: 5px;
+    padding: 0.225rem 0.5rem;
+    border-radius: 4px;
     font-weight: 700;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     z-index: 10;
     letter-spacing: 0.02em;
 }
@@ -168,60 +284,59 @@
 
 .product-img {
     width: 100%;
-    height: 272px;
+    aspect-ratio: 1;
     object-fit: cover;
     transition: transform var(--transition-slow);
+    display: block;
 }
 
-.shop-product-card:hover .product-img {
-    transform: scale(1.04);
-}
+.shop-product-card:hover .product-img { transform: scale(1.04); }
 
 .product-info {
-    padding: 1.375rem;
+    padding: 0.875rem;
     display: flex;
     flex-direction: column;
     flex: 1;
 }
 
-.product-name-link {
-    text-decoration: none;
-    color: inherit;
-}
+.product-name-link { text-decoration: none; color: inherit; }
 
 .product-name {
-    font-size: 1.1rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     color: var(--text-primary);
     letter-spacing: -0.01em;
-    line-height: 1.4;
+    line-height: 1.35;
 }
 
 .product-desc {
-    font-size: 0.875rem;
+    font-size: 0.775rem;
     color: var(--text-secondary);
-    margin-bottom: 1rem;
-    line-height: 1.6;
+    margin-bottom: 0.75rem;
+    line-height: 1.55;
     flex-grow: 1;
+    /* hide on very small screens to keep cards compact */
+    display: none;
 }
 
 .product-price {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.125rem;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
 }
 
 .price-current {
-    font-size: 1.625rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--accent-secondary);
     letter-spacing: -0.02em;
 }
 
 .price-old {
-    font-size: 1.05rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     text-decoration: line-through;
 }
@@ -230,16 +345,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.8125rem;
+    gap: 0.4rem;
+    padding: 0.625rem 0.5rem;
     background: #25d366;
     color: white;
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     border-radius: var(--radius-sm);
     transition: background var(--transition-fast);
     border: none;
+    min-height: 40px;
 }
 
 .btn-order-whatsapp:hover {
@@ -247,43 +363,79 @@
     color: white;
 }
 
-.btn-order-whatsapp i {
-    font-size: 1.125rem;
-}
+.btn-order-whatsapp i { font-size: 1rem; }
 
+/* Empty state */
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 5rem 2rem;
+    padding: 4rem 1.5rem;
 }
 
 .empty-state i {
-    font-size: 4.5rem;
+    font-size: 3.5rem;
     color: var(--text-faint);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
     display: block;
 }
 
 .empty-state h3 {
-    font-size: 1.625rem;
-    margin-bottom: 0.75rem;
+    font-size: 1.375rem;
+    margin-bottom: 0.625rem;
     color: var(--text-primary);
     letter-spacing: -0.01em;
 }
 
 .empty-state p {
     color: var(--text-secondary);
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
 }
 
-@media (max-width: 768px) {
-    .category-title {
-        font-size: 2rem;
+/* Pagination */
+.pagination-nav { margin-top: 1.5rem; }
+
+/* ===================================
+   TABLET (min 480px)
+   =================================== */
+@media (min-width: 480px) {
+    .product-desc { display: block; }   /* show description */
+    .product-name { font-size: 0.925rem; }
+}
+
+/* ===================================
+   TABLET (min 640px)
+   =================================== */
+@media (min-width: 640px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
     }
 
+    .category-title { font-size: 2.25rem; }
+
+    .product-name { font-size: 1rem; }
+    .price-current { font-size: 1.375rem; }
+    .product-badge { font-size: 0.7rem; }
+}
+
+/* ===================================
+   DESKTOP (min 1024px)
+   =================================== */
+@media (min-width: 1024px) {
     .products-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
     }
+
+    .category-title { font-size: 2.5rem; }
+
+    .sticky-cats-scroll { padding: 0.625rem 2rem; }
+
+    .product-info { padding: 1.25rem; }
+    .product-name { font-size: 1.05rem; }
+    .btn-order-whatsapp { font-size: 0.875rem; padding: 0.75rem; }
 }
 </style>
+
 {% endblock %}
