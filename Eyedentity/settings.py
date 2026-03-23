@@ -81,15 +81,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Eyedentity.wsgi.application'
 
-# ---------------------------------------------------------------------------
-# DATABASE
-# On Render, set the DATABASE_URL environment variable to your PostgreSQL URL.
-# Locally, it falls back to your local PostgreSQL config.
-# ---------------------------------------------------------------------------
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
-    # Render (or any env that provides DATABASE_URL)
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
@@ -98,7 +92,6 @@ if DATABASE_URL:
         )
     }
 else:
-    # Local PostgreSQL
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -122,17 +115,10 @@ TIME_ZONE = 'Africa/Harare'
 USE_I18N = True
 USE_TZ = True
 
-# ---------------------------------------------------------------------------
-# STATIC FILES
-# ---------------------------------------------------------------------------
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-# ---------------------------------------------------------------------------
-# MEDIA FILES — local disk in DEBUG, Supabase S3 in production
-# ---------------------------------------------------------------------------
 MEDIA_ROOT = BASE_DIR / 'media'
 
 SUPABASE_PROJECT_ID = 'jmzrevalerojybgvxfas'
@@ -144,25 +130,45 @@ AWS_S3_REGION_NAME = 'us-east-1'
 AWS_S3_ADDRESSING_STYLE = 'path'
 AWS_QUERYSTRING_AUTH = False
 AWS_S3_FILE_OVERWRITE = False
-AWS_S3_CUSTOM_DOMAIN = f'{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}'
-AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
 AWS_DEFAULT_ACL = 'public-read'
-AWS_S3_VERIFY = True
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+
+MEDIA_URL = f'https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}/'
 
 if DEBUG:
-    MEDIA_URL = '/media/'
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        },
+    }
 else:
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "OPTIONS": {
+                "bucket_name": "media",
+                "endpoint_url": f'https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3',
+                "region_name": "us-east-1",
+                "addressing_style": "path",
+                "signature_version": "s3v4",
+                "querystring_auth": False,
+                "file_overwrite": False,
+                "default_acl": "public-read",
+                "custom_domain": f'{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/media',
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        },
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
 
-# ---------------------------------------------------------------------------
-# SECURITY — relaxed in DEBUG, hardened in production
-# ---------------------------------------------------------------------------
 SECURE_SSL_REDIRECT = False
 SECURE_HSTS_SECONDS = 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = False
@@ -179,9 +185,6 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-# ---------------------------------------------------------------------------
-# CKEDITOR
-# ---------------------------------------------------------------------------
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
@@ -202,15 +205,9 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-# ---------------------------------------------------------------------------
-# CRISPY FORMS
-# ---------------------------------------------------------------------------
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
-# ---------------------------------------------------------------------------
-# LOGGING
-# ---------------------------------------------------------------------------
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
 
@@ -258,9 +255,6 @@ LOGGING = {
     },
 }
 
-# ---------------------------------------------------------------------------
-# CACHE
-# ---------------------------------------------------------------------------
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -268,9 +262,6 @@ CACHES = {
     }
 }
 
-# ---------------------------------------------------------------------------
-# SESSIONS & MESSAGES
-# ---------------------------------------------------------------------------
 SESSION_COOKIE_AGE = 1209600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
@@ -283,9 +274,6 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-# ---------------------------------------------------------------------------
-# APP-SPECIFIC
-# ---------------------------------------------------------------------------
 PAGINATE_BY = 12
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
