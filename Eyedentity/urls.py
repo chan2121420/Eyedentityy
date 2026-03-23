@@ -4,12 +4,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
+from django_ckeditor_5.views import upload_file
 
-# Import sitemaps
 from apps.main.sitemaps import ProductSitemap, CategorySitemap, StaticViewSitemap
 from apps.blog.sitemaps import BlogPostSitemap, BlogCategorySitemap
 
-# Sitemap configuration
 sitemaps = {
     'static': StaticViewSitemap,
     'products': ProductSitemap,
@@ -19,34 +19,18 @@ sitemaps = {
 }
 
 urlpatterns = [
-    # Admin
     path('admin/', admin.site.urls),
-    
-    # CKEditor
-    path('ckeditor/', include('ckeditor_uploader.urls')),
-    
-    # Main app URLs
+    path('ckeditor5/image_upload/', login_required(upload_file), name='ck_editor_5_upload_file'),
     path('', include('apps.main.urls')),
-    
-    # Blog app URLs
     path('blog/', include('apps.blog.urls')),
-    
-    # SEO URLs
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
-    
-    # Additional utility URLs
-    path('.well-known/', include([
-        # Add any .well-known routes here if needed
-    ])),
+    path('.well-known/', include([])),
 ]
 
-# Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    
-    # Add debug toolbar if installed
     try:
         import debug_toolbar
         urlpatterns = [
@@ -55,6 +39,5 @@ if settings.DEBUG:
     except ImportError:
         pass
 
-# Custom error handlers
 handler404 = 'apps.main.views.handler404'
 handler500 = 'apps.main.views.handler500'

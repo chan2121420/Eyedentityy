@@ -33,8 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.sitemaps',
-    'ckeditor',
-    'ckeditor_uploader',
+    'django_ckeditor_5',
     'crispy_forms',
     'crispy_bootstrap5',
     'storages',
@@ -149,15 +148,15 @@ else:
         "default": {
             "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
             "OPTIONS": {
-                "bucket_name": "media",
-                "endpoint_url": f'https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3',
-                "region_name": "us-east-1",
+                "bucket_name": AWS_STORAGE_BUCKET_NAME,
+                "endpoint_url": AWS_S3_ENDPOINT_URL,
+                "region_name": AWS_S3_REGION_NAME,
                 "addressing_style": "path",
                 "signature_version": "s3v4",
                 "querystring_auth": False,
                 "file_overwrite": False,
                 "default_acl": "public-read",
-                "custom_domain": f'{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/media',
+                "custom_domain": f'{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}',
             },
         },
         "staticfiles": {
@@ -185,25 +184,34 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_IMAGE_BACKEND = 'pillow'
-CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
-CKEDITOR_CONFIGS = {
+CKEDITOR_5_CONFIGS = {
     'default': {
-        'toolbar': 'full',
-        'height': 300,
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload'],
+    },
+    'extends': {
+        'blockToolbar': ['paragraph', 'heading1', 'heading2', 'heading3'],
+        'toolbar': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic',
+                    'link', 'underline', 'strikethrough', 'code', 'subscript',
+                    'superscript', 'highlight', '|', 'bulletedList', 'numberedList',
+                    'todoList', '|', 'blockQuote', 'imageUpload', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+                    'mediaEmbed', 'removeFormat', 'insertTable'],
+        'image': {
+            'toolbar': ['imageTextAlternative', 'imageTitle', '|',
+                       'imageStyle:full', 'imageStyle:side', '|',
+                       'toggleImageCaption', 'imageResize', '|', 'linkImage'],
+        },
+        'table': {
+            'contentToolbar': ['tableColumn', 'tableRow', 'mergeTableCells',
+                             'resizeTableWidth', 'tableCaption'],
+        },
+        'height': 400,
         'width': '100%',
-        'extraPlugins': ','.join([
-            'uploadimage', 'div', 'autolink', 'autoembed',
-            'embedsemantic', 'autogrow', 'widget', 'lineutils',
-            'clipboard', 'dialog', 'dialogui', 'elementspath',
-        ]),
-        'removePlugins': ','.join(['stylesheetparser']),
-    },
-    'awesome_ckeditor': {
-        'toolbar': 'Basic',
-    },
+    }
 }
+
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
@@ -239,7 +247,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': 'ERROR',
     },
     'loggers': {
         'django': {
